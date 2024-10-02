@@ -7,18 +7,18 @@ export const ChatWindow = () => {
   const { selectedChat } = useOutletContext();
   const { chatUser, userId } = selectedChat;
 
-  // const { chat } = user; 
+  // const { chat } = user;
   // console.log(chat, "chats");
 
   const [messages, setMessages] = useState([]);
-  const { getUserMessages } = useAuth();  // Assume this function fetches messages from the server.
-  const [isLoading, setIsLoading] = useState(false);  // Add loading state to prevent multiple fetches.
+  const { getUserMessages } = useAuth(); // Assume this function fetches messages from the server.
+  const [isLoading, setIsLoading] = useState(false); // Add loading state to prevent multiple fetches.
 
   // Fetch chat history when the chat user changes
   useEffect(() => {
     if (chatUser?._id) {
       const fetchMessages = async () => {
-        const fetchedMessages = await getUserMessages(chatUser._id);  
+        const fetchedMessages = await getUserMessages(chatUser._id);
         setMessages(fetchedMessages || []); // Set fetched messages locally
       };
       fetchMessages();
@@ -27,7 +27,7 @@ export const ChatWindow = () => {
 
   return (
     <div className="bg-gray-100 flex flex-col justify-between h-full shadow-md">
-      {chatUser? (
+      {chatUser ? (
         <>
           <div className="flex items-center border border-gray-300">
             <img
@@ -55,13 +55,12 @@ export const ChatWindow = () => {
               ))}
             </ul>
           </div>
-          <MessageInput
-            selectedChat={selectedChat}
-            setMessages={setMessages}
-          />
+          <MessageInput selectedChat={selectedChat} setMessages={setMessages} />
         </>
       ) : (
-        <p className="text-center text-gray-600">Please select a chat.</p>
+        <p className="text-3xl flex justify-center items-center my-40 text-center text-gray-600">
+          Please select a chat.
+        </p>
       )}
     </div>
   );
