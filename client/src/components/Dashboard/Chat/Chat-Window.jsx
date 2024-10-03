@@ -2,6 +2,7 @@ import { MessageInput } from "./MessageInput";
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { useAuth } from "../../../store/auth";
+import { RxAvatar } from "react-icons/rx";
 
 export const ChatWindow = () => {
   const { selectedChat } = useOutletContext();
@@ -29,7 +30,7 @@ export const ChatWindow = () => {
     <div className="bg-gray-100 flex flex-col justify-between h-full shadow-md">
       {chatUser ? (
         <>
-          <div className="flex items-center border border-gray-300">
+          <div className="flex items-center border border-gray-300 ">
             <img
               className="w-12 rounded-full mr-4"
               src="/src/assets/reactIcon.png"
@@ -58,7 +59,7 @@ export const ChatWindow = () => {
           <MessageInput selectedChat={selectedChat} setMessages={setMessages} />
         </>
       ) : (
-        <p className="text-3xl flex justify-center items-center my-40 text-center text-gray-600">
+        <p className="text-center text-gray-600">
           Please select a chat.
         </p>
       )}
