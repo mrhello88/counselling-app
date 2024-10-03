@@ -2,7 +2,7 @@
 const UserSchema = require("../model/User");
 exports.getCounselor = async (req, res) => {
   try {
-    const counselors = await UserSchema.find({role:"counselor"}); // Fetch all counselors
+    const counselors = await UserSchema.find({ role: "counselor" }); // Fetch all counselors
     res.status(200).json(counselors);
     // console.log(counselors);
   } catch (error) {
@@ -11,7 +11,14 @@ exports.getCounselor = async (req, res) => {
 };
 
 exports.postCAdvice = async (req, res) => {
-  const { userId, counselorId } = req.body;
+  const userId = req.user._id;
+  const { counselorId } = req.body;
+
+  if (userId.toString() === counselorId.toString()) {
+    return res
+      .status(400)
+      .json({ message: "You can't add your self as counselor" });
+  }
 
   try {
     // Add user to counselor's students list
@@ -32,10 +39,11 @@ exports.postCAdvice = async (req, res) => {
 
 exports.getUCounselors = async (req, res) => {
   try {
-    const user = await UserSchema.findById(req.params.userId).populate("friends");
+    const user = await UserSchema.findById(req.params.userId).populate(
+      "friends"
+    );
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
 };
- 

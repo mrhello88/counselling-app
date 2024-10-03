@@ -13,8 +13,7 @@ export const Navbar = () => {
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-4">
             <NavLink to="/" className="text-white hover:text-[#38bdf8]">Home</NavLink>
-            <NavLink to="/user-dashboard" className="text-white hover:text-[#38bdf8]">U</NavLink>
-            <NavLink to="/counsellor-dashboard" className="text-white hover:text-[#38bdf8]">C</NavLink>
+            <NavLink to="/user-dashboard" className="text-white hover:text-[#38bdf8]">User</NavLink>
             <NavLink to="/register" className="text-white hover:text-[#38bdf8]">Register</NavLink>
           </div>
   
@@ -35,10 +34,10 @@ export const Navbar = () => {
         {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden mt-2">
-            <a href="#" className="block text-white py-2 px-4 hover:bg-[#1e293b]">Home</a>
-            <a href="#" className="block text-white py-2 px-4 hover:bg-[#1e293b]">About</a>
-            <a href="#" className="block text-white py-2 px-4 hover:bg-[#1e293b]">Services</a>
-            <a href="#" className="block text-white py-2 px-4 hover:bg-[#1e293b]">Contact</a>
+            <a href="/" className="block text-white py-2 px-4 hover:bg-[#1e293b]">Home</a>
+            <a href="/user-dashboard" className="block text-white py-2 px-4 hover:bg-[#1e293b]">User</a>
+            <a href="#" className="block text-white py-2 px-4 hover:bg-[#1e293b]">Register</a>
+            <a href="/register" className="block text-white py-2 px-4 hover:bg-[#1e293b]">Contact</a>
             <button className="w-full text-left bg-[#38bdf8] text-white py-2 px-4 mt-2 hover:bg-[#0ea5e9]">
               Get Started
             </button>

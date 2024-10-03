@@ -1,32 +1,18 @@
 import { useState,useEffect } from "react";
 import { CounselorCard } from "../components/Counselor-Card/CounselorCard";
 import axios from "axios"
+import { useAuth } from "../store/auth";
 export const Home = () => {
-  const [counselors, setCounselors] = useState([]);
-
-  const fetchCounselors = async () => {
-    const response = await fetch("http://localhost:3000/counselors");
-    const data = await response.json();
-    setCounselors(data);
-  };
+  const {getCounselors,postCounselorAdvice, user} = useAuth()
+ const {counselors} = user
 
   const handleBuy = async (counselor) => {
-    const userId = "66f52ee4447d1b20c6251153"; // Get the current logged-in user ID
-    console.log(counselor,userId)
-    const response = await fetch(`http://localhost:3000/buy-advice`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, counselorId: counselor._id }),
-    });
-
-    if (response.ok) {
-      alert("Advice bought successfully");
-      // Add logic to update the UI (sidebar)
-    }
+    postCounselorAdvice(counselor)
+   console.log("paalksdjf ;a;lsdkj f;alksdjf ;alskdfj ")
   };
 
   useEffect(() => {
-    fetchCounselors();
+    getCounselors()
   }, []);
 
   return (

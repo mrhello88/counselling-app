@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const UserSchema = require("../model/User");
-
+const bcrypt = require("bcrypt")
+const crypto = require("crypto")
+const sendMail = require("../utils/nodeMailer")
 exports.postLogin = async (req, res) => {
   const { email } = req.body; // Destructure the email from req.body
   try {
@@ -35,6 +37,38 @@ exports.postLogin = async (req, res) => {
   } catch (error) {
     console.error("Error during login:", error);
     return res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.postRegister = async (req, res, next) => {
+  const { name, email, password, role } = req.body;
+
+  try {
+    // Check if the user already exists
+    const user = await UserSchema.findOne({ email });
+
+    if (user) {
+      return res.status(409).json({ message: "User already exist" });
+    }
+
+    // Generate token and hash password
+    const token = crypto.randomBytes(32).toString("hex");
+    const bcryptPassword = await bcrypt.hash(password, 12);
+
+    // Save token and user data in the cryptoModel
+    const saveCryptotoken = new cryptoModel({
+      token,
+      name,
+      email,
+      password: bcryptPassword,
+    });
+
+    await saveCryptotoken.save();
+
+    // Send email with token
+    sendMail(email, token);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
   }
 };
 
