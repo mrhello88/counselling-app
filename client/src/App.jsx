@@ -11,11 +11,8 @@ import { Payment } from "./pages/Payment";
 import { Register } from "./pages/Register";
 import { StudentRegister } from "./components/auth/Register/StudentRegister";
 import { CounselorRegister } from "./components/auth/Register/CounselorRegister";
-<<<<<<< HEAD
 import Profile from "./pages/Profile";
-=======
 import About from "./pages/About";
->>>>>>> refactor/navbar-design
 // import { CounsellorDashboard } from "./pages/C-Dashboard";
 
 export const App = () => {
