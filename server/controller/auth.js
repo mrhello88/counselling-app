@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const UserSchema = require("../model/User");
-const bcrypt = require("bcrypt")
+const bcryptjs = require("bcryptjs") 
 const crypto = require("crypto")
 const sendMail = require("../utils/nodeMailer")
 exports.postLogin = async (req, res) => {
@@ -53,7 +53,7 @@ exports.postRegister = async (req, res, next) => {
 
     // Generate token and hash password
     const token = crypto.randomBytes(32).toString("hex");
-    const bcryptPassword = await bcrypt.hash(password, 12);
+    const bcryptPassword = await bcryptjs.hash(password, 12);
 
     // Save token and user data in the cryptoModel
     const saveCryptotoken = new cryptoModel({
