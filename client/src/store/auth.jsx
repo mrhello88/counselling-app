@@ -29,11 +29,11 @@ export const AuthProvider = ({ children }) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body:JSON.stringify({ registerUser })
+        body: JSON.stringify({ registerUser }),
       });
       if (response.ok) {
         const data = await response.json();
-        console.log(data)
+        console.log(data);
         // setUser({ ...user, userData: data.userData });
       }
     } catch (error) {
@@ -60,7 +60,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const userFriends = async (userId) => {
-    console.log(userId, "request by any not 1153");
     try {
       const response = await fetch(
         `http://localhost:3000/user/${userId}/friends`,
@@ -74,7 +73,7 @@ export const AuthProvider = ({ children }) => {
       if (response.ok) {
         const friends = await response.json();
         setUser({ ...user, friends });
-      } 
+      }
     } catch (error) {
       console.error("Error fetching friends list");
     }
@@ -155,8 +154,8 @@ export const AuthProvider = ({ children }) => {
       if (response.ok) {
         alert("Advice bought successfully");
         // Add logic to update the UI (sidebar)
-      }else{
-        console.log(await response.json())
+      } else {
+        console.log(await response.json());
       }
     } catch (error) {
       console.error("Error post advice list");
