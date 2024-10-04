@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 // import { getCounselor } from "../../../server/controller/counselor";
 
 export const AuthContext = createContext();
@@ -27,17 +28,35 @@ export const AuthProvider = ({ children }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body:JSON.stringify({ registerUser })
       });
       if (response.ok) {
         const data = await response.json();
-        console.log(data)
         // setUser({ ...user, userData: data.userData });
+      }else{
+        console.log(await response.json())
       }
     } catch (error) {
       console.error("Error post user data");
+    }
+  };
+
+  const userVerification = async (token) => {
+    try {
+      const response = await fetch(`http://localhost:3000/register/verify/${token}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        storeTokenInLS(data.token)
+        useNavigate("/")
+      }
+    } catch (error) {
+      console.error("Error fetching user data");
     }
   };
 
@@ -176,6 +195,7 @@ export const AuthProvider = ({ children }) => {
         getUserMessages,
         LogoutUser,
         userRegister,
+        userVerification,
         user,
       }}
     >

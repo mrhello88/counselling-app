@@ -7,6 +7,7 @@ export const StudentRegister = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    role:""
   });
   const { userRegister } = useAuth();
 
@@ -17,6 +18,7 @@ export const StudentRegister = () => {
     setFormData({
       ...formData,
       [name]: value,
+       role:"student"
     });
   };
 

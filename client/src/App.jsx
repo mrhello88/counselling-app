@@ -11,6 +11,7 @@ import { Payment } from "./pages/Payment";
 import { Register } from "./pages/Register";
 import { StudentRegister } from "./components/auth/Register/StudentRegister";
 import { CounselorRegister } from "./components/auth/Register/CounselorRegister";
+import { VerifyUser } from "./components/auth/VerifyUser/VerifyUser";
 // import { CounsellorDashboard } from "./pages/C-Dashboard";
 
 export const App = () => {
@@ -30,6 +31,7 @@ export const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/register/student" element={<StudentRegister />} />
         <Route path="/register/counselor" element={<CounselorRegister />} />
+        <Route path="/register/verify/:token" element={<VerifyUser/>} />
       </Routes>
       <Footer />
     </Router>
