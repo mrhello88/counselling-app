@@ -5,19 +5,17 @@ import { Outlet } from "react-router-dom";
 export const UserDashboard = () => {
   const [selectedChat, setSelectedChat] = useState({});
   const handleSelectChat = (chatUser, userId) => {
-    setSelectedChat({chatUser, userId});
+    setSelectedChat({ chatUser, userId });
   };
 
   return (
     <>
-      <section className="max-h-screen h-screen">
-        <div className="flex justify-around container h-full bg-red-400">
-          <div className="w-1/4 h-full">
-            <SideBar
-              onSelectChat={handleSelectChat}
-            />
+      <section className="">
+        <div className="flex justify-around container h-full">
+          <div className="w-1/4">
+            <SideBar onSelectChat={handleSelectChat} />
           </div>
-          <div className="w-3/4 h-full">
+          <div className="w-3/4">
             <Outlet context={{ selectedChat }} />
           </div>
         </div>
