@@ -11,7 +11,11 @@ import { Payment } from "./pages/Payment";
 import { Register } from "./pages/Register";
 import { StudentRegister } from "./components/auth/Register/StudentRegister";
 import { CounselorRegister } from "./components/auth/Register/CounselorRegister";
+<<<<<<< HEAD
 import Profile from "./pages/Profile";
+=======
+import About from "./pages/About";
+>>>>>>> refactor/navbar-design
 // import { CounsellorDashboard } from "./pages/C-Dashboard";
 
 export const App = () => {
@@ -20,6 +24,7 @@ export const App = () => {
       <Navbar />
       <Routes>
         <Route path={`/`} element={<Home />} />
+        <Route path={"/about"} element={<About />} />
         <Route path="/user-dashboard" element={<UserDashboard />}>
           <Route index element={<ChatWindow />} />
         </Route>
@@ -27,6 +32,7 @@ export const App = () => {
         {/* <Route path="/counsellor-dashboard" element={<CounsellorDashboard />}>
           <Route index element={<ChatWindow />} />
         </Route> */}
+
         <Route path="/payment" element={<Payment />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<Register />} />
