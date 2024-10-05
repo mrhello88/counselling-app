@@ -5,7 +5,10 @@ require('dotenv').config()
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const http = require("http");
+const multer  = require('multer')
+const multerFeatures = require("./utils/multer")
 let PORT = process.env.PORT || 3000
+const path = require("path")
 // const authentication = require("./middleware/authentication").authentication
 const counselorRoute = require("./router/counselor")
 const authRoute = require("./router/auth")
@@ -18,17 +21,27 @@ const corsOptions = {
   methods: ["GET", "POST", "DELETE", "UPDATE"],
   Credentials: true,
 };
+
+app.use(
+  multer({
+    storage: multerFeatures.storage,
+    fileFilter: multerFeatures.fileFilter,
+    limits: {
+      fileSize: 1024 * 1024 * 15, // 15MB
+    },
+  }).single("counselorFile")
+);
+
 // app.use(authentication)
 app.use(cors(corsOptions));
 app.use(express.json())
 const io = new Server(server);
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/", (req, res) => {
-  console.log(req.params.userId)
-  res.send("<h1>Hello world</h1>");
-});
+
+ 
 app.use(counselorRoute)
 app.use(authRoute)
 app.use(messageRoute)
