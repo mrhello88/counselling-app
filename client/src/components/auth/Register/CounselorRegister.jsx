@@ -276,7 +276,7 @@ export const CounselorRegister = () => {
    // Ensure the form is only submitted at the final step
   if (step === 4) {
     const formData = new FormData();
-    formData.append("counselorRegister", JSON.stringify(Data));
+    formData.append("registerUser", JSON.stringify(Data));
     formData.append("counselorFile", file);
     userRegister(formData);
     setStep(1)
