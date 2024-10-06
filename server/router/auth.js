@@ -6,7 +6,7 @@ const router = express.Router();
 router.post("/login", authController.postLogin);
 router.post("/register", authController.postRegister)
 router.get("/user", authentication, authController.getUser);
-
+router.get("/register/verify/:token", authController.getVerify)
 module.exports = router;
   
 

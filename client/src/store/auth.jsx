@@ -1,4 +1,5 @@
-import { createContext, useState, useEffect, useContext } from "react";
+import { createContext, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 // import { getCounselor } from "../../../server/controller/counselor";
 
 export const AuthContext = createContext();
@@ -22,14 +23,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const userRegister = async (registerUser) => {
-    console.log(registerUser,"register user by user")
+    console.log(registerUser, "register user by user");
     try {
       const response = await fetch("http://localhost:3000/register", {
         method: "POST",
         // headers: {
         //   "Content-Type": "application/json",
         // },
-        body:registerUser
+        body: registerUser,
       });
       if (response.ok) {
         const data = await response.json();
@@ -38,6 +39,28 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Error post user data");
+    }
+  };
+
+  const VerifyUser = async (token) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/register/verify/${token}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 200) {
+        const data = await response.json();
+        const navigate = useNavigate();
+        navigate("/")
+        console.log(data);
+      }
+    } catch (err) {
+      console.log("Error when verifyUser");
     }
   };
 
@@ -174,6 +197,7 @@ export const AuthProvider = ({ children }) => {
         getCounselors,
         getUserMessages,
         LogoutUser,
+        VerifyUser,
         userRegister,
         user,
       }}

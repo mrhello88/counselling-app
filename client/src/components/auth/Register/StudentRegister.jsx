@@ -2,27 +2,34 @@ import { useState } from "react";
 import { useAuth } from "../../../store/auth";
 
 export const StudentRegister = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+  const [Data, setData] = useState({
+    personalInfo: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    role:"student"
   });
   const { userRegister } = useAuth();
 
   const [error, setError] = useState("");
 
-  const handleChange = (e) => {
+  const handleChange = (section,e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
+    setData({
+      ...Data,
+      [section]: {
+        ...Data[section],
+        [name]: value,
+      },
+      role:"student"
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { name, email, password, confirmPassword } = formData;
+    const { name, email, password, confirmPassword } = Data.personalInfo;
 
     // Simple validation
     if (!name || !email || !password || !confirmPassword) {
@@ -36,15 +43,18 @@ export const StudentRegister = () => {
     }
 
     // Submit form data (you can replace this with an API call)
-    console.log("Form submitted successfully", formData);
+    const formData = new FormData()
+    formData.append("registerUser", JSON.stringify(Data))
     userRegister(formData);
 
     // Reset form and error
-    setFormData({
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+    setData({
+      personalInfo: {
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      },
     });
     setError("");
   };
@@ -64,8 +74,8 @@ export const StudentRegister = () => {
             <input
               type="text"
               name="name"
-              value={formData.name}
-              onChange={handleChange}
+              value={Data.personalInfo.name}
+              onChange={(e)=>handleChange("personalInfo",e)}
               placeholder="Enter your name"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
@@ -79,8 +89,8 @@ export const StudentRegister = () => {
             <input
               type="email"
               name="email"
-              value={formData.email}
-              onChange={handleChange}
+              value={Data.personalInfo.email}
+              onChange={(e)=>handleChange( "personalInfo",e)}
               placeholder="Enter your email"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
@@ -94,8 +104,8 @@ export const StudentRegister = () => {
             <input
               type="password"
               name="password"
-              value={formData.password}
-              onChange={handleChange}
+              value={Data.personalInfo.password}
+              onChange={(e)=>handleChange( "personalInfo",e)}
               placeholder="Enter your password"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
@@ -109,8 +119,8 @@ export const StudentRegister = () => {
             <input
               type="password"
               name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
+              value={Data.personalInfo.confirmPassword}
+              onChange={(e)=>handleChange( "personalInfo",e)}
               placeholder="Confirm your password"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required

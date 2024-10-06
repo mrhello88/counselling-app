@@ -1,15 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { CounselorCard } from "../components/Counselor-Card/CounselorCard";
-import axios from "axios";
 import { useAuth } from "../store/auth";
 export const Home = () => {
-  const { getCounselors, postCounselorAdvice, user } = useAuth();
+  const { getCounselors, user } = useAuth();
   const { counselors } = user;
 
-  const handleBuy = async (counselor) => {
-    postCounselorAdvice(counselor);
-  };
-
+ 
   useEffect(() => {
     getCounselors();
   }, []);
@@ -23,7 +19,6 @@ export const Home = () => {
             <CounselorCard
               key={counselor._id}
               counselor={counselor}
-              onBuy={handleBuy}
             />
           ))}
         </div>
