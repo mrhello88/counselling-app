@@ -52,8 +52,8 @@ export const SideBar = ({ onSelectChat }) => {
                 <div className="flex items-center justify-start cursor-pointer gap-4">
                   <RxAvatar size={24} />
                   <div className="text-base">
-                    <p className="capitalize">{items?.name}</p>
-                    <span>last message</span>
+                    <p className="capitalize">{items?.personalInfo?.name}</p>
+                    <span>{items?.personalInfo?.email}</span>
                   </div>
                 </div>
               </li>

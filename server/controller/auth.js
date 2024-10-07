@@ -20,7 +20,13 @@ exports.postLogin = async (req, res) => {
 
     // Create JWT token
     const token = jwt.sign(
-      { name:personalInfo.name, email:personalInfo.email, userId: user._id, role, isLoggedIn: true },
+      {
+        name: personalInfo.name,
+        email: personalInfo.email,
+        userId: user._id,
+        role,
+        isLoggedIn: true,
+      },
       process.env.JWT_SECRET_KEY, // Replace with your secret key
       {
         expiresIn: 259200, // Token expiry time in seconds (3 days)
@@ -51,7 +57,7 @@ exports.postRegister = async (req, res, next) => {
 
       // Check if the user already exists
       const user = await UserSchema.findOne({
-        personalInfo: personalInfo.email,
+        "personalInfo.email": personalInfo.email,
       });
 
       if (user) {
@@ -74,12 +80,14 @@ exports.postRegister = async (req, res, next) => {
         role,
       });
       await saveCryptotoken.save();
-      // Send email with token
-      sendMail(personalInfo.email, token);
+      if (saveCryptotoken) {
+        // Send email with token
+        sendMail(personalInfo.email, token);
+      }
     } else {
       // Check if the user already exists
       const user = await UserSchema.findOne({
-        personalInfo: personalInfo.email,
+        "personalInfo.email": personalInfo.email,
       });
 
       if (user) {
@@ -99,8 +107,10 @@ exports.postRegister = async (req, res, next) => {
         role,
       });
       await saveCryptotoken.save();
-      // Send email with token
-      sendMail(personalInfo.email, token);
+      if (saveCryptotoken) {
+        // Send email with token
+        sendMail(personalInfo.email, token);
+      }
     }
   } catch (error) {
     console.log("error from register ", error);

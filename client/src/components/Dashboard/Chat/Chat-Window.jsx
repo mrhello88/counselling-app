@@ -38,7 +38,7 @@ export const ChatWindow = () => {
             alt="demy logo"
           />
           <span className="text-black text-xl font-medium capitalize">
-            Chat with: {chatUser?.name}
+            Chat with: {chatUser?.personalInfo?.name}
           </span>
         </div>
         <div className="">

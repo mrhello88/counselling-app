@@ -11,6 +11,7 @@ export const AuthProvider = ({ children }) => {
     friends: [],
     postMessage: [],
     counselors: [],
+    profileData: [],
   });
   const storeTokenInLS = (serverToken) => {
     return localStorage.setItem("token", serverToken);
@@ -56,7 +57,7 @@ export const AuthProvider = ({ children }) => {
       if (response.status === 200) {
         const data = await response.json();
         const navigate = useNavigate();
-        navigate("/")
+        navigate("/");
         console.log(data);
       }
     } catch (err) {
@@ -185,6 +186,48 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const fetchProfileData = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/profile", {
+        method: "GET",
+        headers: {
+          "Content-Type": "Application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }); // Adjust the endpoint to your backend route
+      if (response.ok) {
+        const profileData = await response.json();
+        setUser({ ...user, profileData });
+      }
+    } catch (error) {
+      console.error("Error fetching profile data:", error);
+    }
+  };
+
+  const putUpdateProfileData = async(formData)=>{
+    try {
+      // Make an API call to update the profile in the database
+      const response = await fetch("http://localhost:3000/update-profile", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        // Optionally fetch updated profile data after saving
+        fetchProfileData();
+      } else {
+        // Handle errors
+        console.error("Failed to update profile");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -194,9 +237,11 @@ export const AuthProvider = ({ children }) => {
         postUserMessage,
         storeTokenInLS,
         postCounselorAdvice,
+        fetchProfileData,
         getCounselors,
         getUserMessages,
         LogoutUser,
+        putUpdateProfileData,
         VerifyUser,
         userRegister,
         user,

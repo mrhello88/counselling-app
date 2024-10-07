@@ -1,19 +1,19 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-require('dotenv').config()
+require("dotenv").config();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const http = require("http");
-const multer  = require('multer')
-const multerFeatures = require("./utils/multer")
-let PORT = process.env.PORT || 3000
-const path = require("path")
+const multer = require("multer");
+const multerFeatures = require("./utils/multer");
+let PORT = process.env.PORT || 3000;
+const path = require("path");
 // const authentication = require("./middleware/authentication").authentication
-const counselorRoute = require("./router/counselor")
-const authRoute = require("./router/auth")
-const messageRoute = require("./router/message")
-
+const counselorRoute = require("./router/counselor");
+const authRoute = require("./router/auth");
+const messageRoute = require("./router/message");
+const profileRoute = require("./router/profile");
 const { Server } = require("socket.io");
 const server = http.createServer(app);
 const corsOptions = {
@@ -22,60 +22,44 @@ const corsOptions = {
   Credentials: true,
 };
 
-app.use(
-  multer({
-    storage: multerFeatures.storage,
-    fileFilter: multerFeatures.fileFilter,
-    limits: {
-      fileSize: 1024 * 1024 * 15, // 15MB
-    },
-  }).single("counselorFile")
-);
-
 // app.use(authentication)
 app.use(cors(corsOptions));
-app.use(express.json())
+app.use(express.json());
 const io = new Server(server);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-
- 
-app.use(counselorRoute)
-app.use(authRoute)
-app.use(messageRoute)
-io.on('connection', (socket) => {
-  console.log('A user connected', socket.id);
+app.use(profileRoute);
+app.use(counselorRoute);
+app.use(authRoute);
+app.use(messageRoute);
+io.on("connection", (socket) => {
+  console.log("A user connected", socket.id);
 
   // Handle joining the room
-  socket.on('join', ({ room }) => {
+  socket.on("join", ({ room }) => {
     socket.join(room);
     console.log(`User joined room: ${room}`);
   });
 
   // Handle receiving and broadcasting messages
-  socket.on('message', ({ room, message, sender }) => {
-    const newMessage = { message, senderId:sender, _id: Date.now() };
+  socket.on("message", ({ room, message, sender }) => {
+    const newMessage = { message, senderId: sender, _id: Date.now() };
     // Broadcast the message to everyone in the room
-    io.to(room).emit('message', newMessage);
+    io.to(room).emit("message", newMessage);
 
     // Optionally, save the message to the database
     // Save message to MongoDB
-
   });
 
   // Handle disconnect
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
   });
 });
- 
+
 console.log("paksitan");
-mongoose
-  .connect(
-    process.env.MONGODB_STRING
-  )
-  .then(() => {
-    server.listen(PORT);
-  });
+mongoose.connect(process.env.MONGODB_STRING).then(() => {
+  server.listen(PORT);
+});
