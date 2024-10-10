@@ -42,6 +42,28 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const VerifyUser = async (token) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/register/verify/${token}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 200) {
+        const data = await response.json();
+        LogoutUser()
+        storeTokenInLS(data.token)
+        console.log(data);
+      }
+    } catch (err) {
+      console.log("Error when verifyUser");
+    }
+  };
+
   const userAuthentication = async () => {
     try {
       const response = await fetch("http://localhost:3000/user", {
@@ -218,6 +240,8 @@ export const AuthProvider = ({ children }) => {
         getCounselors,
         getUserMessages,
         LogoutUser,
+        putUpdateProfileData,
+        VerifyUser,
         userRegister,
         user,
       }}
