@@ -55,8 +55,8 @@ export const AuthProvider = ({ children }) => {
       );
       if (response.status === 200) {
         const data = await response.json();
-        LogoutUser()
-        storeTokenInLS(data.token)
+        LogoutUser();
+        storeTokenInLS(data.token);
         console.log(data);
       }
     } catch (err) {
@@ -203,7 +203,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const putUpdateProfileData = async(formData)=>{
+  const putUpdateProfileData = async (formData) => {
     try {
       // Make an API call to update the profile in the database
       const response = await fetch("http://localhost:3000/update-profile", {
@@ -225,7 +225,28 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Error updating profile:", error);
     }
-  }
+  };
+
+  const postUpdatedStudentProfile = async (formData) => {
+    console.log(formData,"from student")
+    try {
+      const response = await fetch("http://localhost:3000/update-student-profile", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+      if (response.ok) {
+        fetchProfileData();
+      } else {
+        // Handle errors
+        console.error("Failed to update profile");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
+  };
 
   return (
     <AuthContext.Provider
@@ -240,6 +261,7 @@ export const AuthProvider = ({ children }) => {
         getCounselors,
         getUserMessages,
         LogoutUser,
+        postUpdatedStudentProfile,
         putUpdateProfileData,
         VerifyUser,
         userRegister,

@@ -12,4 +12,11 @@ router.post(
   uploadProfileAndFiles,
   profileController.putUpdateProfile
 );
+
+router.post(
+  "/update-student-profile",
+  authentication,
+  uploadProfileAndFiles,
+  profileController.postUpdateStudentProfile
+);
 module.exports = router;
