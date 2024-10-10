@@ -13,7 +13,8 @@ import { StudentRegister } from "./components/auth/Register/StudentRegister";
 import { CounselorRegister } from "./components/auth/Register/CounselorRegister";
 import About from "./pages/About";
 import { VerifyUser } from "./components/auth/Verify/VerifyUser";
-import { ProfilePage } from "./pages/Profile";
+import { CounselorProfilePage } from "./pages/CounselorProfile";
+import { StudentProfilePage } from "./pages/StudentProfile";
 // import { CounsellorDashboard } from "./pages/C-Dashboard";
 
 export const App = () => {
@@ -30,7 +31,8 @@ export const App = () => {
           <Route index element={<ChatWindow />} />
           </Route> */}
 
-        <Route path="/profile/counselor" element={<ProfilePage />} />
+        <Route path="/profile/counselor" element={<CounselorProfilePage />} />
+        <Route path="/profile/student" element={<StudentProfilePage />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<Register />} />

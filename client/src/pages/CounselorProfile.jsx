@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../store/auth";
 
-export const ProfilePage = () => {
+export const CounselorProfilePage = () => {
   const { user, fetchProfileData, putUpdateProfileData } = useAuth();
   const { profileData } = user || {};
   const [isEditing, setIsEditing] = useState(false);
@@ -11,15 +11,13 @@ export const ProfilePage = () => {
   const [previewImage, setPreviewImage] = useState("");
   useEffect(() => {
     fetchProfileData(); // Fetch profile data on mount
-  }, []);
+  }, [isEditing]);
 
   useEffect(() => {
     if (profileData) {
       // Set initial form data
       setFormData({
         name: profileData.personalInfo?.name || "",
-        // email: profileData.personalInfo?.email || "",
-        // password: profileData.personalInfo?.password || "",
         degree: profileData.education?.degree || "",
         institution: profileData.education?.institution || "",
         experience: profileData.education?.experience || "",

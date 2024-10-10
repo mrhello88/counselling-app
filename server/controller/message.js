@@ -22,9 +22,9 @@ exports.postMessages = async (req, res, next) => {
     });
     if (newMessage) {
       conversation.messages.push(newMessage._id);
-      conversation.save();
+      conversation.save(); 
       console.log(conversation, "conversations");
-    }
+    } 
     await Promise.all([newMessage.save()]);
     res.status(201).json({
       message: "message add to conversation successfully",
