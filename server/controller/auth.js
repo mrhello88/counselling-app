@@ -53,7 +53,7 @@ exports.postRegister = async (req, res, next) => {
   try {
     if (role === "counselor") {
       const { education, payment } = JSON.parse(req.body.registerUser);
-      const file = req.file;
+      const filePath = req.files?.file?.[0]?.filename;
 
       // Check if the user already exists
       const user = await UserSchema.findOne({
@@ -76,7 +76,7 @@ exports.postRegister = async (req, res, next) => {
         personalInfo,
         education,
         payment,
-        file: file.path,
+        file: filePath,
         role,
       });
       await saveCryptotoken.save();
@@ -109,6 +109,7 @@ exports.postRegister = async (req, res, next) => {
       await saveCryptotoken.save();
       if (saveCryptotoken) {
         // Send email with token
+        console.log("personalEmail", personalInfo.email);
         sendMail(personalInfo.email, token);
       }
     }
@@ -138,6 +139,7 @@ exports.getVerify = async (req, res, next) => {
         education,
         payment,
         file,
+        profile: "https://via.placeholder.com/150",
         role,
       });
       // Save the user to the database
@@ -166,7 +168,11 @@ exports.getVerify = async (req, res, next) => {
     } else {
       const { personalInfo } = cryptoUser;
       // Create a new user with the info from the token
-      const saveUser = new UserSchema({ personalInfo, role });
+      const saveUser = new UserSchema({
+        personalInfo,
+        role,
+        profile: "dummyImage.png",
+      });
 
       // Save the user to the database
       const user = await saveUser.save();

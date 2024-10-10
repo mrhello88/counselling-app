@@ -277,7 +277,7 @@ export const CounselorRegister = () => {
   if (step === 4) {
     const formData = new FormData();
     formData.append("registerUser", JSON.stringify(Data));
-    formData.append("counselorFile", file);
+    formData.append("file", file);
     userRegister(formData);
     setStep(1)
     setData({

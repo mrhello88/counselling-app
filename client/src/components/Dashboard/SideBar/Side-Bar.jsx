@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../store/auth";
-import { RxAvatar } from "react-icons/rx";
 import { FaBook } from "react-icons/fa";
 
 export const SideBar = ({ onSelectChat }) => {
   const { user, userAuthentication, userFriends } = useAuth();
   const { friends, userData } = user;
-  const [activeUser, setActiveUser] = useState(0);
+  const [activeUser, setActiveUser] = useState("");
 
   useEffect(() => {
     userAuthentication();
@@ -16,6 +15,10 @@ export const SideBar = ({ onSelectChat }) => {
 
   const useClickHandler = (items) => {
     onSelectChat(items, userData?._id);
+    console.log(
+      userData?.friends.indexOf(items?._id),
+      "user data with i don't know"
+    );
     setActiveUser(userData?.friends.indexOf(items?._id));
   };
   return (
@@ -42,15 +45,20 @@ export const SideBar = ({ onSelectChat }) => {
             <>
               <li
                 className={`my-4 text-sm ${
-                  activeUser === index + 1
-                    ? "bg-white text-black"
-                    : "text-white"
+                  activeUser === index ? "bg-white text-black" : "text-white bg-gray-600"
                 }  hover:text-black hover:bg-white p-2 rounded`}
                 key={index}
                 onClick={() => useClickHandler(items)}
               >
                 <div className="flex items-center justify-start cursor-pointer gap-4">
-                  <RxAvatar size={24} />
+                  {/* {activeUser !== index ? "bg-white text-black" : "text-white"} */}
+                  <img
+                    className="w-16 h-16 rounded-full object-cover"
+                    src={
+                      `http://localhost:3000/images/${items?.profile}`
+                    }
+                    alt="Profile"
+                  />
                   <div className="text-base">
                     <p className="capitalize">{items?.personalInfo?.name}</p>
                     <span>{items?.personalInfo?.email}</span>

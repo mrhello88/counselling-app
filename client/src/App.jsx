@@ -30,7 +30,7 @@ export const App = () => {
           <Route index element={<ChatWindow />} />
           </Route> */}
 
-        <Route path="/profiles" element={<ProfilePage />} />
+        <Route path="/profile/counselor" element={<ProfilePage />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<Register />} />

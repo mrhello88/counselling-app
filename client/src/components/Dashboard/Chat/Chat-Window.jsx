@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { useAuth } from "../../../store/auth";
 import { RxAvatar } from "react-icons/rx";
-import Navbar from "./Navbar";
+import Navbar from "../Navbar";
 
 export const ChatWindow = () => {
   const { selectedChat } = useOutletContext();

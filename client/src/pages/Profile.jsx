@@ -3,20 +3,23 @@ import { useAuth } from "../store/auth";
 
 export const ProfilePage = () => {
   const { user, fetchProfileData, putUpdateProfileData } = useAuth();
-  const { profileData } = user || {}; // Ensure user is defined before destructuring
+  const { profileData } = user || {};
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
+  const [profileImage, setProfileImage] = useState("");
   const [file, setFile] = useState("");
-
+  const [previewImage, setPreviewImage] = useState("");
   useEffect(() => {
     fetchProfileData(); // Fetch profile data on mount
   }, []);
 
   useEffect(() => {
     if (profileData) {
-      // Set initial form data when profileData is available
+      // Set initial form data
       setFormData({
         name: profileData.personalInfo?.name || "",
+        // email: profileData.personalInfo?.email || "",
+        // password: profileData.personalInfo?.password || "",
         degree: profileData.education?.degree || "",
         institution: profileData.education?.institution || "",
         experience: profileData.education?.experience || "",
@@ -24,227 +27,258 @@ export const ProfilePage = () => {
         accountNumber: profileData.payment?.accountNumber || "",
         bankName: profileData.payment?.bankName || "",
         branchCode: profileData.payment?.branchCode || "",
-        file: profileData.file || "",
+        
       });
+      setFile(profileData.file)
+      setPreviewImage(profileData.profile); // Set initial profile image preview
     }
-  }, [profileData]);
+  }, [profileData,previewImage]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    // Handle file upload if needed
-    if (file) {
-      const formDataWithFile = new FormData();
-      formDataWithFile.append("file", file);
-      // Append other form fields to FormData
-      for (const key in formData) {
-        formDataWithFile.append(key, formData[key]);
-      }
-      await putUpdateProfileData(formDataWithFile);
-    } else {
-      await putUpdateProfileData(formData);
-    }
-    
-    setIsEditing(false);
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
   };
 
-  if (!profileData) {
-    return <p>Loading...</p>; // Show loading state if profileData is not available yet
+  const handleProfileImageChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setProfileImage(selectedFile);
+    
+    // Preview the image
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreviewImage(reader.result);
+    };
+    reader.readAsDataURL(selectedFile);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formDataToSubmit = new FormData();
+    
+    // Add files and profile image to FormData
+    if (profileImage) {
+      formDataToSubmit.append("profileImage", profileImage);
+    }
+    if (file) {
+      formDataToSubmit.append("file", file);
+    } 
+
+    // Append other form fields
+    for (const key in formData) {
+      formDataToSubmit.append(key, formData[key]);
+    }
+
+    // Call API to update profile data
+    await putUpdateProfileData(formDataToSubmit);
+    setIsEditing(false); // Disable editing mode after submission
+  };
+
+  if (!profileData) { 
+    return <p>Loading...</p>;
   }
 
   return (
-    <>
-      <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
-        {/* Profile Image */}
+    <div className="max-w-4xl mx-auto p-8 bg-white shadow-md rounded-lg">
+      <div className="text-center">
         <div className="flex justify-center">
           <img
             className="w-32 h-32 rounded-full object-cover"
-            src={profileData.profile || "https://via.placeholder.com/150"} // Use the profile image or placeholder
+            src={`http://localhost:3000/images/${previewImage}`}
             alt="Profile"
           />
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          {/* Personal Details */}
-          <div>
-            <div className="flex justify-between">
-              <label className="font-semibold">Name:</label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  className="border p-1 rounded"
-                />
-              ) : (
-                <span>{formData.name || "N/A"}</span>
-              )}
-            </div>
-            {/* Repeat similar structure for other fields */}
-            <div className="flex justify-between">
-              <label className="font-semibold">Degree:</label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="degree"
-                  value={formData.degree}
-                  onChange={handleInputChange}
-                  className="border p-1 rounded"
-                />
-              ) : (
-                <span>{formData.degree || "N/A"}</span>
-              )}
-            </div>
-            <div className="flex justify-between">
-              <label className="font-semibold">Institution:</label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="institution"
-                  value={formData.institution}
-                  onChange={handleInputChange}
-                  className="border p-1 rounded"
-                />
-              ) : (
-                <span>{formData.institution || "N/A"}</span>
-              )}
-            </div>
-            <div className="flex justify-between">
-              <label className="font-semibold">Experience:</label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="experience"
-                  value={formData.experience}
-                  onChange={handleInputChange}
-                  className="border p-1 rounded"
-                />
-              ) : (
-                <span>{formData.experience || "N/A"}</span>
-              )}
-            </div>
-            <div className="flex justify-between">
-              <label className="font-semibold">Description:</label>
-              {isEditing ? (
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  className="border p-1 rounded"
-                />
-              ) : (
-                <span>{formData.description || "N/A"}</span>
-              )}
-            </div>
-          </div>
+        {isEditing && (
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleProfileImageChange}
+            className="mt-4 block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+          />
+        )}
+      </div>
 
-          {/* Payment Details */}
-          <div>
-            <div className="flex justify-between">
-              <label className="font-semibold">Account Number:</label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="accountNumber"
-                  value={formData.accountNumber}
-                  onChange={handleInputChange}
-                  className="border p-1 rounded"
-                />
-              ) : (
-                <span>{formData.accountNumber || "N/A"}</span>
-              )}
-            </div>
-            <div className="flex justify-between">
-              <label className="font-semibold">Bank Name:</label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="bankName"
-                  value={formData.bankName}
-                  onChange={handleInputChange}
-                  className="border p-1 rounded"
-                />
-              ) : (
-                <span>{formData.bankName || "N/A"}</span>
-              )}
-            </div>
-            <div className="flex justify-between">
-              <label className="font-semibold">Branch Code:</label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="branchCode"
-                  value={formData.branchCode}
-                  onChange={handleInputChange}
-                  className="border p-1 rounded"
-                />
-              ) : (
-                <span>{formData.branchCode || "N/A"}</span>
-              )}
-            </div>
-            <div className="flex justify-between">
-              {isEditing ? (
-                <>
-                  <label className="font-semibold">Change file:</label>
-                  <input
-                    type="file"
-                    accept="application/pdf"
-                    name="file"
-                    onChange={(e) => {
-                      setFile(e.target.files[0]);
-                    }}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </>
-              ) : (
-                ""
-              )}
-            </div>
-          </div>
-
-          {/* PDF Preview */}
-          <div className="mt-6">
-            <label className="font-semibold">Uploaded File:</label>
-            {formData.file ? (
-              <iframe
-                src={
-                  "http://localhost:3000/files/1728233814914-FypFinal%20(1).pdf"
-                } // Display the file if it exists
-                className="w-full h-64 mt-2 border border-gray-300"
-                title="PDF Preview"
-              ></iframe>
+      <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-1">
+            <label className="block text-gray-700 font-semibold">Name</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
             ) : (
-              <p>No file uploaded yet.</p>
+              <p>{formData.name}</p>
             )}
           </div>
 
-          {/* Edit Button */}
-          <div className="mt-6 flex justify-between">
+          <div className="space-y-1">
+            <label className="block text-gray-700 font-semibold">Degree</label>
             {isEditing ? (
+              <input
+                type="text"
+                name="degree"
+                value={formData.degree}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            ) : (
+              <p>{formData.degree}</p>
+            )}
+          </div>
+
+          <div className="space-y-1">
+            <label className="block text-gray-700 font-semibold">Institution</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="institution"
+                value={formData.institution}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            ) : (
+              <p>{formData.institution}</p>
+            )}
+          </div>
+
+          <div className="space-y-1">
+            <label className="block text-gray-700 font-semibold">Experience</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="experience"
+                value={formData.experience}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            ) : (
+              <p>{formData.experience}</p>
+            )}
+          </div>
+
+          <div className="space-y-1 md:col-span-2">
+            <label className="block text-gray-700 font-semibold">Description</label>
+            {isEditing ? (
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            ) : (
+              <p>{formData.description}</p>
+            )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <div className="space-y-1">
+            <label className="block text-gray-700 font-semibold">Account Number</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="accountNumber"
+                value={formData.accountNumber}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            ) : (
+              <p>{formData.accountNumber}</p>
+            )}
+          </div>
+
+          <div className="space-y-1">
+            <label className="block text-gray-700 font-semibold">Bank Name</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="bankName"
+                value={formData.bankName}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            ) : (
+              <p>{formData.bankName}</p>
+            )}
+          </div>
+
+          <div className="space-y-1">
+            <label className="block text-gray-700 font-semibold">Branch Code</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="branchCode"
+                value={formData.branchCode}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            ) : (
+              <p>{formData.branchCode}</p>
+            )}
+          </div>
+
+          <div className="space-y-1 md:col-span-2">
+            <label className="block text-gray-700 font-semibold">Upload File</label>
+            {isEditing && (
+              <input
+                type="file"
+                name="file"
+                accept=".pdf"
+                onChange={handleFileChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              />
+            )}
+            {!isEditing && file && (
+              <a
+                href={`http://localhost:3000/files/${file}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                View File
+              </a>
+            )}
+          </div>
+        </div>
+
+        <div className="flex justify-end space-x-4 mt-8">
+          {isEditing ? (
+            <>
+              <button
+                type="button"
+                onClick={() => setIsEditing(false)}
+                className="py-2 px-4 border border-gray-300 rounded-md"
+              >
+                Cancel
+              </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
+                className="py-2 px-4 bg-blue-600 text-white rounded-md"
               >
                 Save Changes
               </button>
-            ) : (
-              <button
-                type="button" // Make sure this button does not submit the form
-                onClick={() => setIsEditing(true)}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-              >
-                Edit Profile
-              </button>
-            )}
-          </div>
-        </form>
-      </div>
-    </>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setIsEditing(true)}
+              className="py-2 px-4 bg-blue-600 text-white rounded-md"
+            >
+              Edit Profile
+            </button>
+          )}
+        </div>
+      </form>
+    </div>
   );
 };

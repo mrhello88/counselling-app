@@ -1,9 +1,15 @@
 const express = require("express");
 const profileController = require("../controller/profile");
 const authentication = require("../middleware/authentication").authentication;
-const uploadMulter = require("../utils/multer").uploadImage
+const uploadProfileAndFiles = require("../utils/multer").uploadProfileAndFiles;
+
 const router = express.Router();
 
-router.get("/profile",authentication, profileController.getProfile);
-router.post("/update-profile",authentication, profileController.putUpdateProfile);
+router.get("/profile", authentication, profileController.getProfile);
+router.post(
+  "/update-profile",
+  authentication,
+  uploadProfileAndFiles,
+  profileController.putUpdateProfile
+);
 module.exports = router;

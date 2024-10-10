@@ -1,5 +1,4 @@
 import { createContext, useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
 // import { getCounselor } from "../../../server/controller/counselor";
 
 export const AuthContext = createContext();
@@ -56,8 +55,8 @@ export const AuthProvider = ({ children }) => {
       );
       if (response.status === 200) {
         const data = await response.json();
-        const navigate = useNavigate();
-        navigate("/");
+        LogoutUser()
+        storeTokenInLS(data.token)
         console.log(data);
       }
     } catch (err) {
@@ -210,10 +209,10 @@ export const AuthProvider = ({ children }) => {
       const response = await fetch("http://localhost:3000/update-profile", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          // "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: formData,
       });
 
       if (response.ok) {

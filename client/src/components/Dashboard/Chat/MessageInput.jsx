@@ -15,6 +15,7 @@ export const MessageInput = ({ selectedChat, setMessages }) => {
 
   const [message, setMessage] = useState("");
   const { chatUser, userId } = selectedChat;
+  console.log(selectedChat, "this selectChat")
   // const [file, setFile] = useState(null); // To store the selected file (image/PDF)
 
   // Update the file state when a file is selected
@@ -48,7 +49,7 @@ export const MessageInput = ({ selectedChat, setMessages }) => {
       //   ...prevMessages,
       //   { _id: Date.now(), message, senderId: userId },
       // ]);
-
+      console.log(chatUser)
       await postUserMessage(chatUser?._id, message); // Save the message to the server
       
       setMessage(""); // Clear input
