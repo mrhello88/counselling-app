@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.get("/counselors", counselorController.getCounselor);
 router.post("/buy-advice",authentication,counselorController.postCAdvice)
-router.get("/user/:userId/friends",counselorController.getUCounselors)
-module.exports = router
+router.post("/create-counseling",authentication,counselorController.postCreateCounseling)
+router.get("/user/friends",authentication,counselorController.getUCounselors)
+module.exports = router 

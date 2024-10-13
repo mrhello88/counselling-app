@@ -6,7 +6,6 @@ exports.postMessages = async (req, res, next) => {
     const { id: receiverId } = req.params;
     const senderId = req.user._id;
     const { message } = req.body;
-    console.log(senderId, receiverId, message, "data from postmessages");
     let conversation = await Conversation.findOne({
       participants: { $all: [senderId, receiverId] },
     });
@@ -23,7 +22,6 @@ exports.postMessages = async (req, res, next) => {
     if (newMessage) {
       conversation.messages.push(newMessage._id);
       conversation.save(); 
-      console.log(conversation, "conversations");
     } 
     await Promise.all([newMessage.save()]);
     res.status(201).json({
@@ -39,7 +37,6 @@ exports.postGetMessages = async (req, res, next) => {
   try {
     const senderId = req.user._id;
     const { id: receiverId } = req.params
-    console.log("req.boyd", receiverId, senderId);
     const conversation = await Conversation.findOne({
       participants: { $all: [senderId, receiverId] },
     }).populate("messages");

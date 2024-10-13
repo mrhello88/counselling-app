@@ -14,8 +14,6 @@ exports.authentication = async (req, res, next) => {
     req.user = userData;
     req.token = token;
     req.userId = userData._id;
-    console.log("userId", userData._id);
-
     next();
   } catch (error) {
     console.log(error.message)

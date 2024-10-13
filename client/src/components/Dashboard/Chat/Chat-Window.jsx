@@ -2,19 +2,13 @@ import { MessageInput } from "./MessageInput";
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { useAuth } from "../../../store/auth";
-import { RxAvatar } from "react-icons/rx";
-import Navbar from "../Navbar";
 
 export const ChatWindow = () => {
   const { selectedChat } = useOutletContext();
   const { chatUser, userId } = selectedChat;
 
-  // const { chat } = user;
-  // console.log(chat, "chats");
-
   const [messages, setMessages] = useState([]);
   const { getUserMessages } = useAuth(); // Assume this function fetches messages from the server.
-  const [isLoading, setIsLoading] = useState(false); // Add loading state to prevent multiple fetches.
 
   // Fetch chat history when the chat user changes
   useEffect(() => {
@@ -29,7 +23,6 @@ export const ChatWindow = () => {
 
   return (
     <div className="flex flex-col justify-between h-screen">
-      <Navbar />
       <div className="h-full">
         <div className="flex items-center gap-2 py-2 px-4">
           <img

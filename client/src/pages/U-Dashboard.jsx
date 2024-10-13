@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { SideBar } from "../components/Dashboard/SideBar/Side-Bar";
 import { Outlet } from "react-router-dom";
+import Navbar from "../components/Dashboard/Navbar";
 
 export const UserDashboard = () => {
   const [selectedChat, setSelectedChat] = useState({});
   const handleSelectChat = (chatUser, userId) => {
-    console.log(chatUser,"data by anas")
+    console.log(chatUser, "data by anas");
     setSelectedChat({ chatUser, userId });
   };
 
@@ -17,6 +18,7 @@ export const UserDashboard = () => {
             <SideBar onSelectChat={handleSelectChat} />
           </div>
           <div className="w-3/4">
+            <Navbar />
             <Outlet context={{ selectedChat }} />
           </div>
         </div>
