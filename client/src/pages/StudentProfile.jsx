@@ -3,16 +3,20 @@ import { useAuth } from "../store/auth";
 
 export const StudentProfilePage = () => {
   const { fetchProfileData, postUpdatedStudentProfile, user } = useAuth();
-  const { profileData } = user || {}; // Ensure user is defined
+  const [profileData, setProfileData] = useState([]);
+  // const { profileData } = user || {}; // Ensure user is defined
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "" });
-  const [previewImage,setPreviewImage] = useState("")
+  const [previewImage, setPreviewImage] = useState("");
   const [profileImage, setProfileImage] = useState("");
 
-  // Fetch profile data once when the component mounts
   useEffect(() => {
-    fetchProfileData();
-  }, []); // <- Only on mount, no need to refetch on editing mode change
+    const getTheProfileData = async () => {
+      const data = await fetchProfileData(); // Fetch profile data on mount
+      setProfileData(data || []);
+    };
+    getTheProfileData();
+  }, [isEditing]);
 
   // Set form data once profileData is available
   useEffect(() => {
@@ -37,7 +41,7 @@ export const StudentProfilePage = () => {
   const handleProfileImageChange = (e) => {
     const selectedFile = e.target.files[0];
     setProfileImage(selectedFile);
-    
+
     // Preview the image
     const reader = new FileReader();
     reader.onloadend = () => {

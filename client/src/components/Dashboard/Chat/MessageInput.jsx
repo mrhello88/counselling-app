@@ -44,12 +44,6 @@ export const MessageInput = ({ selectedChat, setMessages }) => {
       const newMessage = { room, message, sender: userId };
       socket.emit("message", newMessage); // Send message to room
       
-      // Immediately update messages for the sender
-      // setMessages((prevMessages) => [
-      //   ...prevMessages,
-      //   { _id: Date.now(), message, senderId: userId },
-      // ]);
-      console.log(chatUser)
       await postUserMessage(chatUser?._id, message); // Save the message to the server
       
       setMessage(""); // Clear input

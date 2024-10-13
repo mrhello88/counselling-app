@@ -8,7 +8,6 @@ const Navbar = () => {
   useEffect(() => {
     userAuthentication();
   }, []);
-  console.log("userData = ", userData);
   return (
     <div className="flex justify-between items-center py-2 bg-gray-200 px-8 ">
       <div className="text-xl capitalize font-bold">

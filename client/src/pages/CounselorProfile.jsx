@@ -2,33 +2,37 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../store/auth";
 
 export const CounselorProfilePage = () => {
-  const { user, fetchProfileData, putUpdateProfileData } = useAuth();
-  const { profileData } = user || {};
+  const { fetchProfileData, putUpdateProfileData } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [profileData, setProfileData] = useState([])
+  console.log(profileData,"this is counselor profile")
   const [formData, setFormData] = useState({});
   const [profileImage, setProfileImage] = useState("");
   const [file, setFile] = useState("");
   const [previewImage, setPreviewImage] = useState("");
   useEffect(() => {
-    fetchProfileData(); // Fetch profile data on mount
-  }, [isEditing]);
-
+    const getTheProfileData = async ()=>{
+      const data = await fetchProfileData() // Fetch profile data on mount
+      setProfileData(data || [])
+    }
+    getTheProfileData()
+  },[isEditing]);
   useEffect(() => {
     if (profileData) {
       // Set initial form data
       setFormData({
         name: profileData.personalInfo?.name || "",
-        degree: profileData.education?.degree || "",
-        institution: profileData.education?.institution || "",
-        experience: profileData.education?.experience || "",
-        description: profileData.education?.description || "",
-        accountNumber: profileData.payment?.accountNumber || "",
-        bankName: profileData.payment?.bankName || "",
-        branchCode: profileData.payment?.branchCode || "",
+        degree: profileData.counselor?.education.degree || "",
+        institution:profileData.counselor?.education?.institution || "",
+        experience: profileData.counselor?.education?.experience || "",
+        description: profileData.counselor?.education?.description || "",
+        accountNumber: profileData.counselor?.payment?.accountNumber || "",
+        bankName: profileData.counselor?.payment?.bankName || "",
+        branchCode: profileData.counselor?.payment?.branchCode || "",
         
       });
-      setFile(profileData.file)
-      setPreviewImage(profileData.profile); // Set initial profile image preview
+      setFile(profileData.counselor?.file)
+      setPreviewImage(profileData?.profile); // Set initial profile image preview
     }
   }, [profileData,previewImage]);
 

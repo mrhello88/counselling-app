@@ -1,12 +1,12 @@
 const jwt = require("jsonwebtoken");
 const UserSchema = require("../model/User");
+const CounselorProfileSchema = require("../model/CounselorProfile");
 const bcryptjs = require("bcryptjs");
 const crypto = require("crypto");
 const cryptoSchema = require("../model/CryptoToken");
 const sendMail = require("../utils/nodeMailer");
 exports.postLogin = async (req, res) => {
   const { email } = req.body; // Destructure the email from req.body
-  console.log("email", email);
   try {
     // Find the user by email
     const user = await UserSchema.findOne({ "personalInfo.email": email });
@@ -134,15 +134,19 @@ exports.getVerify = async (req, res, next) => {
 
     if (role === "counselor") {
       const { personalInfo, education, payment, file } = cryptoUser;
-      const saveUser = new UserSchema({
-        personalInfo,
+      const counselorProfile = new CounselorProfileSchema({
         education,
         payment,
         file,
-        profile: "https://via.placeholder.com/150",
-        role,
       });
-      // Save the user to the database
+      const saveUser = new UserSchema({
+        personalInfo,
+        profile: "dummyImage.png",
+        role,
+        counselor: counselorProfile._id,
+      });
+      // Save the user and counselorProfile to the database
+      await counselorProfile.save();
       const user = await saveUser.save();
 
       // Assign sessions and set a cookie with the token
@@ -159,7 +163,7 @@ exports.getVerify = async (req, res, next) => {
           expiresIn: 259200, // Token expiry time in seconds (3 days)
         }
       );
-      await cryptoUser.deleteOne({ personalInfo: personalInfo.email });
+      await cryptoUser.deleteOne({ personalInfo: personalInfo.email }); // delete when the user Verify, not wait for 5min
       return res.status(200).json({
         message: "Session added successfully",
         token, // Send the token back to React (optional)
@@ -206,9 +210,23 @@ exports.getVerify = async (req, res, next) => {
 
 exports.getUser = async (req, res, next) => {
   try {
-    const userData = req.user;
-    return res.status(200).json({ userData });
+    const { role, personalInfo } = req.user;
+
+    // If the user is a student, simply return the user data
+    if (role === "student") {
+      return res.status(200).json({ userData: req.user });
+    }
+
+    // If the user is a counselor, fetch their data and populate the counselorId
+    const counselorData = await UserSchema.findOne({
+      "personalInfo.email": personalInfo.email,
+    }).populate("counselor");
+
+    if (!counselorData) {
+      return res.status(404).json({ message: "Counselor not found" });
+    }
+    return res.status(200).json({ userData: counselorData });
   } catch (error) {
     console.log("error from user route", error);
   }
-};
+}; 

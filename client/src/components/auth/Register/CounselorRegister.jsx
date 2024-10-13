@@ -22,7 +22,7 @@ export const CounselorRegister = () => {
       branchCode: "",
     },
   });
-  const [file, setFile] = useState("")
+  const [file, setFile] = useState("");
 
   const handleInputChange = (section, key, value) => {
     setData((prevData) => ({
@@ -35,7 +35,6 @@ export const CounselorRegister = () => {
     }));
   };
 
- 
   const renderStep = () => {
     switch (step) {
       case 1:
@@ -185,7 +184,9 @@ export const CounselorRegister = () => {
               accept="application/pdf"
               name="file"
               multiple
-              onChange={(e) => {setFile(e.target.files[0])}}
+              onChange={(e) => {
+                setFile(e.target.files[0]);
+              }}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             {/* <input
@@ -253,8 +254,7 @@ export const CounselorRegister = () => {
         !education.experience ||
         !education.description
       );
-    } 
-    else if (step === 3) {
+    } else if (step === 3) {
       return !payment.accountNumber || !payment.bankName || !payment.branchCode;
     }
     return false;
@@ -273,77 +273,77 @@ export const CounselorRegister = () => {
   const { userRegister } = useAuth();
   const submitHandler = (e) => {
     e.preventDefault();
-   // Ensure the form is only submitted at the final step
-  if (step === 4) {
-    const formData = new FormData();
-    formData.append("registerUser", JSON.stringify(Data));
-    formData.append("file", file);
-    userRegister(formData);
-    setStep(1)
-    setData({
-      personalInfo: {
-        name: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-      },
-      education: {
-        degree: "",
-        institution: "",
-        experience: "",
-        description: "",
-      },
-      payment: {
-        accountNumber: "",
-        bankName: "",
-        branchCode: "",
-      },
-    })
-    setFile("")
-    console.log(step, "stepsalskdfj asldkf ja;lsdkfj ")
-  }
+    // Ensure the form is only submitted at the final step
+    if (step === 4) {
+      const formData = new FormData();
+      formData.append("registerUser", JSON.stringify(Data));
+      formData.append("file", file);
+      userRegister(formData);
+      setStep(1);
+      setData({
+        personalInfo: {
+          name: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        },
+        education: {
+          degree: "",
+          institution: "",
+          experience: "",
+          description: "",
+        },
+        payment: {
+          accountNumber: "",
+          bankName: "",
+          branchCode: "",
+        },
+      });
+      setFile("");
+      console.log(step, "stepsalskdfj asldkf ja;lsdkfj ");
+    }
   };
 
   return (
     <form
-  onSubmit={submitHandler}
-  className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md"
->
-  {renderStep()}
-  <div className="flex justify-between mt-6">
-    <button
-      type="button"  // Explicitly set type to "button"
-      className={`px-4 py-2 bg-blue-500 text-white rounded ${
-        step === 1 ? "bg-gray-400 cursor-not-allowed" : "hover:bg-blue-700"
-      }`}
-      onClick={handlePrevious}
-      disabled={step === 1}
+      onSubmit={submitHandler}
+      className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md"
     >
-      Previous
-    </button>
-    {step < 3 ? (
-      <button
-        type="button"  // Explicitly set type to "button"
-        className={`px-4 py-2 bg-blue-500 text-white rounded ${
-          isNextDisabled()
-            ? "bg-gray-400 cursor-not-allowed"
-            : "hover:bg-blue-700"
-        }`}
-        onClick={handleNext}
-        disabled={isNextDisabled()}
-      >
-        Next
-      </button>
-    ) : (
-      <button
-        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
-        type="submit" // This button is the submit button
-        onClick={handleNext}
-      >
-        Submit
-      </button>
-    )}
-  </div>
-</form>
+      {renderStep()}
+      <div className="flex justify-between mt-6">
+        <button
+          type="button" // Explicitly set type to "button"
+          className={`px-4 py-2 bg-blue-500 text-white rounded ${
+            step === 1 ? "bg-gray-400 cursor-not-allowed" : "hover:bg-blue-700"
+          }`}
+          onClick={handlePrevious}
+          disabled={step === 1}
+        >
+          Previous
+        </button>
+        {step < 3 ? (
+          <button
+            type="button" // Explicitly set type to "button"
+            className={`px-4 py-2 bg-blue-500 text-white rounded ${
+              isNextDisabled()
+                ? "bg-gray-400 cursor-not-allowed"
+                : "hover:bg-blue-700"
+            }`}
+            onClick={handleNext}
+            disabled={isNextDisabled()}
+          >
+            Next
+          </button>
+        ) : (
+          <button
+            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
+            type="submit" // This button is the submit button
+            onClick={handleNext}
+          >
+            Submit
+          </button>
+        )}
+      </div>
+    </form>
   );
 };

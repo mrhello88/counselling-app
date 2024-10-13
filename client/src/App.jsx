@@ -15,6 +15,7 @@ import About from "./pages/About";
 import { VerifyUser } from "./components/auth/Verify/VerifyUser";
 import { CounselorProfilePage } from "./pages/CounselorProfile";
 import { StudentProfilePage } from "./pages/StudentProfile";
+import { CreateSession } from "./components/Dashboard/createCounseling/CreateCounseling";
 // import { CounsellorDashboard } from "./pages/C-Dashboard";
 
 export const App = () => {
@@ -26,6 +27,7 @@ export const App = () => {
         <Route path={"/about"} element={<About />} />
         <Route path="/user-dashboard" element={<UserDashboard />}>
           <Route index element={<ChatWindow />} />
+          <Route path="/user-dashboard/create-session" element={<CreateSession />} />
         </Route>
         {/* <Route path="/counsellor-dashboard" element={<CounsellorDashboard />}>
           <Route index element={<ChatWindow />} />

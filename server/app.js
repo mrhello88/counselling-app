@@ -5,8 +5,6 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const http = require("http");
-const multer = require("multer");
-const multerFeatures = require("./utils/multer");
 let PORT = process.env.PORT || 3000;
 const path = require("path");
 // const authentication = require("./middleware/authentication").authentication
