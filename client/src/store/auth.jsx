@@ -9,14 +9,38 @@ export const AuthProvider = ({ children }) => {
     postMessage: [],
     counselors: [],
   });
+  const [formDataSession, setFormDataSession] = useState(null);
   const storeTokenInLS = (serverToken) => {
-    return localStorage.setItem("token", serverToken);
+    localStorage.setItem("token", serverToken);
+    return setToken(localStorage.getItem("token"));
   };
 
   let isLoggedIn = !!token;
   const LogoutUser = () => {
     setToken("");
     return localStorage.removeItem("token");
+  };
+
+  const userLogin = async (email) => {
+    try {
+      const response = await fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }), // Send email to backend
+      });
+      if (response.status === 200) {
+        const res_data = await response.json();
+        LogoutUser();
+        storeTokenInLS(res_data.token);
+        return res_data;
+      } else {
+        console.log("Login failed");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
   };
 
   const userRegister = async (registerUser) => {
@@ -151,15 +175,85 @@ export const AuthProvider = ({ children }) => {
         },
       });
       if (response.ok) {
-        const counselors = await response.json();
-        setUser({ ...user, counselors });
+        const counselor = await response.json();
+        return counselor;
       }
     } catch (error) {
       console.error("Error fetching counselors list");
     }
   };
 
-  const postCounselorAdvice = async (counselor) => {
+  const postCounselingSession = async (formData) => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/counseling-schedule",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (response.ok) {
+        console.log("Counseling session scheduled successfully!");
+      } else if (response.status === 409) {
+        alert("Error scheduling counseling session.");
+      } else {
+        alert("Error scheduling counseling session.");
+      }
+    } catch (error) {
+      console.error("Error fetching counselors list");
+    }
+  };
+
+  const getCounselingSession = async (counselorId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/counseling-schedule/${counselorId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        return await response.json();
+      } else {
+        alert("Error scheduling counseling session.");
+      }
+    } catch (error) {
+      console.error("Error fetching counselors list");
+    }
+  };
+
+  const getCounselorProfile = async (userId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/counselorProfile/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "Application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.ok) {
+        const counselorProfile = await response.json();
+        return counselorProfile;
+      }
+    } catch (error) {
+      console.error("Error fetching counselors list");
+    }
+  };
+
+  const postCounselorAdvice = async (scheduleSessionData) => {
     try {
       const response = await fetch(`http://localhost:3000/buy-advice`, {
         method: "POST",
@@ -167,12 +261,14 @@ export const AuthProvider = ({ children }) => {
           "Content-Type": "Application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ counselorId: counselor._id }),
+        body: JSON.stringify({ counselorId: scheduleSessionData.counselorId }),
       });
 
       if (response.ok) {
         alert("Advice bought successfully");
-        // Add logic to update the UI (sidebar)
+        await postCounselingSession(scheduleSessionData);
+
+        // Add logic to update the UI (sidebar) nbcd bgnh
       } else {
         console.log(await response.json());
       }
@@ -280,11 +376,18 @@ export const AuthProvider = ({ children }) => {
         getCounselors,
         getUserMessages,
         LogoutUser,
+        userLogin,
+        getCounselorProfile,
         postUpdatedStudentProfile,
+        postCounselingSession,
         postCreateCounseling,
         putUpdateProfileData,
+        getCounselingSession,
         VerifyUser,
         userRegister,
+        setFormDataSession,
+        formDataSession,
+        token,
         user,
       }}
     >

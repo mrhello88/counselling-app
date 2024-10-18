@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../store/auth";
+import { useAuth } from "../../store/auth";
 
 export const StudentProfilePage = () => {
   const { fetchProfileData, postUpdatedStudentProfile, user } = useAuth();

@@ -23,19 +23,18 @@ export const Navbar = () => {
             <NavLink to="/user-dashboard" className={({ isActive }) => ` ${isActive
               ? "hover:text-[#38bdf8] text-white" : " text-[#38bdf8]"}`}>User</NavLink>
 
-            <NavLink to="/about" className={({ isActive }) => ` ${isActive
-              ? "hover:text-[#38bdf8] text-white" : " text-[#38bdf8]"}`}>About</NavLink>
-
-            <NavLink to="/register" className={({ isActive }) => ` ${isActive
-              ? "hover:text-[#38bdf8] text-white" : " text-[#38bdf8]"}`}>Register</NavLink>
+            <NavLink to="/counselorList" className={({ isActive }) => ` ${isActive
+              ? "hover:text-[#38bdf8] text-white" : " text-[#38bdf8]"}`}>Counselors</NavLink>
           </div>
         </div>
 
         {/* CTA Button */}
         <div className='hidden md:flex text-lg'>
-          <NavLink to={"/login"} className="hidden md:block bg-[#38bdf8] text-white px-4 py-2 rounded hover:bg-[#0ea5e9]">
-            Get Started
+          <NavLink to={"/login"} className="hidden md:block bg-[#38bdf8] mx-12 text-white px-4 py-2 rounded hover:bg-[#0ea5e9]">
+           Log In
           </NavLink>
+
+          <NavLink to="/register" className="hidden md:block bg-[#38bdf8] text-white px-4 py-2 rounded hover:bg-[#0ea5e9]">Register</NavLink>
         </div>
 
         {/* Mobile Menu Button */}

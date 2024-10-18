@@ -5,7 +5,7 @@ import { FaBook } from "react-icons/fa";
 import { MdCreate } from "react-icons/md";
 import { MdLogout } from "react-icons/md";
 export const SideBar = ({ onSelectChat }) => {
-  const { userFriends } = useAuth();
+  const { userFriends, token } = useAuth();
   const [userData, setUserData] = useState({});
   const [activeUser, setActiveUser] = useState("");
   useEffect(() => {
@@ -14,10 +14,7 @@ export const SideBar = ({ onSelectChat }) => {
       setUserData(data || {});
     };
     userFreindeData();
-  }, [userFriends]);
-  if (!userData?.friends) { 
-    return <p>Loading....</p>;
-  }
+  }, [userFriends, token]);
   const useClickHandler = (items) => {
     onSelectChat(items, userData?._id);
     setActiveUser(userData?.friends.indexOf(items));

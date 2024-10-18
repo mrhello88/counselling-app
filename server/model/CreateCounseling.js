@@ -6,7 +6,7 @@ const createCounselingSchema = new mongoose.Schema(
       type: String,
     },
     duration: {
-      type: String,
+      type: Number,
     },
     price: {
       type: String,

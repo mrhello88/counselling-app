@@ -1,34 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../store/auth";
- 
+import { useLocation, useNavigate } from "react-router-dom";
+
 export const LoginPage = () => {
   const [email, setEmail] = useState("");
-  const {storeTokenInLS} = useAuth()
-  
+  const { userLogin } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      const response = await fetch("http://localhost:3000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }), // Send email to backend
-      });
-      if (response.status === 200) {
-        // console.log(await response.json())
-        const res_data = await response.json();
-        storeTokenInLS(res_data.token)
-        // localStorage.setItem("token", res_data.token);
-        // On success, you can store the token in localStorage or rely on the cookie
-        console.log("Login successful");
-        // window.location.href = "/"; // Redirect to dashboard
+    const loginSuccess = await userLogin(email); // Assuming userLogin returns a success flag or token
+    if (loginSuccess) {
+      // If there is a path to return to after login
+      if (location.state?.navigateToPayment) {
+        navigate(location.state.navigateToPayment, {
+          state: { ...location.state },
+        }); // Redirect to the intended session
       } else {
-        console.log("Login failed");
+        navigate("/counselorList"); // Default redirect after successful login
       }
-    } catch (error) {
-      console.error("Error during login:", error);
+    } else {
+      console.log("Login failed. Staying on login page or showing error.");
     }
   };
 

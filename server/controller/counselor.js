@@ -1,13 +1,23 @@
 // const CounselorSchema = require("../model/Counselor");
 const CreateCounseling = require("../model/CreateCounseling");
-const User = require("../model/User");
 const UserSchema = require("../model/User");
 exports.getCounselor = async (req, res) => {
   try {
-    const counselors = await UserSchema.find({ role: "counselor" }); // Fetch all counselors
-    res.status(200).json(counselors);
-    // console.log(counselors);
-  } catch (error) {
+    // Find the user by ID and populate both the counselor and counseling references
+    const counselor = await UserSchema.find({ role: "counselor" })
+      .populate("counselor") // Populate the counselor field
+      .populate("counseling"); // Populate the counseling field
+
+    // Check if the counselor profile exists
+    console.log("counselor",counselor)
+    if (!counselor) {
+      return res.status(404).json({ message: "Counselor not found" });
+    }
+  
+    // Return the counselor profile data
+    res.status(200).json(counselor);
+  } catch (error) { 
+    // Return an error message in case of server issues
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -18,7 +28,7 @@ exports.postCAdvice = async (req, res) => {
 
   if (userId.toString() === counselorId.toString()) {
     return res
-      .status(400)
+      .status(403)
       .json({ message: "You can't add your self as counselor" });
   }
 
@@ -58,7 +68,7 @@ exports.postCreateCounseling = async (req, res, next) => {
     });
 
     const findUser = await UserSchema.findById(userId);
-    findUser.counseling = counseling._id; 
+    findUser.counseling = counseling._id;
     await findUser.save();
     await counseling.save();
     return res.status(200).json({ msg: "counseling Created" });

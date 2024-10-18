@@ -12,6 +12,7 @@ const counselorRoute = require("./router/counselor");
 const authRoute = require("./router/auth");
 const messageRoute = require("./router/message");
 const profileRoute = require("./router/profile");
+const counselorProfileRoute = require("./router/counselingSession");
 const { Server } = require("socket.io");
 const server = http.createServer(app);
 const corsOptions = {
@@ -32,6 +33,7 @@ app.use(profileRoute);
 app.use(counselorRoute);
 app.use(authRoute);
 app.use(messageRoute);
+app.use(counselorProfileRoute);
 io.on("connection", (socket) => {
   console.log("A user connected", socket.id);
 

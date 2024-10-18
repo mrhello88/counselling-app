@@ -2,24 +2,43 @@ import { MessageInput } from "./MessageInput";
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { useAuth } from "../../../store/auth";
+import moment from "moment";
 
 export const ChatWindow = () => {
   const { selectedChat } = useOutletContext();
   const { chatUser, userId } = selectedChat;
 
   const [messages, setMessages] = useState([]);
-  const { getUserMessages } = useAuth(); // Assume this function fetches messages from the server.
+  // const [schedule, setSchedule] = useState({});
+  const [isChatEnabled, setIsChatEnabled] = useState(false);
+  const { getUserMessages, getCounselingSession, token } = useAuth(); // Assume this function fetches messages from the server.
 
   // Fetch chat history when the chat user changes
   useEffect(() => {
     if (chatUser?._id) {
-      const fetchMessages = async () => {
+      const fetchData = async () => {
         const fetchedMessages = await getUserMessages(chatUser._id);
+        const fetchSchedule = await getCounselingSession(chatUser._id);
+        const now = moment();
+        const sessionStart = moment(fetchSchedule.startDate);
+        const sessionEnd = moment(fetchSchedule.endDate);
+        console.log(
+          sessionStart,
+          sessionEnd,
+          "this is time of start and end of session"
+        );
+        // Enable chat if the current time is within the session time
+        if (now.isBetween(sessionStart, sessionEnd)) {
+          setIsChatEnabled(true);
+        } else {
+          setIsChatEnabled(false);
+        }
         setMessages(fetchedMessages || []); // Set fetched messages locally
+        // setSchedule(fetchSchedule || {});
       };
-      fetchMessages();
+      fetchData();
     }
-  }, [chatUser?._id, getUserMessages]);
+  }, [chatUser?._id, token, getUserMessages, getCounselingSession]);
 
   return (
     <div className="flex flex-col justify-between h-screen">
@@ -50,7 +69,11 @@ export const ChatWindow = () => {
             ))}
           </ul>
         </div>
-        <MessageInput selectedChat={selectedChat} setMessages={setMessages} />
+        <MessageInput
+          selectedChat={selectedChat}
+          setMessages={setMessages}
+          isChatEnabled={isChatEnabled}
+        />
       </div>
     </div>
   );

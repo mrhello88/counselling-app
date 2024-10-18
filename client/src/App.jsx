@@ -13,9 +13,11 @@ import { StudentRegister } from "./components/auth/Register/StudentRegister";
 import { CounselorRegister } from "./components/auth/Register/CounselorRegister";
 import About from "./pages/About";
 import { VerifyUser } from "./components/auth/Verify/VerifyUser";
-import { CounselorProfilePage } from "./pages/CounselorProfile";
-import { StudentProfilePage } from "./pages/StudentProfile";
+import { CounselorProfilePage } from "./components/EditProfile/CounselorProfile";
+import { StudentProfilePage } from "./components/EditProfile/StudentProfile";
 import { CreateSession } from "./components/Dashboard/createCounseling/CreateCounseling";
+import { CounselorProfile } from "./components/CounselorProfile/CounselorProfile";
+import { CounselorList } from "./components/FilterCounselors/CounselorList";
 // import { CounsellorDashboard } from "./pages/C-Dashboard";
 
 export const App = () => {
@@ -27,12 +29,16 @@ export const App = () => {
         <Route path={"/about"} element={<About />} />
         <Route path="/user-dashboard" element={<UserDashboard />}>
           <Route index element={<ChatWindow />} />
-          <Route path="/user-dashboard/create-session" element={<CreateSession />} />
+          <Route
+            path="/user-dashboard/create-session"
+            element={<CreateSession />}
+          />
         </Route>
         {/* <Route path="/counsellor-dashboard" element={<CounsellorDashboard />}>
           <Route index element={<ChatWindow />} />
           </Route> */}
-
+        <Route path="/counselor-profile/:userId" element={<CounselorProfile />} />
+        <Route path="/counselorList" element={<CounselorList />} />
         <Route path="/profile/counselor" element={<CounselorProfilePage />} />
         <Route path="/profile/student" element={<StudentProfilePage />} />
         <Route path="/payment" element={<Payment />} />

@@ -184,7 +184,7 @@ exports.getVerify = async (req, res, next) => {
       // Assign sessions and set a cookie with the token
       const token = jwt.sign(
         {
-          name: personalInfo.name,
+          name: personalInfo.name, 
           email: personalInfo.email,
           userId: user._id,
           role,
