@@ -27,9 +27,9 @@ export const CounselorList = () => {
     price: "",
   });
 
-  const handlCounselorProfile = async (e,userId) => {
+  const handlCounselorProfile = async (e,counselorId) => {
     e.preventDefault();
-    navigate(`/counselor-profile/${userId}`);
+    navigate(`/counselor-profile/${counselorId}`);
     console.log("this executes")
   };
   return (

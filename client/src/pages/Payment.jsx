@@ -24,8 +24,10 @@ export const Payment = () => {
     console.log(paymentInfo);
     if (location.state.scheduleSessionData) {
       const { scheduleSessionData } = location.state;
-      await postCounselorAdvice(scheduleSessionData);
-      navigate("/user-dashboard");
+      const response = await postCounselorAdvice(scheduleSessionData);
+      if (response) {
+        navigate("/user-dashboard");
+      }
     }
   };
 

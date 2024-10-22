@@ -4,51 +4,89 @@ const sendMail = require("../utils/nodeMailer");
 exports.getCounselorProfile = async (req, res, next) => {
   try {
     // Find the user by ID and populate both the counselor and counseling references
-    const counselorProfile = await UserSchema.findById(req.params.userId)
+    const counselorProfile = await UserSchema.findById(req.params.counselorId)
       .populate("counselor") // Populate the counselor field
       .populate("counseling"); // Populate the counseling field
 
     // Check if the counselor profile exists
     if (!counselorProfile) {
-      return res.status(404).json({ message: "Counselor not found" });
+      return res
+        .status(404)
+        .json({ message: "Counselor not found", success: false });
     }
 
     // Return the counselor profile data
-    res.status(200).json(counselorProfile);
+    return res
+      .status(200)
+      .json({
+        data: counselorProfile,
+        message: "Counselor Found",
+        success: true,
+      });
   } catch (error) {
     // Return an error message in case of server issues
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error", success: false });
   }
 };
 
 exports.postscheduleCounseling = async (req, res) => {
-  const { counselorId, startDate, endDate, duration } = req.body;
-
-  if (counselorId.toString() === req.user._id.toString()) {
-    return res.status(403).json({ msg: "counselor can't create own session" });
-  }
-  const counselor = await UserSchema.findById(counselorId);
-  if (!counselor) {
-    res.status(404).json({ msg: "counselor not found" });
-  }
   try {
+    const { counselorId, startDate, endDate, duration } = req.body;
+
+    if (req.user.role === "counselor") {
+      return res
+        .status(403)
+        .json({
+          message: "counselor can't create own session",
+          success: false,
+        });
+    }
+    const counselor = await UserSchema.findById(counselorId);
+    if (!counselor) {
+      res.status(404).json({ message: "counselor not found", success: false });
+    }
+    // // Check if a session between the student and counselor already exists
+    // const existingSession = await CounselingSession.findOne({
+    //   counselorId,
+    //   studentId: req.user._id,
+    // });
+
+    // // If session exists, update it
+    // if (existingSession) {
+    //   existingSession.startDate = startDate;
+    //   existingSession.endDate = endDate;
+    //   existingSession.duration = duration;
+    //   await existingSession.save();
+
+    //   return res.status(200).json({
+    //     message: "Counseling session updated successfully",
+    //     data: existingSession,
+    //     success: true,
+    //   });
+    // }
+    // If session doesn't exist, create a new one
     const session = new CounselingSession({
       counselorId,
       studentId: req.user._id, // Assuming the student is logged in
       startDate,
       endDate,
       duration,
-      status: "incomplete",
     });
 
     await session.save();
-    res
-      .status(200)
-      .json({ message: "Counseling session scheduled successfully" });
     sendMail(counselor.personalInfo.email, "counselor");
     sendMail(req.user.personalInfo.email, "student");
+    return res
+      .status(200)
+      .json({
+        message: "Counseling session scheduled successfully",
+        success: true,
+        data: session,
+      });
   } catch (error) {
-    res.status(500).json({ error: "Failed to schedule counseling session" });
+    return res
+      .status(500)
+      .json({ message: "Failed to schedule counseling session", success:true });
   }
 };
 
@@ -57,7 +95,7 @@ exports.getscheduleCounseling = async (req, res, next) => {
     const counselorId = req.params.counselorId;
     const studentId = req.user._id;
 
-    const isStudentRequest = req.user.personalInfo.role === "student"; // Assuming you have roles set for users
+    const isStudentRequest = req.user.role === "student"; // Assuming you have roles set for users
 
     // Handle cases based on who is making the request
     const sessionQuery = isStudentRequest
@@ -66,12 +104,21 @@ exports.getscheduleCounseling = async (req, res, next) => {
 
     const counselingSession = await CounselingSession.findOne(sessionQuery);
     if (!counselingSession) {
-      res.status(404).json({ msg: "Not found"});
+      return res.status(404).json({ message: "Not found", success: false });
     }
-    res
+    return res
       .status(200)
-      .json({ msg: "counseling session found", counselingSession });
+      .json({
+        message: "counseling session found",
+        data: counselingSession,
+        success: true,
+      });
   } catch (error) {
-    res.status(500).json({ error: "Failed to schedule counseling session" });
+    return res
+      .status(500)
+      .json({
+        message: "Failed to schedule counseling session",
+        success: false,
+      });
   }
 };

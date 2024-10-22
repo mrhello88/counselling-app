@@ -21,35 +21,42 @@ exports.postMessages = async (req, res, next) => {
     });
     if (newMessage) {
       conversation.messages.push(newMessage._id);
-      conversation.save(); 
-    } 
+      conversation.save();
+    }
     await Promise.all([newMessage.save()]);
-    res.status(201).json({
+    return res.status(201).json({
       message: "message add to conversation successfully",
-      newMessage,
+      data: newMessage,
+      success: true,
     });
   } catch (error) {
-    res.status(500).json({ message: "server error post messages" });
+    return res
+      .status(500)
+      .json({ message: "server error post messages", success: true });
   }
 };
 
 exports.postGetMessages = async (req, res, next) => {
   try {
     const senderId = req.user._id;
-    const { id: receiverId } = req.params
+    const { id: receiverId } = req.params;
     const conversation = await Conversation.findOne({
       participants: { $all: [senderId, receiverId] },
     }).populate("messages");
     if (!conversation) {
-      return res.status(200).json([]);
+      return res
+        .status(404)
+        .json({ data: [], success: true, message: "conversion is not exist" });
     }
-    res
-      .status(201)
-      .json({
-        message: "fetch all messages from conversation",
-        chat: conversation.messages,
-      });
+    return res.status(201).json({
+      message: "fetch all messages from conversation",
+      data: conversation.messages,
+      success: true,
+    });
   } catch (error) {
-    res.status(500).json({ message: "server error fetch messages" });
+    return res
+      .status(500)
+      .json({ message: "server error fetch messages", success: false });
   }
 };
+  

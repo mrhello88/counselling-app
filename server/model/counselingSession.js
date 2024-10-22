@@ -24,11 +24,6 @@ const CounselingSessionSchema = new Schema({
     type: Number, // Duration in minutes
     required: true
   },
-  status: {
-    type: String,
-    enum: ['incomplete','scheduled', 'completed', 'canceled'],
-    default: 'scheduled'
-  },
   createdAt: { 
     type: Date,
     default: Date.now

@@ -7,7 +7,13 @@ exports.getProfile = async (req, res) => {
 
     // If the user is a student, return their basic profile data
     if (role === "student") {
-      return res.status(200).json(req.user);
+      return res
+        .status(200)
+        .json({
+          data: req.user,
+          success: true,
+          message: "this is student Profile",
+        });
     }
 
     // If the user is a counselor, populate the counselorId for additional details
@@ -17,110 +23,23 @@ exports.getProfile = async (req, res) => {
 
     // If counselor data is not found
     if (!counselorData) {
-      return res.status(404).json({ message: "Counselor not found" });
+      return res
+        .status(404)
+        .json({ message: "Counselor not found", success: false }); 
     }
     // Return the counselor data with populated counselor
-    return res.status(200).json(counselorData);
+    return res
+      .status(200)
+      .json({
+        data: counselorData,
+        success: true,
+        message: "counselorData with populated counselor",
+      });
   } catch (error) {
     // Log and return error response
-    console.error("Error fetching profile:", error);
-    return res.status(500).json({ error: "Failed to fetch user profile" });
-  }
-};
-
-exports.postUpdateStudentProfile = async (req, res, next) => {
-  const { name } = req.body;
-  // Access uploaded file paths if they exist
-  const profileImagePath = req.files?.profileImage?.[0]?.filename;
-  try {
-    const userId = req.user._id;
-    const user = await User.findById(userId);
-    // If the user is not found
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Construct the updated profile object based on the existing data
-    let updatedProfile = {};
-
-    // Update only the fields provided, while retaining the existing ones
-    if (name) updatedProfile.personalInfo = { ...user.personalInfo, name }; // Keep email and password, just update name
-
-    if (user.profile === "dummyImage.png" || profileImagePath === undefined) {
-      updatedProfile.profile = profileImagePath;
-    } else {
-      deleteFile(user.profile);
-      updatedProfile.profile = profileImagePath;
-    }
-
-    const editUser = await User.findByIdAndUpdate(
-      userId,
-      { $set: updatedProfile },
-      { new: true, useFindAndModify: false }
-    );
-
-    // If the user is not found
-    if (!editUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Success response
-    return res
-      .status(200)
-      .json({ message: "Profile updated successfully!", editUser });
-  } catch (error) {
-    // Error handling
     return res
       .status(500)
-      .json({ message: "Error updating profile", error: error.message });
-  }
-};
-
-exports.postUpdateStudentProfile = async (req, res, next) => {
-  const { name } = req.body;
-  // Access uploaded file paths if they exist
-  const profileImagePath = req.files?.profileImage?.[0]?.filename;
-  try {
-    const userId = req.user._id;
-    const user = await User.findById(userId);
-    // If the user is not found
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Construct the updated profile object based on the existing data
-    let updatedProfile = {};
-
-    // Update only the fields provided, while retaining the existing ones
-    if (name) updatedProfile.personalInfo = { ...user.personalInfo, name }; // Keep email and password, just update name
-
-    if (user.profile === "dummyImage.png" || profileImagePath === undefined) {
-      updatedProfile.profile = profileImagePath;
-    } else {
-      deleteFile(user.profile);
-      updatedProfile.profile = profileImagePath;
-    }
-
-    const editUser = await User.findByIdAndUpdate(
-      userId,
-      { $set: updatedProfile },
-      { new: true, useFindAndModify: false }
-    );
-
-    // If the user is not found
-    if (!editUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Success response
-    return res
-      .status(200)
-      .json({ message: "Profile updated successfully!", editUser });
-  } catch (error) {
-    // Error handling
-    return res
-      .status(500)
-      .json({ message: "Error updating profile", error: error.message });
+      .json({ message: "Failed to fetch user profile", success: false });
   }
 };
 
@@ -146,7 +65,9 @@ exports.putUpdateProfile = async (req, res) => {
 
     // If the user is not found
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
     }
 
     // Construct the updated profile object based on the existing data
@@ -204,21 +125,85 @@ exports.putUpdateProfile = async (req, res) => {
 
     // If the user is not found
     if (!editUser) {
-      return res.status(404).json({ message: "User not found" });
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
     }
 
     if (!editCounselorProfile) {
-      return res.status(404).json({ message: "User not found" });
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
     }
 
     // Success response
     return res
       .status(200)
-      .json({ message: "Profile updated successfully!", editUser });
+      .json({
+        message: "Profile updated successfully!",
+        data: editUser,
+        success: true,
+      });
   } catch (error) {
     // Error handling
     return res
       .status(500)
-      .json({ message: "Error updating profile", error: error.message });
+      .json({ message: "Error updating profile", success: false });
+  }
+};
+
+exports.postUpdateStudentProfile = async (req, res, next) => {
+  const { name } = req.body;
+  // Access uploaded file paths if they exist
+  const profileImagePath = req.files?.profileImage?.[0]?.filename;
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+    // If the user is not found
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
+    }
+
+    // Construct the updated profile object based on the existing data
+    let updatedProfile = {};
+
+    // Update only the fields provided, while retaining the existing ones
+    if (name) updatedProfile.personalInfo = { ...user.personalInfo, name }; // Keep email and password, just update name
+
+    if (user.profile === "dummyImage.png" || profileImagePath === undefined) {
+      updatedProfile.profile = profileImagePath;
+    } else {
+      deleteFile(user.profile);
+      updatedProfile.profile = profileImagePath;
+    }
+
+    const editUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updatedProfile },
+      { new: true, useFindAndModify: false }
+    );
+
+    // If the user is not found
+    if (!editUser) {
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
+    }
+
+    // Success response
+    return res
+      .status(200)
+      .json({
+        message: "Profile updated successfully!",
+        data: editUser,
+        success: true,
+      });
+  } catch (error) {
+    // Error handling
+    return res
+      .status(500)
+      .json({ message: "Error updating profile", success: false });
   }
 };

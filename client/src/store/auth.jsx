@@ -1,15 +1,16 @@
-import { createContext, useState, useEffect, useContext } from "react";
-
+import { createContext, useState, useContext } from "react";
+import { toast } from "react-toastify";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  // Configure toast notifications
+
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [user, setUser] = useState({
     userData: [],
     postMessage: [],
     counselors: [],
   });
-  const [formDataSession, setFormDataSession] = useState(null);
   const storeTokenInLS = (serverToken) => {
     localStorage.setItem("token", serverToken);
     return setToken(localStorage.getItem("token"));
@@ -30,21 +31,25 @@ export const AuthProvider = ({ children }) => {
         },
         body: JSON.stringify({ email }), // Send email to backend
       });
-      if (response.status === 200) {
-        const res_data = await response.json();
+      const res_data = await response.json();
+      if (res_data.success) {
         LogoutUser();
         storeTokenInLS(res_data.token);
+        toast.success(res_data.message || "Login Successfully");
         return res_data;
       } else {
-        console.log("Login failed");
+        console.log(res_data.message);
+        // If the backend response indicates failure, show the error message
+        toast.error(res_data.message || "Failed to Post Login details");
       }
     } catch (error) {
-      console.error("Error during login:", error);
+      // Catch any unexpected errors
+      console.error("Error Post login details", error);
+      toast.error("An unexpected error occurred while Post login details.");
     }
   };
 
   const userRegister = async (registerUser) => {
-    console.log(registerUser, "register user by user");
     try {
       const response = await fetch("http://localhost:3000/register", {
         method: "POST",
@@ -53,13 +58,44 @@ export const AuthProvider = ({ children }) => {
         // },
         body: registerUser,
       });
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-        // setUser({ ...user, userData: data.userData });
+      const res_data = await response.json();
+      if (res_data.success) {
+        console.log(res_data.message);
+        toast.success(res_data.message || "you got Email");
+      } else {
+        console.log(res_data.message);
+        // If the backend response indicates failure, show the error message
+        toast.error(res_data.message || "Failed to Post Register details");
       }
     } catch (error) {
-      console.error("Error post user data");
+      // Catch any unexpected errors
+      console.error("Error Post Register details", error);
+      toast.error("An unexpected error occurred while Post Register details.");
+    }
+  };
+
+  const userAuthentication = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/user", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const res_data = await response.json();
+      if (res_data.success) {
+        setUser({ ...user, userData: res_data.data });
+      }
+       else {
+        // console.log(res_data.message);
+        // // If the backend response indicates failure, show the error message
+        // toast.error(res_data.message || "user is not LoggedIn");
+      }
+    } catch (error) {
+      console.error("Error fetching user data", error);
+      // Catch any unexpected errors
+      toast.error("An unexpected error occurred while fetching user data.");
     }
   };
 
@@ -74,32 +110,96 @@ export const AuthProvider = ({ children }) => {
           },
         }
       );
-      if (response.status === 200) {
-        const data = await response.json();
+      const res_data = await response.json();
+      if (res_data.success) {
         LogoutUser();
-        storeTokenInLS(data.token);
-        console.log(data);
+        storeTokenInLS(res_data.token);
+        toast.success(res_data.message);
+        return res_data.data;
+      } else {
+        console.log(res_data.message);
+        // If the backend response indicates failure, show the error message
+        toast.error(res_data.message || "user is Registr");
       }
-    } catch (err) {
-      console.log("Error when verifyUser");
+    } catch (error) {
+      console.log("Error when verifyUser", error);
+      toast.error("An unexpected error occurred while verifyUser.");
     }
   };
 
-  const userAuthentication = async () => {
+  const getCounselors = async () => {
     try {
-      const response = await fetch("http://localhost:3000/user", {
+      const response = await fetch(`http://localhost:3000/counselors`, {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "Application/json",
           Authorization: `Bearer ${token}`,
         },
       });
-      if (response.ok) {
-        const data = await response.json();
-        setUser({ ...user, userData: data.userData });
+      const res_data = await response.json();
+      if (res_data.success) {
+        return res_data.data;
+      } else {
+        console.log(res_data.message);
+        // If the backend response indicates failure, show the error message
+        toast.error(res_data.message || "counselors list");
       }
     } catch (error) {
-      console.error("Error fetching user data");
+      console.error("Error fetching counselors list");
+      toast.error("An unexpected error occurred while counselors list");
+    }
+  };
+
+  const postCounselorAdvice = async (scheduleSessionData) => {
+    try {
+      const response = await fetch(`http://localhost:3000/buy-advice`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "Application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ counselorId: scheduleSessionData.counselorId }),
+      });
+      const res_data = await response.json();
+
+      if (res_data.success) {
+        toast.success(res_data.message || "Advice bought successfully");
+        await postCounselingSession(scheduleSessionData);
+
+        // Add logic to update the UI (sidebar) nbcd bgnh
+      } else {
+        console.log(res_data.message);
+        // If the backend response indicates failure, show the error message
+        toast.error(res_data.message || "Advice not bought successfully");
+      }
+    } catch (error) {
+      console.error("Error fetching advice list");
+      toast.error("An unexpected error occurred while advice list");
+    }
+  };
+
+  const postCreateCounseling = async (formData) => {
+    try {
+      const response = await fetch("http://localhost:3000/create-counseling", {
+        method: "POST",
+        headers: {
+          "Content-Type": "Application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const res_data = await response.json();
+      if (res_data.success) {
+        toast.success(res_data.message || "counseling created successfully");
+      } else {
+        console.log(res_data.message);
+        // If the backend response indicates failure, show the error message
+        toast.error(res_data.message || "counseling not created successfully");
+      }
+    } catch (error) {
+      console.error("Error post counseling created");
+      toast.error("An unexpected error occurred while counseling creating");
     }
   };
 
@@ -112,13 +212,17 @@ export const AuthProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (response.ok) {
-        const userFriend = await response.json();
-        // setUser({ ...user, Userfriends });
-        return userFriend;
+      const res_data = await response.json();
+      if (res_data.success) {
+        return res_data.data;
+      } else {
+        console.log(res_data.message);
+        // If the backend response indicates failure, show the error message
+        toast.error(res_data.message);
       }
     } catch (error) {
       console.error("Error fetching friends list");
+      toast.error("An unexpected error occurred while friends list");
     }
   };
 
@@ -136,17 +240,21 @@ export const AuthProvider = ({ children }) => {
         },
         body: JSON.stringify({ message }),
       });
-      if (response.ok) {
-        const postMessage = await response.json();
-        setUser({ ...user, postMessage });
+      const res_data = await response.json();
+      if (res_data.success) {
+        setUser({ ...user, postMessage: res_data.data });
+      } else {
+        console.log(res_data.message);
+        // If the backend response indicates failure, show the error message
+        toast.error(res_data.message);
       }
     } catch (error) {
       console.error("Error post message", error);
+      toast.error("An unexpected error occurred while post message");
     }
   };
 
   const getUserMessages = async (userId) => {
-    console.log(userId);
     try {
       const response = await fetch(`http://localhost:3000/get/${userId}`, {
         method: "GET",
@@ -155,31 +263,121 @@ export const AuthProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (response.ok) {
-        const { chat } = await response.json();
-        return chat;
-        // setUser({ ...user, chat });
+      const res_data = await response.json();
+      if (res_data.success) {
+        return res_data.data;
+      } else {
+        console.log(res_data.message);
+        // If the backend response indicates failure, show the error message
+        toast.error(res_data.message);
       }
     } catch (error) {
-      console.error("Error fetching friends list");
+      console.error("Error fetching message", error);
+      toast.error("An unexpected error occurred while fetching message");
     }
   };
 
-  const getCounselors = async () => {
+  const fetchProfileData = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/counselors`, {
+      const response = await fetch("http://localhost:3000/profile", {
         method: "GET",
         headers: {
-          "Content-Type": "Application/json",
           Authorization: `Bearer ${token}`,
         },
-      });
-      if (response.ok) {
-        const counselor = await response.json();
-        return counselor;
+      }); // Adjust the endpoint to your backend route
+      const res_data = await response.json();
+      if (res_data.success) {
+        return res_data.data;
+      } else {
+        console.log(res_data.message);
+        // If the backend response indicates failure, show the error message
+        toast.error(res_data.message);
       }
     } catch (error) {
-      console.error("Error fetching counselors list");
+      console.error("Error fetching profile data:", error);
+      toast.error("An unexpected error occurred while fetching profile data");
+    }
+  };
+
+  const putUpdateProfileData = async (formData) => {
+    try {
+      // Make an API call to update the profile in the database
+      const response = await fetch("http://localhost:3000/update-profile", {
+        method: "POST",
+        headers: {
+          // "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+      const res_data = await response.json();
+      if (res_data.success) {
+        // Optionally fetch updated profile data after saving
+        toast.success(res_data.message);
+        fetchProfileData();
+      } else {
+        console.log(res_data.message);
+        // If the backend response indicates failure, show the error message
+        toast.error(res_data.message);
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error("An unexpected error occurred while updating profile");
+    }
+  };
+
+  const postUpdatedStudentProfile = async (formData) => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/update-student-profile",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+      const res_data = await response.json();
+      if (res_data.success) {
+        toast.success(res_data.message);
+        fetchProfileData();
+      } else {
+        console.log(res_data.message);
+        // If the backend response indicates failure, show the error message
+        toast.error(res_data.message);
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error("An unexpected error occurred while updating profile");
+    }
+  };
+
+  const getCounselorProfile = async (counselorId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/counselorProfile/${counselorId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "Application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const res_data = await response.json();
+      if (res_data.success) {
+        return res_data.data;
+      } else {
+        console.log(res_data.message);
+        // If the backend response indicates failure, show the error message
+        toast.error(res_data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching counselor Profile by Id");
+      toast.error(
+        "An unexpected error occurred while fetching counselor Profile by Id"
+      );
     }
   };
 
@@ -196,16 +394,20 @@ export const AuthProvider = ({ children }) => {
           body: JSON.stringify(formData),
         }
       );
-
-      if (response.ok) {
+      const res_data = await response.json();
+      if (res_data.success) {
         console.log("Counseling session scheduled successfully!");
-      } else if (response.status === 409) {
-        alert("Error scheduling counseling session.");
-      } else {
-        alert("Error scheduling counseling session.");
+        // toast.success(
+        //   res_data.message || "Counseling session scheduled successfully!"
+        // );
+      } else if (res_data.success === false) {
+        console.log(res_data.message);
+        // If the backend response indicates failure, show the error message
+        toast.error(res_data.message);
       }
     } catch (error) {
-      console.error("Error fetching counselors list");
+      console.error("Error post counsling schedule");
+      toast.error("An unexpected error occurred while post counsling schedule");
     }
   };
 
@@ -221,145 +423,20 @@ export const AuthProvider = ({ children }) => {
           },
         }
       );
+      const res_data = await response.json();
 
-      if (response.ok) {
-        return await response.json();
+      if (res_data.success) {
+        return res_data.data;
       } else {
-        alert("Error scheduling counseling session.");
+        console.log(res_data.message);
+        // If the backend response indicates failure, show the error message
+        toast.error(res_data.message);
       }
     } catch (error) {
-      console.error("Error fetching counselors list");
-    }
-  };
-
-  const getCounselorProfile = async (userId) => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/counselorProfile/${userId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "Application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      console.error("Error fetching counsling schedule");
+      toast.error(
+        "An unexpected error occurred while fetching counsling schedule"
       );
-      if (response.ok) {
-        const counselorProfile = await response.json();
-        return counselorProfile;
-      }
-    } catch (error) {
-      console.error("Error fetching counselors list");
-    }
-  };
-
-  const postCounselorAdvice = async (scheduleSessionData) => {
-    try {
-      const response = await fetch(`http://localhost:3000/buy-advice`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "Application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ counselorId: scheduleSessionData.counselorId }),
-      });
-
-      if (response.ok) {
-        alert("Advice bought successfully");
-        await postCounselingSession(scheduleSessionData);
-
-        // Add logic to update the UI (sidebar) nbcd bgnh
-      } else {
-        console.log(await response.json());
-      }
-    } catch (error) {
-      console.error("Error post advice list");
-    }
-  };
-
-  const fetchProfileData = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/profile", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }); // Adjust the endpoint to your backend route
-      console.log("this is profileData,");
-      if (response.ok) {
-        const profileData = await response.json();
-        console.log(profileData, "thsi is auth, at fetch profile data");
-        return profileData;
-      }
-    } catch (error) {
-      console.error("Error fetching profile data:", error);
-    }
-  };
-  const putUpdateProfileData = async (formData) => {
-    try {
-      // Make an API call to update the profile in the database
-      const response = await fetch("http://localhost:3000/update-profile", {
-        method: "POST",
-        headers: {
-          // "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      if (response.ok) {
-        // Optionally fetch updated profile data after saving
-        fetchProfileData();
-      } else {
-        // Handle errors
-        console.error("Failed to update profile");
-      }
-    } catch (error) {
-      console.error("Error updating profile:", error);
-    }
-  };
-
-  const postUpdatedStudentProfile = async (formData) => {
-    console.log(formData, "from student");
-    try {
-      const response = await fetch(
-        "http://localhost:3000/update-student-profile",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
-        }
-      );
-      if (response.ok) {
-        fetchProfileData();
-      } else {
-        // Handle errors
-        console.error("Failed to update profile");
-      }
-    } catch (error) {
-      console.error("Error updating profile:", error);
-    }
-  };
-
-  const postCreateCounseling = async (formData) => {
-    try {
-      const response = await fetch("http://localhost:3000/create-counseling", {
-        method: "POST",
-        headers: {
-          "Content-Type": "Application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-      }
-    } catch (error) {
-      console.log("Server Error", error.message);
     }
   };
 
@@ -385,8 +462,6 @@ export const AuthProvider = ({ children }) => {
         getCounselingSession,
         VerifyUser,
         userRegister,
-        setFormDataSession,
-        formDataSession,
         token,
         user,
       }}

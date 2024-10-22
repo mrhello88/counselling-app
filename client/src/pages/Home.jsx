@@ -1,16 +1,16 @@
-import { useEffect,useState } from "react";
-import { CounselorCard } from "../components/Counselor-Card/CounselorCard";
-import { useAuth } from "../store/auth";
+// import { useEffect,useState } from "react";
+// import { CounselorCard } from "../components/Counselor-Card/CounselorCard";
+// import { useAuth } from "../store/auth";
 export const Home = () => {
-  const { getCounselors} = useAuth();
-  const [counselors, setCounselors] = useState([]);
-  useEffect(() => {
-    const counselorList = async () => {
-      const data = await getCounselors();
-      setCounselors(data || []);
-    };
-    counselorList();
-  }, [getCounselors]);
+  // const { getCounselors} = useAuth();
+  // const [counselors, setCounselors] = useState([]);
+  // useEffect(() => {
+  //   const counselorList = async () => {
+  //     const data = await getCounselors();
+  //     setCounselors(data || []);
+  //   };
+  //   counselorList();
+  // }, [getCounselors]);
     return (
       <div className="min-h-screen">
         Home Component

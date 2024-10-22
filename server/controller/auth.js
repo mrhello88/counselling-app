@@ -13,7 +13,9 @@ exports.postLogin = async (req, res) => {
 
     // If the user does not exist, return an error response
     if (!user) {
-      return res.status(401).json({ message: "User does not exist" });
+      return res
+        .status(401)
+        .json({ message: "User does not exist", success: false });
     }
 
     const { personalInfo, role } = user;
@@ -38,13 +40,13 @@ exports.postLogin = async (req, res) => {
 
     // Return success response to React
     return res.status(200).json({
-      message: "Session added successfully",
+      message: "Login successfully",
       token, // Send the token back to React (optional)
       userId: user._id.toString(),
+      success: true,
     });
   } catch (error) {
-    console.error("Error during login:", error);
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error", success: false });
   }
 };
 
@@ -61,7 +63,9 @@ exports.postRegister = async (req, res, next) => {
       });
 
       if (user) {
-        return res.status(409).json({ message: "User already exist" });
+        return res
+          .status(409)
+          .json({ message: "User already exist", success: false });
       }
 
       // Generate token and hash password
@@ -83,6 +87,9 @@ exports.postRegister = async (req, res, next) => {
       if (saveCryptotoken) {
         // Send email with token
         sendMail(personalInfo.email, token);
+        return res
+          .status(200)
+          .json({ message: "Check your Email!", success: true });
       }
     } else {
       // Check if the user already exists
@@ -91,7 +98,9 @@ exports.postRegister = async (req, res, next) => {
       });
 
       if (user) {
-        return res.status(409).json({ message: "User already exist" });
+        return res
+          .status(409)
+          .json({ message: "User already exist", success: false });
       }
 
       // Generate token and hash password
@@ -109,13 +118,43 @@ exports.postRegister = async (req, res, next) => {
       await saveCryptotoken.save();
       if (saveCryptotoken) {
         // Send email with token
-        console.log("personalEmail", personalInfo.email);
         sendMail(personalInfo.email, token);
+        return res
+          .status(200)
+          .json({ message: "Check your Email!", success: true });
       }
     }
   } catch (error) {
-    console.log("error from register ", error);
-    res.status(500).json({ message: "Server Error" });
+    return res.status(500).json({ message: "Server error", success: false });
+  }
+};
+
+exports.getUser = async (req, res, next) => {
+  try {
+    const { role, personalInfo } = req.user;
+
+    // If the user is a student, simply return the user data
+    if (role === "student") {
+      return res.status(200).json({
+        data: req.user,
+        message: "this is student not counselor",
+        success: true,
+      });
+    }
+
+    // If the user is a counselor, fetch their data and populate the counselorId
+    const counselorData = await UserSchema.findOne({
+      "personalInfo.email": personalInfo.email,
+    }).populate("counselor");
+
+    if (!counselorData) {
+      return res
+        .status(404)
+        .json({ message: "Counselor not found", success: false });
+    }
+    return res.status(200).json({ data: counselorData, message:"user LoggedIn",success: true });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", success: false });
   }
 };
 
@@ -127,7 +166,7 @@ exports.getVerify = async (req, res, next) => {
     if (!cryptoUser) {
       return res
         .status(404)
-        .json({ message: "Time is out Please Register again" });
+        .json({ message: "Time is out Please Register again", success: false });
     }
 
     const { role } = cryptoUser;
@@ -143,6 +182,7 @@ exports.getVerify = async (req, res, next) => {
         personalInfo,
         profile: "dummyImage.png",
         role,
+        friends: [],
         counselor: counselorProfile._id,
       });
       // Save the user and counselorProfile to the database
@@ -163,11 +203,12 @@ exports.getVerify = async (req, res, next) => {
           expiresIn: 259200, // Token expiry time in seconds (3 days)
         }
       );
-      await cryptoUser.deleteOne({ personalInfo: personalInfo.email }); // delete when the user Verify, not wait for 5min
+      // await cryptoUser.deleteOne({ personalInfo: personalInfo.email }); // delete when the user Verify, not wait for 5min
       return res.status(200).json({
         message: "Session added successfully",
         token, // Send the token back to React (optional)
-        userId: user._id.toString(),
+        data: user,
+        success: true,
       });
     } else {
       const { personalInfo } = cryptoUser;
@@ -175,6 +216,7 @@ exports.getVerify = async (req, res, next) => {
       const saveUser = new UserSchema({
         personalInfo,
         role,
+        friends: [],
         profile: "dummyImage.png",
       });
 
@@ -184,7 +226,7 @@ exports.getVerify = async (req, res, next) => {
       // Assign sessions and set a cookie with the token
       const token = jwt.sign(
         {
-          name: personalInfo.name, 
+          name: personalInfo.name,
           email: personalInfo.email,
           userId: user._id,
           role,
@@ -195,38 +237,15 @@ exports.getVerify = async (req, res, next) => {
           expiresIn: 259200, // Token expiry time in seconds (3 days)
         }
       );
-      await cryptoUser.deleteOne({ personalInfo: personalInfo.email });
+      // await cryptoUser.deleteOne({ personalInfo: personalInfo.email });
       return res.status(200).json({
         message: "Session added successfully",
         token, // Send the token back to React (optional)
-        userId: user._id.toString(),
+        data: user,
+        success: true,
       });
     }
   } catch (error) {
-    console.error("Error during login:", error);
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error", success: false });
   }
 };
-
-exports.getUser = async (req, res, next) => {
-  try {
-    const { role, personalInfo } = req.user;
-
-    // If the user is a student, simply return the user data
-    if (role === "student") {
-      return res.status(200).json({ userData: req.user });
-    }
-
-    // If the user is a counselor, fetch their data and populate the counselorId
-    const counselorData = await UserSchema.findOne({
-      "personalInfo.email": personalInfo.email,
-    }).populate("counselor");
-
-    if (!counselorData) {
-      return res.status(404).json({ message: "Counselor not found" });
-    }
-    return res.status(200).json({ userData: counselorData });
-  } catch (error) {
-    console.log("error from user route", error);
-  }
-}; 

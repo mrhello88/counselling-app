@@ -13,7 +13,8 @@ export const CounselorCard = ({ counselorData, handlCounselorProfile }) => {
         alt="Profile"
         className="w-24 h-24 rounded-full mb-4"
       />
-      <h3 className="text-xl font-semibold">{counselorData.name}</h3>
+      <h3 className="text-xl font-semibold">{counselorData.personalInfo?.name}</h3>
+      <p className="text-gray-600 mb-2">email: {counselorData.personalInfo?.email}</p>
       <p className="text-gray-600 mb-2">{counselorData.counselor?.education.degree}</p>
       <p className="text-gray-600 mb-2">
         Experience: {counselorData.counselor?.education.experience}

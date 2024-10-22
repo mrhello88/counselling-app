@@ -15,15 +15,15 @@ export const CounselorProfile = () => {
     // setFormDataSession,
     // formDataSession,
   } = useAuth();
-  const { userId } = useParams();
+  const { counselorId } = useParams();
   const navigate = useNavigate();
   useEffect(() => {
     const counselorData = async () => {
-      const data = await getCounselorProfile(userId);
+      const data = await getCounselorProfile(counselorId);
       setProfileData(data || {});
     };
     counselorData();
-  }, [getCounselorProfile]);
+  }, [getCounselorProfile]);  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,7 +33,6 @@ export const CounselorProfile = () => {
       .format("YYYY-MM-DD HH:mm:ss");
 
     if (!isLoggedIn) {
-      console.log("this is counselorProfile page", isLoggedIn);
       return navigate("/login", {
         state: {
           navigateToPayment: `/payment`,

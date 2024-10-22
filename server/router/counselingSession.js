@@ -4,7 +4,7 @@ const authentication = require("../middleware/authentication").authentication;
 const router = express.Router();
 
 router.get(
-  "/counselorProfile/:userId",
+  "/counselorProfile/:counselorId",
   counselingSessionController.getCounselorProfile
 );
 

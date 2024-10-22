@@ -9,3 +9,4 @@ router.post("/register", uploadProfileAndFiles, authController.postRegister);
 router.get("/user", authentication, authController.getUser);
 router.get("/register/verify/:token", authController.getVerify);
 module.exports = router;
+ 

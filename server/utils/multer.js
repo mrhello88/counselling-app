@@ -51,7 +51,7 @@ const uploadProfileAndFiles = multer({
       imageFilter(req, file, cb); // Use image filter for images
     } else if (file.mimetype === "application/pdf") {
       pdfFilter(req, file, cb); // Use PDF filter for PDFs
-    } else {
+    } else { 
       cb(new Error("Unsupported file format!"), false);
     }
   },

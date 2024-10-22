@@ -9,16 +9,21 @@ exports.getCounselor = async (req, res) => {
       .populate("counseling"); // Populate the counseling field
 
     // Check if the counselor profile exists
-    console.log("counselor",counselor)
     if (!counselor) {
-      return res.status(404).json({ message: "Counselor not found" });
+      return res
+        .status(404)
+        .json({ message: "Counselor not found", success: false });
     }
-  
+
     // Return the counselor profile data
-    res.status(200).json(counselor);
-  } catch (error) { 
+    return res.status(200).json({
+      data: counselor,
+      success: true,
+      message: "the counselor Profiles",
+    });
+  } catch (error) {
     // Return an error message in case of server issues
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error", success: false });
   }
 };
 
@@ -26,12 +31,13 @@ exports.postCAdvice = async (req, res) => {
   const userId = req.user._id;
   const { counselorId } = req.body;
 
-  if (userId.toString() === counselorId.toString()) {
-    return res
-      .status(403)
-      .json({ message: "You can't add your self as counselor" });
+  if (req.user.role === "counselor") {
+    return res.status(403).json({
+      message: "You can't add counselor as student",
+      success: false,
+    });
   }
-
+   
   try {
     // Add user to counselor's students list
     await UserSchema.findByIdAndUpdate(counselorId, {
@@ -43,9 +49,11 @@ exports.postCAdvice = async (req, res) => {
       $addToSet: { friends: counselorId },
     });
 
-    res.status(200).json({ message: "Advice purchased successfully" });
+    return res
+      .status(200)
+      .json({ message: "Advice purchased successfully", success: true });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error", success: false });
   }
 };
 
@@ -58,7 +66,9 @@ exports.postCreateCounseling = async (req, res, next) => {
     const findCounseling = await CreateCounseling.findById(userId);
 
     if (findCounseling) {
-      return res.status(409).json({ msg: "this is already exist" });
+      return res
+        .status(409) 
+        .json({ message: "this is already exist", success: false });
     }
 
     const counseling = new CreateCounseling({
@@ -71,9 +81,11 @@ exports.postCreateCounseling = async (req, res, next) => {
     findUser.counseling = counseling._id;
     await findUser.save();
     await counseling.save();
-    return res.status(200).json({ msg: "counseling Created" });
+    return res
+      .status(200)
+      .json({ message: "counseling Created", success: true });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error", success: false });
   }
 };
 
@@ -81,8 +93,10 @@ exports.getUCounselors = async (req, res, next) => {
   try {
     const userId = req.user._id;
     const user = await UserSchema.findById(userId).populate("friends");
-    res.status(200).json(user);
+    return res
+      .status(200)
+      .json({ data: user, success: true, message: "User Friends list" });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error", success: true });
   }
 };
