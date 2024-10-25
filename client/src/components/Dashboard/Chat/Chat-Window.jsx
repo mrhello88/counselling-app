@@ -23,19 +23,35 @@ export const ChatWindow = () => {
           year: 2024,
           month: 9,
           day: 26,
-          hour: 1,
-          minutes: 37,
+          hour: 2,
+          minutes: 1,
           second: 50,
         });
         const sessionEnd = moment({
           year: 2024,
           month: 9,
           day: 26,
-          hour: 1,
-          minutes: 50,
+          hour: 2,
+          minutes: 4,
           second: 7,
         });
-        const nextHour = moment().startOf("second").add(1, "second");
+        const nextHour = moment()
+          .startOf({
+            year: 2024,
+            month: 9,
+            day: 26,
+            hour: 2,
+            minutes: 1,
+            second: 50,
+          })
+          .endOf({
+            year: 2024,
+            month: 9,
+            day: 26,
+            hour: 2,
+            minutes: 4,
+            second: 7,
+          });
         setNextSecond(nextHour);
         if (now.isBetween(sessionStart, sessionEnd)) {
           setIsChatEnabled(true);
