@@ -86,8 +86,7 @@ export const AuthProvider = ({ children }) => {
       const res_data = await response.json();
       if (res_data.success) {
         setUser({ ...user, userData: res_data.data });
-      }
-       else {
+      } else {
         // console.log(res_data.message);
         // // If the backend response indicates failure, show the error message
         // toast.error(res_data.message || "user is not LoggedIn");
@@ -412,6 +411,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const getCounselingSession = async (counselorId) => {
+    console.log("counselorId = ", counselorId);
     try {
       const response = await fetch(
         `http://localhost:3000/counseling-schedule/${counselorId}`,
@@ -424,8 +424,8 @@ export const AuthProvider = ({ children }) => {
         }
       );
       const res_data = await response.json();
-
       if (res_data.success) {
+        console.log("res_data = ", res_data.data);
         return res_data.data;
       } else {
         console.log(res_data.message);
