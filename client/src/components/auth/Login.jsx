@@ -33,8 +33,13 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
+    <div className="h-screen ">
+      <div className="z-0">
+      <img className="w-full opacity-25 absolute " src="../../../public/asset/download (23).jpeg" alt="" />
+        <div className="flex justify-between w-64">
+          <div className="">
+          <img className="rounded-lg w-32" src="../../../public/asset/colorful-bird.png" alt="side-logo" />
+          </div>
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -60,6 +65,7 @@ export const LoginPage = () => {
             Login
           </button>
         </form>
+        </div>
       </div>
     </div>
   );
