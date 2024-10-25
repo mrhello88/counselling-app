@@ -11,29 +11,49 @@ export const ChatWindow = () => {
   const [messages, setMessages] = useState([]);
   // const [schedule, setSchedule] = useState({});
   const [isChatEnabled, setIsChatEnabled] = useState(false);
-  const { getUserMessages, getCounselingSession, isLoggedIn } = useAuth(); // Assume this function fetches messages from the server.
-
-  // Fetch chat history when the chat user changes
+  const { getUserMessages, getCounselingSession, isLoggedIn } = useAuth();
+  const [nextSecond, setNextSecond] = useState();
   useEffect(() => {
     if (chatUser?._id) {
       const fetchData = async () => {
         const fetchedMessages = await getUserMessages(chatUser._id);
-        const fetchSchedule = await getCounselingSession(chatUser._id);
+        // const fetchSchedule = await getCounselingSession(chatUser._id);
         const now = moment();
-        const sessionStart = moment(fetchSchedule.startDate);
-        const sessionEnd = moment(fetchSchedule.endDate);
-        // Enable chat if the current time is within the session time
+        const sessionStart = moment({
+          year: 2024,
+          month: 9,
+          day: 26,
+          hour: 1,
+          minutes: 37,
+          second: 50,
+        });
+        const sessionEnd = moment({
+          year: 2024,
+          month: 9,
+          day: 26,
+          hour: 1,
+          minutes: 50,
+          second: 7,
+        });
+        const nextHour = moment().startOf("second").add(1, "second");
+        setNextSecond(nextHour);
         if (now.isBetween(sessionStart, sessionEnd)) {
           setIsChatEnabled(true);
         } else {
           setIsChatEnabled(false);
         }
-        setMessages(fetchedMessages || []); // Set fetched messages locally
-        // setSchedule(fetchSchedule || {}); 
+        setMessages(fetchedMessages || []);
+        // setSchedule(fetchSchedule || {});
       };
       fetchData();
     }
-  }, [chatUser?._id, isLoggedIn, getUserMessages, getCounselingSession]);
+  }, [
+    chatUser?._id,
+    isLoggedIn,
+    getUserMessages,
+    getCounselingSession,
+    nextSecond,
+  ]);
 
   return (
     <>

@@ -6,7 +6,6 @@ import Navbar from "../components/Dashboard/Navbar";
 export const UserDashboard = () => {
   const [selectedChat, setSelectedChat] = useState({});
   const handleSelectChat = (chatUser, userId) => {
-    console.log(chatUser, "data by anas");
     setSelectedChat({ chatUser, userId });
   };
 
