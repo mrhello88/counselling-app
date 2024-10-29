@@ -7,7 +7,7 @@ import { UserDashboard } from "./pages/U-Dashboard";
 import { ChatWindow } from "./components/Dashboard/Chat/Chat-Window";
 // import { ChatWindows } from "./components/Dashboard/Chat/Chat-Window";
 import { Footer } from "./components/Navbar-Footer/Footer";
-import { LoginPage } from "./components/auth/login";
+import { LoginPage } from "./components/auth/Login";
 // import { Home } from "./pages/Home";
 import { Payment } from "./pages/Payment";
 import { Register } from "./pages/Register";
@@ -19,7 +19,7 @@ import { StudentProfilePage } from "./components/EditProfile/StudentProfile";
 import { CreateSession } from "./components/Dashboard/createCounseling/CreateCounseling";
 import { CounselorProfile } from "./components/CounselorProfile/CounselorProfile";
 import { CounselorList } from "./components/FilterCounselors/CounselorList";
-import {HomePage} from "./pages/HomePage"
+import { HomePage } from "./pages/HomePage";
 import { useAuth } from "./store/auth";
 // import { CounsellorDashboard } from "./pages/C-Dashboard";
 
@@ -91,4 +91,3 @@ export const App = () => {
     </Router>
   );
 };
- 

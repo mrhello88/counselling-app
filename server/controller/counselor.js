@@ -28,30 +28,32 @@ exports.getCounselor = async (req, res) => {
 };
 
 exports.postCAdvice = async (req, res) => {
-  const userId = req.user._id;
-  const { counselorId } = req.body;
-
-  if (req.user.role === "counselor") {
-    return res.status(403).json({
-      message: "You can't add counselor as student",
-      success: false,
-    });
-  }
-   
   try {
+    const userId = req.user._id;
+    const { counselorId } = req.body;
+
+    if (req.user.role === "counselor") {
+      return res.status(403).json({
+        message: "You can't add counselor as student",
+        success: false,
+      });
+    }
+
     // Add user to counselor's students list
     await UserSchema.findByIdAndUpdate(counselorId, {
       $addToSet: { friends: userId },
     });
 
     // Add counselor to user's counselor list
-    await UserSchema.findByIdAndUpdate(userId, {
+    const user = await UserSchema.findByIdAndUpdate(userId, {
       $addToSet: { friends: counselorId },
     });
 
-    return res
-      .status(200)
-      .json({ message: "Advice purchased successfully", success: true });
+    return res.status(200).json({
+      message: "Advice purchased successfully",
+      success: true,
+      data: user,
+    });
   } catch (error) {
     return res.status(500).json({ message: "Server error", success: false });
   }
@@ -63,15 +65,17 @@ exports.postCreateCounseling = async (req, res, next) => {
     //  console.log("executes", req.body)
     const userId = req.user._id;
 
-    const findCounseling = await CreateCounseling.findById(userId);
+    const findCounseling = await CreateCounseling.findOne({
+      counselorId: userId,
+    });
 
     if (findCounseling) {
       return res
-        .status(409) 
+        .status(409)
         .json({ message: "this is already exist", success: false });
     }
-
     const counseling = new CreateCounseling({
+      counselorId: userId,
       category,
       duration,
       price,

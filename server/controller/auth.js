@@ -42,7 +42,7 @@ exports.postLogin = async (req, res) => {
     return res.status(200).json({
       message: "Login successfully",
       token, // Send the token back to React (optional)
-      userId: user._id.toString(),
+      data: user,
       success: true,
     });
   } catch (error) {
@@ -51,25 +51,25 @@ exports.postLogin = async (req, res) => {
 };
 
 exports.postRegister = async (req, res, next) => {
-  const { role, personalInfo } = JSON.parse(req.body.registerUser);
   try {
+    const { role, personalInfo } = req.body.registerUser;
     if (role === "counselor") {
-      const { education, payment } = JSON.parse(req.body.registerUser);
-      const filePath = req.files?.file?.[0]?.filename;
+      const { education, payment } = req.body.registerUser;
+      const filePath = req.files?.file?.[0]?.filename; 
 
       // Check if the user already exists
       const user = await UserSchema.findOne({
         "personalInfo.email": personalInfo.email,
-      });
+      }); 
 
       if (user) {
-        return res
+        return res 
           .status(409)
           .json({ message: "User already exist", success: false });
       }
 
       // Generate token and hash password
-      const token = crypto.randomBytes(32).toString("hex");
+      const token = crypto.randomBytes(32).toString("hex"); 
       const bcryptPassword = await bcryptjs.hash(personalInfo.password, 12);
       personalInfo.password = bcryptPassword;
       //removing 'confirmPassword' from personalInfo

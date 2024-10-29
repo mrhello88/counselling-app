@@ -1,53 +1,49 @@
 import { useState } from "react";
 import { useAuth } from "../../../store/auth";
-
+import { toast } from "react-toastify";
+import {studentSchemaZod} from "../../../zod-validation/studentZod"
 export const StudentRegister = () => {
-  const [Data, setData] = useState({
+  const [data, setData] = useState({
     personalInfo: {
       name: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
-    role:"student"
+    role: "student",
   });
   const { userRegister } = useAuth();
-
-  const [error, setError] = useState("");
-
-  const handleChange = (section,e) => {
+  const [errors, setErrors] = useState({});
+  const handleChange = (section, e) => {
     const { name, value } = e.target;
     setData({
-      ...Data,
+      ...data,
       [section]: {
-        ...Data[section],
+        ...data[section],
         [name]: value,
       },
-      role:"student"
+      role: "student",
     });
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" })); 
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { name, email, password, confirmPassword } = Data.personalInfo;
 
-    // Simple validation
-    if (!name || !email || !password || !confirmPassword) {
-      setError("Please fill in all fields.");
+    const result = studentSchemaZod.safeParse(data);
+    if (!result.success) {
+      const fieldErrors = result.error.format();
+      setErrors(fieldErrors.personalInfo);
+      toast.error("Please fix the errors in the form.");
       return;
     }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-
+    const formData = new FormData();
+    formData.append("registerUser", JSON.stringify(data));
     // Submit form data (you can replace this with an API call)
-    const formData = new FormData()
-    formData.append("registerUser", JSON.stringify(Data))
     userRegister(formData);
 
     // Reset form and error
+    setErrors({});
     setData({
       personalInfo: {
         name: "",
@@ -56,13 +52,11 @@ export const StudentRegister = () => {
         confirmPassword: "",
       },
     });
-    setError("");
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        {error ? <div>{error}</div> : ""}
         <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">
           Student Registration
         </h2>
@@ -74,12 +68,12 @@ export const StudentRegister = () => {
             <input
               type="text"
               name="name"
-              value={Data.personalInfo.name}
-              onChange={(e)=>handleChange("personalInfo",e)}
+              value={data.personalInfo.name}
+              onChange={(e) => handleChange("personalInfo", e)}
               placeholder="Enter your name"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
             />
+            {errors.name && <p className="text-red-500 text-sm">{errors.name._errors[0]}</p>}
           </div>
 
           <div className="mb-4">
@@ -89,12 +83,12 @@ export const StudentRegister = () => {
             <input
               type="email"
               name="email"
-              value={Data.personalInfo.email}
-              onChange={(e)=>handleChange( "personalInfo",e)}
+              value={data.personalInfo.email}
+              onChange={(e) => handleChange("personalInfo", e)}
               placeholder="Enter your email"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
             />
+             {errors.email && <p className="text-red-500 text-sm">{errors.email._errors[0]}</p>}
           </div>
 
           <div className="mb-4">
@@ -104,12 +98,12 @@ export const StudentRegister = () => {
             <input
               type="password"
               name="password"
-              value={Data.personalInfo.password}
-              onChange={(e)=>handleChange( "personalInfo",e)}
+              value={data.personalInfo.password}
+              onChange={(e) => handleChange("personalInfo", e)}
               placeholder="Enter your password"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
             />
+            {errors.password && <p className="text-red-500 text-sm">{errors.password._errors[0]}</p>}
           </div>
 
           <div className="mb-6">
@@ -119,12 +113,12 @@ export const StudentRegister = () => {
             <input
               type="password"
               name="confirmPassword"
-              value={Data.personalInfo.confirmPassword}
-              onChange={(e)=>handleChange( "personalInfo",e)}
+              value={data.personalInfo.confirmPassword}
+              onChange={(e) => handleChange("personalInfo", e)}
               placeholder="Confirm your password"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
             />
+            {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword._errors[0]}</p>}
           </div>
 
           <button

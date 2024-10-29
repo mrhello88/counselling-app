@@ -4,10 +4,13 @@ import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
 import { useAuth } from "../../store/auth";
 import { useNavigate, useParams } from "react-router-dom";
+import { counselingSessionSchemaZod } from "../../zod-validation/counselingSessionZod";
+import { toast } from "react-toastify";
 
 export const CounselorProfile = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [profileData, setProfileData] = useState({});
+  const [errors, setErrors] = useState({});
   const {
     getCounselorProfile,
     // postCounselingSession,
@@ -23,11 +26,23 @@ export const CounselorProfile = () => {
       setProfileData(data || {});
     };
     counselorData();
-  }, [getCounselorProfile]);  
+  }, [getCounselorProfile]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (selectedDate === null) {
+      toast.error("Date is Required!");
+      return;
+    }
     const startDate = moment(selectedDate).format("YYYY-MM-DD HH:mm:ss");
+    const result = counselingSessionSchemaZod.safeParse({ date: startDate });
+    if (!result.success) {
+      const fieldErrors = result.error.format();
+      setErrors(fieldErrors);
+      toast.error("Please fix the errors in the form.");
+      return;
+    }
+
     const endDate = moment(selectedDate)
       .add(profileData.counseling?.duration, "minutes")
       .format("YYYY-MM-DD HH:mm:ss");
@@ -59,7 +74,7 @@ export const CounselorProfile = () => {
     // navigate("/payment");
     // alert("Counseling session scheduled successfully!");
   };
- 
+
   if (!profileData?._id) {
     return <p>Loading.... at counselorProfile</p>;
   }
@@ -134,12 +149,18 @@ export const CounselorProfile = () => {
         </label>
         <DatePicker
           selected={selectedDate}
-          onChange={(date) => setSelectedDate(date)}
+          onChange={(date) => {
+            setSelectedDate(date);
+            setErrors({});
+          }}
           showTimeSelect
           dateFormat="Pp"
           className="border border-gray-300 rounded-md p-2 w-full"
           minDate={new Date()} // Prevent past dates
         />
+        {errors.date && (
+          <p className="text-red-500 text-sm">{errors?.date?._errors[0]}</p>
+        )}
         <button
           type="submit"
           className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"

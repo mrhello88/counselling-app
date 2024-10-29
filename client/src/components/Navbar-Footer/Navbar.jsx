@@ -94,7 +94,9 @@ export const Navbar = () => {
             <>
               <NavLink
                 to={"/"}
-                onClick={()=>{LogoutUser()}}
+                onClick={() => {
+                  LogoutUser();
+                }}
                 className="hidden md:block bg-[#38bdf8] mx-12 text-white px-4 py-2 rounded hover:bg-[#0ea5e9]"
               >
                 Log Out

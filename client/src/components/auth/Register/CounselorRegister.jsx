@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { useAuth } from "../../../store/auth";
+import { counselorPersonalInfoSchema } from "../../../zod-validation/counselorZod.js";
+import { counselorEducationSchema } from "../../../zod-validation/counselorZod.js";
+import { counselorPaymentSchema } from "../../../zod-validation/counselorZod.js";
+import { toast } from "react-toastify";
 
 export const CounselorRegister = () => {
   const [step, setStep] = useState(1); // Track current step
+  const { userRegister } = useAuth();
   const [Data, setData] = useState({
     personalInfo: {
       name: "",
@@ -21,18 +26,35 @@ export const CounselorRegister = () => {
       bankName: "",
       branchCode: "",
     },
+    file: null,
   });
-  const [file, setFile] = useState("");
-
+  const [errors, setErrors] = useState({});
   const handleInputChange = (section, key, value) => {
-    setData((prevData) => ({
-      ...prevData,
-      [section]: {
-        ...prevData[section],
+    if (section === "Files") {
+      // If updating the file field
+      setData((prevData) => ({
+        ...prevData,
+        file: value,
+      }));
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        file: "", // Clear any file-related errors
+      }));
+    } else {
+      setData((prevData) => ({
+        ...prevData,
+        [section]: {
+          ...prevData[section],
+          [key]: value,
+        },
+        role: "counselor",
         [key]: value,
-      },
-      role: "counselor",
-    }));
+      }));
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [section]: { ...prevErrors[section], [key]: "" },
+      }));
+    }
   };
 
   const renderStep = () => {
@@ -51,6 +73,11 @@ export const CounselorRegister = () => {
               }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors?.personalInfo?.name && (
+              <p className="text-red-500">
+                {errors.personalInfo.name._errors.join(", ")}
+              </p>
+            )}
             <input
               type="email"
               name="email"
@@ -61,6 +88,11 @@ export const CounselorRegister = () => {
               }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors?.personalInfo?.email && (
+              <p className="text-red-500">
+                {errors.personalInfo.email._errors.join(", ")}
+              </p>
+            )}
             <input
               type="password"
               name="password"
@@ -71,6 +103,11 @@ export const CounselorRegister = () => {
               }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors?.personalInfo?.password && (
+              <p className="text-red-500">
+                {errors.personalInfo.password._errors.join(", ")}
+              </p>
+            )}
             <input
               type="password"
               name="confirmPassword"
@@ -85,6 +122,11 @@ export const CounselorRegister = () => {
               }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors?.personalInfo?.confirmPassword && (
+              <p className="text-red-500">
+                {errors.personalInfo.confirmPassword._errors.join(", ")}
+              </p>
+            )}
           </div>
         );
       case 2:
@@ -108,6 +150,11 @@ export const CounselorRegister = () => {
               <option value="Diploma">Diploma</option>
               <option value="Certificate">Certificate</option>
             </select>
+            {errors?.education?.degree && (
+              <p className="text-red-500">
+                {errors?.education?.degree._errors.join(", ")}
+              </p>
+            )}
             <select
               value={Data.education.institution}
               onChange={(e) =>
@@ -147,6 +194,11 @@ export const CounselorRegister = () => {
                 University of Engineering and Technology (UET)
               </option>
             </select>
+            {errors?.education?.institution && (
+              <p className="text-red-500">
+                {errors?.education?.institution._errors.join(", ")}
+              </p>
+            )}
             <select
               value={Data.education.experience}
               onChange={(e) =>
@@ -164,40 +216,38 @@ export const CounselorRegister = () => {
               <option value="5 years">5 years</option>
               <option value="5-10 years">5 to 10 years</option>
             </select>
+            {errors?.education?.experience && (
+              <p className="text-red-500">
+                {errors?.education?.experience._errors.join(", ")}
+              </p>
+            )}
             <textarea
               value={Data.education.description}
               onChange={(e) => {
-                const words = e.target.value.split(" ");
-                if (words.length <= 200) {
-                  handleInputChange("education", "description", e.target.value);
-                }
+                handleInputChange("education", "description", e.target.value);
               }}
-              placeholder="Enter a brief description (max 200 words)"
+              placeholder="Enter a brief description (max 200 words or least 10 words)"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows="5"
             />
-            <p className="text-sm text-gray-500">
-              {Data.education.description.split(" ").length}/200 words
-            </p>
+            {errors?.education?.description?._errors && (
+              <p className="text-red-500">
+                {errors.education.description._errors[0]}
+              </p>
+            )} 
             <input
               type="file"
               accept="application/pdf"
               name="file"
               multiple
               onChange={(e) => {
-                setFile(e.target.files[0]);
+                handleInputChange("Files", "file", e.target.files[0]);
               }}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {/* <input
-              type="text"
-              placeholder="Institution"
-              value={Data.education.institution}
-              onChange={(e) =>
-                handleInputChange("education", "institution", e.target.value)
-              }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            /> */}
+            {errors?.file && (
+              <p className="text-red-500">{errors.file._errors[0]}</p>
+            )}
           </div>
         );
       case 3:
@@ -213,6 +263,11 @@ export const CounselorRegister = () => {
               }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors?.payment?.accountNumber && (
+              <p className="text-red-500">
+                {errors?.payment?.accountNumber._errors.join(", ")}
+              </p>
+            )}
             <input
               type="text"
               placeholder="Bank Name"
@@ -222,6 +277,11 @@ export const CounselorRegister = () => {
               }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors?.payment?.bankName && (
+              <p className="text-red-500">
+                {errors?.payment?.bankName._errors.join(", ")}
+              </p>
+            )}
             <input
               type="text"
               placeholder="Branch Code"
@@ -231,36 +291,50 @@ export const CounselorRegister = () => {
               }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors?.payment?.branchCode && (
+              <p className="text-red-500">
+                {errors?.payment?.branchCode._errors.join(", ")}
+              </p>
+            )}
           </div>
         );
       default:
         return null;
     }
   };
-  const isNextDisabled = () => {
-    const { personalInfo, education, payment } = Data;
 
+  // Validate current step with Zod schema
+  const validateStep = () => {
+    let validationResult;
     if (step === 1) {
-      return (
-        !personalInfo.name ||
-        !personalInfo.email ||
-        !personalInfo.password ||
-        !personalInfo.confirmPassword
-      );
+      validationResult = counselorPersonalInfoSchema.safeParse({
+        personalInfo: Data.personalInfo,
+      });
     } else if (step === 2) {
-      return (
-        !education.degree ||
-        !education.institution ||
-        !education.experience ||
-        !education.description
-      );
+      validationResult = counselorEducationSchema.safeParse({
+        education: Data.education,
+        file: Data.file,
+      });
     } else if (step === 3) {
-      return !payment.accountNumber || !payment.bankName || !payment.branchCode;
+      validationResult = counselorPaymentSchema.safeParse({
+        payment: Data.payment,
+      });
     }
+
+    if (!validationResult.success) {
+      const fieldErrors = validationResult.error.format();
+      setErrors(fieldErrors);
+      toast.error(`please fix all the fields`);
+      return true;
+    }
+
+    setErrors({});
     return false;
   };
+
   const handleNext = () => {
-    if (!isNextDisabled()) {
+    const hasError = validateStep();
+    if (!hasError) {
       setStep((prevStep) => prevStep + 1);
     }
   };
@@ -270,14 +344,24 @@ export const CounselorRegister = () => {
       setStep((prevStep) => prevStep - 1);
     }
   };
-  const { userRegister } = useAuth();
   const submitHandler = (e) => {
     e.preventDefault();
     // Ensure the form is only submitted at the final step
+    // const hasError = validateStep();
     if (step === 4) {
+      const data = {
+        personalInfo: Data.personalInfo,
+        education: Data.education,
+        payment: Data.payment,
+      };
       const formData = new FormData();
-      formData.append("registerUser", JSON.stringify(Data));
-      formData.append("file", file);
+      // Append nested objects individually as JSON strings
+      formData.append("registerUser", JSON.stringify(data));
+
+      // Add the file if it exists
+
+      formData.append("file", Data.file);
+
       userRegister(formData);
       setStep(1);
       setData({
@@ -298,52 +382,54 @@ export const CounselorRegister = () => {
           bankName: "",
           branchCode: "",
         },
+        file: null,
       });
-      setFile("");
-      console.log(step, "stepsalskdfj asldkf ja;lsdkfj ");
     }
   };
 
   return (
-    <form
-      onSubmit={submitHandler}
-      className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md"
-    >
-      {renderStep()}
-      <div className="flex justify-between mt-6">
-        <button
-          type="button" // Explicitly set type to "button"
-          className={`px-4 py-2 bg-blue-500 text-white rounded ${
-            step === 1 ? "bg-gray-400 cursor-not-allowed" : "hover:bg-blue-700"
-          }`}
-          onClick={handlePrevious}
-          disabled={step === 1}
-        >
-          Previous
-        </button>
-        {step < 3 ? (
+    <>
+      <form
+        onSubmit={(e) => submitHandler(e)}
+        className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md"
+      >
+        {renderStep()}
+        <div className="flex justify-between mt-6">
           <button
             type="button" // Explicitly set type to "button"
             className={`px-4 py-2 bg-blue-500 text-white rounded ${
-              isNextDisabled()
+              step === 1
                 ? "bg-gray-400 cursor-not-allowed"
                 : "hover:bg-blue-700"
             }`}
-            onClick={handleNext}
-            disabled={isNextDisabled()}
+            onClick={handlePrevious}
+            disabled={step === 1}
           >
-            Next
+            Previous
           </button>
-        ) : (
-          <button
-            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
-            type="submit" // This button is the submit button
-            onClick={handleNext}
-          >
-            Submit
-          </button>
-        )}
-      </div>
-    </form>
+          {step < 3 ? (
+            <>
+              <button
+                type="button" // Explicitly set type to "button"
+                className={`px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700`}
+                onClick={handleNext}
+              >
+                Next
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
+                type="submit" // This button is the submit button
+                onClick={handleNext}
+              >
+                Submit
+              </button>
+            </>
+          )}
+        </div>
+      </form>
+    </>
   );
 };

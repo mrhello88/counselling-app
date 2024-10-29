@@ -33,7 +33,7 @@ export const ChatWindow = () => {
       };
       fetchData();
     }
-  }, [chatUser?._id, isLoggedIn, getUserMessages, getCounselingSession]);
+  }, [chatUser?._id, isLoggedIn, getUserMessages, getCounselingSession, isChatEnabled]);
 
   return (
     <>

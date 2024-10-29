@@ -45,25 +45,25 @@ exports.postscheduleCounseling = async (req, res) => {
     if (!counselor) {
       res.status(404).json({ message: "counselor not found", success: false });
     }
-    // // Check if a session between the student and counselor already exists
-    // const existingSession = await CounselingSession.findOne({
-    //   counselorId,
-    //   studentId: req.user._id,
-    // });
+    // Check if a session between the student and counselor already exists
+    const existingSession = await CounselingSession.findOne({
+      counselorId,
+      studentId: req.user._id,
+    });
 
-    // // If session exists, update it
-    // if (existingSession) {
-    //   existingSession.startDate = startDate;
-    //   existingSession.endDate = endDate;
-    //   existingSession.duration = duration;
-    //   await existingSession.save();
+    // If session exists, update it
+    if (existingSession) {
+      existingSession.startDate = startDate;
+      existingSession.endDate = endDate;
+      existingSession.duration = duration;
+      await existingSession.save();
 
-    //   return res.status(200).json({
-    //     message: "Counseling session updated successfully",
-    //     data: existingSession,
-    //     success: true,
-    //   });
-    // }
+      return res.status(200).json({
+        message: "Counseling session updated successfully",
+        data: existingSession,
+        success: true,
+      });
+    } 
     // If session doesn't exist, create a new one
     const session = new CounselingSession({
       counselorId,
