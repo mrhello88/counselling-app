@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../store/auth";
-
+import { paymentFormSchema } from "../zod-validation/paymentZod";
 export const Payment = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { postCounselingSession, postCounselorAdvice } = useAuth();
+  const [errors, setErrors] = useState({});
   const [paymentInfo, setPaymentInfo] = useState({
     cardNumber: "",
     cardHolder: "",
@@ -16,16 +17,22 @@ export const Payment = () => {
 
   const handleChange = (e) => {
     setPaymentInfo({ ...paymentInfo, [e.target.name]: e.target.value });
+    setErrors((prevError) => ({ ...prevError, [e.target.name]: "" }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle payment submission here
-    console.log(paymentInfo);
+    const result = paymentFormSchema.safeParse(paymentInfo);
+    if (!result.success) {
+      const fieldErrors = result.error.format();
+      setErrors(fieldErrors);
+      toast.error("Please fix the errors in the form.");
+      return;
+    }
     if (location.state.scheduleSessionData) {
       const { scheduleSessionData } = location.state;
       const response = await postCounselorAdvice(scheduleSessionData);
-      if (response) {
+      if (response.success) {
         navigate("/user-dashboard");
       }
     }
@@ -56,6 +63,11 @@ export const Payment = () => {
               onChange={handleChange}
               required
             />
+            {errors.cardNumber && (
+              <p className="text-red-500 text-sm">
+                {errors.cardNumber._errors[0]}
+              </p>
+            )}
           </div>
 
           {/* Cardholder Name */}
@@ -76,6 +88,11 @@ export const Payment = () => {
               onChange={handleChange}
               required
             />
+            {errors.cardHolder && (
+              <p className="text-red-500 text-sm">
+                {errors.cardHolder._errors[0]}
+              </p>
+            )}
           </div>
 
           {/* Expiration Date */}
@@ -96,6 +113,11 @@ export const Payment = () => {
               onChange={handleChange}
               required
             />
+            {errors.expirationDate && (
+              <p className="text-red-500 text-sm">
+                {errors.expirationDate._errors[0]}
+              </p>
+            )}
           </div>
 
           {/* CVV */}
@@ -116,6 +138,9 @@ export const Payment = () => {
               onChange={handleChange}
               required
             />
+            {errors.cvv && (
+              <p className="text-red-500 text-sm">{errors.cvv._errors[0]}</p>
+            )}
           </div>
 
           {/* Billing Address */}
@@ -136,6 +161,11 @@ export const Payment = () => {
               onChange={handleChange}
               required
             />
+            {errors.billingAddress && (
+              <p className="text-red-500 text-sm">
+                {errors.billingAddress._errors[0]}
+              </p>
+            )}
           </div>
 
           {/* Pay Now Button */}

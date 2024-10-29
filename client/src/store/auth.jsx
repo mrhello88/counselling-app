@@ -5,20 +5,21 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   // Configure toast notifications
 
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  // const [token, setToken] = useState(localStorage.getItem("token"));
   const [user, setUser] = useState({
     userData: [],
     postMessage: [],
     counselors: [],
+    token: localStorage.getItem("token"),
   });
+
+  let isLoggedIn = !!user.token;
   const storeTokenInLS = (serverToken) => {
     localStorage.setItem("token", serverToken);
-    return setToken(localStorage.getItem("token"));
+    return setUser({ ...user, token: localStorage.getItem("token") });
   };
-
-  let isLoggedIn = !!token;
   const LogoutUser = () => {
-    setToken("");
+    setUser({ ...user, token: "" });
     return localStorage.removeItem("token");
   };
 
@@ -80,7 +81,7 @@ export const AuthProvider = ({ children }) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.token}`,
         },
       });
       const res_data = await response.json();
@@ -132,7 +133,7 @@ export const AuthProvider = ({ children }) => {
         method: "GET",
         headers: {
           "Content-Type": "Application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.token}`,
         },
       });
       const res_data = await response.json();
@@ -155,16 +156,15 @@ export const AuthProvider = ({ children }) => {
         method: "POST",
         headers: {
           "Content-Type": "Application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.token}`,
         },
         body: JSON.stringify({ counselorId: scheduleSessionData.counselorId }),
       });
       const res_data = await response.json();
 
       if (res_data.success) {
-        toast.success(res_data.message || "Advice bought successfully");
         await postCounselingSession(scheduleSessionData);
-
+        return res_data;
         // Add logic to update the UI (sidebar) nbcd bgnh
       } else {
         console.log(res_data.message);
@@ -183,7 +183,7 @@ export const AuthProvider = ({ children }) => {
         method: "POST",
         headers: {
           "Content-Type": "Application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.token}`,
         },
         body: JSON.stringify(formData),
       });
@@ -208,7 +208,7 @@ export const AuthProvider = ({ children }) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.token}`,
         },
       });
       const res_data = await response.json();
@@ -235,7 +235,7 @@ export const AuthProvider = ({ children }) => {
         method: "POST",
         headers: {
           "Content-Type": "Application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.token}`,
         },
         body: JSON.stringify({ message }),
       });
@@ -259,7 +259,7 @@ export const AuthProvider = ({ children }) => {
         method: "GET",
         headers: {
           "Content-Type": "Application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.token}`,
         },
       });
       const res_data = await response.json();
@@ -281,7 +281,7 @@ export const AuthProvider = ({ children }) => {
       const response = await fetch("http://localhost:3000/profile", {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.token}`,
         },
       }); // Adjust the endpoint to your backend route
       const res_data = await response.json();
@@ -305,7 +305,7 @@ export const AuthProvider = ({ children }) => {
         method: "POST",
         headers: {
           // "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.token}`,
         },
         body: formData,
       });
@@ -332,7 +332,7 @@ export const AuthProvider = ({ children }) => {
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user.token}`,
           },
           body: formData,
         }
@@ -360,7 +360,7 @@ export const AuthProvider = ({ children }) => {
           method: "GET",
           headers: {
             "Content-Type": "Application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user.token}`,
           },
         }
       );
@@ -388,17 +388,16 @@ export const AuthProvider = ({ children }) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user.token}`,
           },
           body: JSON.stringify(formData),
         }
       );
       const res_data = await response.json();
       if (res_data.success) {
+        userAuthentication();
         console.log("Counseling session scheduled successfully!");
-        // toast.success(
-        //   res_data.message || "Counseling session scheduled successfully!"
-        // );
+        toast.success(res_data.message || "Advice bought successfully");
       } else if (res_data.success === false) {
         console.log(res_data.message);
         // If the backend response indicates failure, show the error message
@@ -419,7 +418,7 @@ export const AuthProvider = ({ children }) => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user.token}`,
           },
         }
       );
@@ -462,7 +461,6 @@ export const AuthProvider = ({ children }) => {
         getCounselingSession,
         VerifyUser,
         userRegister,
-        token,
         user,
       }}
     >
