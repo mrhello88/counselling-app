@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
     userData: [],
     postMessage: [],
     counselors: [],
+    getCounselingSession: [],
     token: localStorage.getItem("token"),
   });
 
@@ -424,7 +425,6 @@ export const AuthProvider = ({ children }) => {
       );
       const res_data = await response.json();
       if (res_data.success) {
-        console.log("res_data = ", res_data.data);
         return res_data.data;
       } else {
         console.log(res_data.message);

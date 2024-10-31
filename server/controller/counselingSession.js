@@ -50,7 +50,8 @@ exports.postscheduleCounseling = async (req, res) => {
       counselorId,
       studentId: req.user._id,
     });
-
+    
+    console.log(new Date(startDate + "UTC"),endDate,"postScheduleCounseling")
     // If session exists, update it
     if (existingSession) {
       existingSession.startDate = startDate;
@@ -62,7 +63,7 @@ exports.postscheduleCounseling = async (req, res) => {
         message: "Counseling session updated successfully",
         data: existingSession,
         success: true,
-      });
+      }); 
     } 
     // If session doesn't exist, create a new one
     const session = new CounselingSession({
@@ -104,8 +105,9 @@ exports.getscheduleCounseling = async (req, res, next) => {
 
     const counselingSession = await CounselingSession.findOne(sessionQuery);
     if (!counselingSession) {
-      return res.status(404).json({ message: "Not found", success: false });
+      return res.status(404).json({ message: "Counseling Session is not Found", success: false });
     }
+
     return res
       .status(200)
       .json({

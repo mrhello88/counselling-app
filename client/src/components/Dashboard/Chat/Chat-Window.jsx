@@ -1,127 +1,142 @@
-import { MessageInput } from "./MessageInput";
 import { useEffect, useState } from "react";
+import { MessageInput } from "./MessageInput";
 import { useOutletContext } from "react-router-dom";
 import { useAuth } from "../../../store/auth";
-import moment from "moment";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import duration from "dayjs/plugin/duration";
+
+dayjs.extend(utc);
+dayjs.extend(duration);
 
 export const ChatWindow = () => {
   const { selectedChat } = useOutletContext();
   const { chatUser, userId } = selectedChat;
 
   const [messages, setMessages] = useState([]);
-  // const [schedule, setSchedule] = useState({});
-  const [isChatEnabled, setIsChatEnabled] = useState(false);
+  const [schedule, setSchedule] = useState({});
+  const [status, setStatus] = useState("loading"); // loading, before, during, end
+  const [remainingTime, setRemainingTime] = useState(null);
   const { getUserMessages, getCounselingSession, isLoggedIn } = useAuth();
-  const [nextSecond, setNextSecond] = useState();
+  console.log(messages, "this is messages");
   useEffect(() => {
     if (chatUser?._id) {
       const fetchData = async () => {
         const fetchedMessages = await getUserMessages(chatUser._id);
-        // const fetchSchedule = await getCounselingSession(chatUser._id);
-        const now = moment();
-        const sessionStart = moment({
-          year: 2024,
-          month: 9,
-          day: 26,
-          hour: 2,
-          minutes: 1,
-          second: 50,
-        });
-        const sessionEnd = moment({
-          year: 2024,
-          month: 9,
-          day: 26,
-          hour: 2,
-          minutes: 4,
-          second: 7,
-        });
-        const nextHour = moment()
-          .startOf({
-            year: 2024,
-            month: 9,
-            day: 26,
-            hour: 2,
-            minutes: 1,
-            second: 50,
-          })
-          .endOf({
-            year: 2024,
-            month: 9,
-            day: 26,
-            hour: 2,
-            minutes: 4,
-            second: 7,
-          });
-        setNextSecond(nextHour);
-        if (now.isBetween(sessionStart, sessionEnd)) {
-          setIsChatEnabled(true);
-        } else {
-          setIsChatEnabled(false);
-        }
+        const fetchSchedule = await getCounselingSession(chatUser._id);
         setMessages(fetchedMessages || []);
-        // setSchedule(fetchSchedule || {});
+        setSchedule(fetchSchedule || {});
       };
       fetchData();
     }
-  }, [
-    chatUser?._id,
-    isLoggedIn,
-    getUserMessages,
-    getCounselingSession,
-    nextSecond,
-  ]);
+  }, [chatUser?._id, isLoggedIn, getUserMessages]);
+
+  useEffect(() => {
+    const sessionEnd = dayjs.utc(schedule.endDate);
+    const sessionStart = dayjs.utc(schedule.startDate);
+
+    const intervalId = setInterval(() => {
+      const now = dayjs();
+
+      // Pre-Session Countdown
+      if (now.isBefore(sessionStart)) {
+        setStatus("before");
+        const remaining = dayjs.duration(sessionStart.diff(now));
+        setRemainingTime({
+          days: remaining.days(),
+          hours: remaining.hours(),
+          minutes: remaining.minutes(),
+          seconds: remaining.seconds(),
+        });
+
+        // During Session Countdown
+      } else if (now.isAfter(sessionStart) && now.isBefore(sessionEnd)) {
+        setStatus("during");
+        const elapsed = dayjs.duration(now.diff(sessionStart)); // Calculate elapsed time
+
+        setRemainingTime({
+          days: elapsed.days(),
+          hours: elapsed.hours(),
+          minutes: elapsed.minutes(),
+          seconds: elapsed.seconds(),
+        });
+
+        // Post-Session
+      } else if (now.isAfter(sessionEnd)) {
+        setStatus("end");
+        clearInterval(intervalId);
+      }
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [schedule.startDate, schedule.endDate]);
 
   return (
     <>
       {isLoggedIn && chatUser?._id ? (
-        <>
-          <div className="flex flex-col justify-between h-screen">
-            <div className="h-full">
-              <div className="flex items-center gap-2 py-2 px-4">
-                <img
-                  className="w-12 rounded-full"
-                  src="/src/assets/reactIcon.png"
-                  alt="demy logo"
-                />
-                <span className="text-black text-xl font-medium capitalize">
-                  Chat with: {chatUser?.personalInfo?.name}
-                </span>
-              </div>
-              <div className="">
-                <ul className="overflow-y-scroll h-[497px] bg-white border border-gray-300 px-4 pt-2">
-                  {messages?.map((obj) => (
-                    <li
-                      key={obj._id}
-                      className={`mb-2 p-2 max-w-xs rounded-lg ${
-                        obj.senderId === userId
-                          ? "bg-blue-500 text-white self-end ml-auto"
-                          : "bg-gray-200 text-gray-800 self-start"
-                      }`}
-                    >
-                      <p>{obj.message}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <MessageInput
-                selectedChat={selectedChat}
-                setMessages={setMessages}
-                isChatEnabled={isChatEnabled}
+        <div className="flex flex-col justify-between h-screen">
+          <div className="h-full">
+            <div className="flex items-center gap-2 py-2 px-4">
+              <img
+                className="w-12 rounded-full"
+                src="/src/assets/reactIcon.png"
+                alt="demy logo"
               />
+              <span className="text-black text-xl font-medium capitalize">
+                Chat with: {chatUser?.personalInfo?.name}
+                {status === "before" && remainingTime ? (
+                  <div style={{ fontSize: "25px" }}>
+                    <span>Session Starts In: </span>
+                    <span>{remainingTime.days}</span>:
+                    <span>{remainingTime.hours}</span>:
+                    <span>{remainingTime.minutes}</span>:
+                    <span>{remainingTime.seconds}</span>
+                  </div>
+                ) : status === "during" && remainingTime ? (
+                  <div style={{ fontSize: "25px" }}>
+                    <span>Remaining Time: </span>
+                    <span>{remainingTime.days}</span>:
+                    <span>{remainingTime.hours}</span>:
+                    <span>{remainingTime.minutes}</span>:
+                    <span>{remainingTime.seconds}</span>
+                  </div>
+                ) : (
+                  status === "end" && <p>Session End</p>
+                )}
+              </span>
             </div>
+            <div>
+              <ul className="overflow-y-scroll h-[497px] bg-white border border-gray-300 px-4 pt-2">
+                {messages?.map((obj) => (
+                  <li
+                    key={obj._id}
+                    className={`mb-2 p-2 max-w-xs rounded-lg ${
+                      obj.senderId === userId.toString()
+                        ? "bg-blue-500 text-white self-end ml-auto"
+                        : "bg-gray-200 text-gray-800 self-start"
+                    }`}
+                  >
+                    <p>{obj.message}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <MessageInput
+              selectedChat={selectedChat}
+              setMessages={setMessages}
+              isChatEnabled={status === "during"}
+            />
           </div>
-        </>
+        </div>
       ) : (
-        <>
-          <div className="h-screen flex items-center justify-center">
-            <div className="bg-white p-8 rounded-lg shadow-lg text-center">
-              <h1 className="text-4xl font-bold text-gray-800">Welcome</h1>
-              <p className="text-gray-600 mt-4 text-lg">
-                We're glad to have you here!
-              </p>
-            </div>
+        <div className="h-screen flex items-center justify-center">
+          <div className="bg-white p-8 rounded-lg shadow-lg text-center">
+            <h1 className="text-4xl font-bold text-gray-800">Welcome</h1>
+            <p className="text-gray-600 mt-4 text-lg">
+              We're glad to have you here!
+            </p>
           </div>
-        </>
+        </div>
       )}
     </>
   );

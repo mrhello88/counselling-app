@@ -31,7 +31,7 @@ exports.postLogin = async (req, res) => {
       },
       process.env.JWT_SECRET_KEY, // Replace with your secret key
       {
-        expiresIn: 259200, // Token expiry time in seconds (3 days)
+        expiresIn: 259200, // Token expiry time in seconds (3 days) 
       }
     );
 
@@ -39,10 +39,10 @@ exports.postLogin = async (req, res) => {
     // Set the token in the response cookie
 
     // Return success response to React
-    return res.status(200).json({
+    return res.status(200).json({ 
       message: "Login successfully",
       token, // Send the token back to React (optional)
-      data: user,
+      data: user, 
       success: true,
     });
   } catch (error) {

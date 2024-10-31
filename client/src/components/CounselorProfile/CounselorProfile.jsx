@@ -34,18 +34,22 @@ export const CounselorProfile = () => {
       toast.error("Date is Required!");
       return;
     }
-    const startDate = moment(selectedDate).format("YYYY-MM-DD HH:mm:ss");
-    const result = counselingSessionSchemaZod.safeParse({ date: startDate });
-    if (!result.success) {
-      const fieldErrors = result.error.format();
-      setErrors(fieldErrors);
-      toast.error("Please fix the errors in the form.");
-      return;
-    }
+    console.log(selectedDate,"this is date and time")
+   // Convert the selected date to UTC explicitly
+  const startDate = moment(selectedDate).format("YYYY-MM-DD HH:mm:ss");
+const result = counselingSessionSchemaZod.safeParse({ date: startDate });
 
-    const endDate = moment(selectedDate)
-      .add(profileData.counseling?.duration, "minutes")
-      .format("YYYY-MM-DD HH:mm:ss");
+if (!result.success) {
+  const fieldErrors = result.error.format();
+  setErrors(fieldErrors);
+  toast.error("Please fix the errors in the form.");
+  return;
+}
+
+// Calculate end date in UTC as well
+const endDate = moment(selectedDate)
+  .add(profileData.counseling?.duration, "minutes")
+  .format("YYYY-MM-DD HH:mm:ss");
 
     if (!isLoggedIn) {
       return navigate("/login", {
@@ -59,7 +63,8 @@ export const CounselorProfile = () => {
           },
         },
       });
-    }
+    } 
+    console.log(startDate,endDate,"profile")
     navigate("/payment", {
       state: {
         navigateToPayment: `/payment`,
