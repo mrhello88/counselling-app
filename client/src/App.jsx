@@ -19,7 +19,7 @@ import { StudentProfilePage } from "./components/EditProfile/StudentProfile";
 import { CreateSession } from "./components/Dashboard/createCounseling/CreateCounseling";
 import { CounselorProfile } from "./components/CounselorProfile/CounselorProfile";
 import { CounselorList } from "./components/FilterCounselors/CounselorList";
-import {HomePage} from "./pages/HomePage"
+import { HomePage } from "./pages/HomePage"
 import { useAuth } from "./store/auth";
 // import { CounsellorDashboard } from "./pages/C-Dashboard";
 
@@ -31,7 +31,9 @@ export const App = () => {
   }, [isLoggedIn]);
   return (
     <Router>
-      <Navbar />
+      <div className="">
+        <Navbar />
+      </div>
       <Routes>
         {/* <Route path={`/`} element={<Home />} /> */}
         {isLoggedIn ? (
@@ -91,4 +93,3 @@ export const App = () => {
     </Router>
   );
 };
- 

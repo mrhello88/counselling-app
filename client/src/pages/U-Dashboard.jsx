@@ -14,10 +14,10 @@ export const UserDashboard = () => {
     <>
       <section className="">
         <div className="flex justify-around container h-full">
-          <div className="w-1/4">
+          <div className="w-1/4 ">
             <SideBar onSelectChat={handleSelectChat} />
           </div>
-          <div className="w-3/4">
+          <div className="w-3/4 h-20">
             <Navbar />
             <Outlet context={{ selectedChat }} />
           </div>

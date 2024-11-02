@@ -9,11 +9,11 @@ const Navbar = () => {
     userAuthentication();
   }, []);
   return (
-    <div className="flex justify-between items-center py-2 bg-gray-200 px-8 ">
-      <div className="text-xl capitalize font-bold">
-        <h1>Dashboard: {userData?.personalInfo?.name}</h1>
+    <div className="flex justify-between items-center py-2 bg-gray-900 px-8 ">
+      <div className="text-xl  capitalize font-bold">
+        <h1 className="text-secondary">Dashboard: <span className="text-white">{userData?.personalInfo?.name}</span></h1>
       </div>
-      <div className="hover:bg-gray-50 rounded-full">
+      <div className="hover:bg-gray-50  rounded-full">
         {userData?.role === "counselor" ? (
           <Link to={"/profile/counselor"}>
             <img

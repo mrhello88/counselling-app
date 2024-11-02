@@ -72,7 +72,7 @@ export const MessageInput = ({ selectedChat, setMessages, isChatEnabled }) => {
   }, [socket, chatUser?._id]);
 
   return (
-    <div className="flex items-center space-x-4 bg-white p-4 rounded-lg shadow-md border border-gray-300">
+    <div className="flex items-center space-x-4 bg-primary p-4  shadow-md  ">
       {isChatEnabled? (
         <>
           {" "}
@@ -81,12 +81,12 @@ export const MessageInput = ({ selectedChat, setMessages, isChatEnabled }) => {
             value={message}
             onChange={handleInputChange}
             placeholder="Type a message..."
-            className="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-grow p-2 border   focus:outline-none focus:ring-2 bg-gray-900"
           />
           {/* <input type="file" onChange={handleFileChange} /> */}
           <button
             onClick={handleSend}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-4 py-2 bg-secondary hover:text-white rounded-lg font-bold text-lg focus:outline-none focus:ring-2 hover:scale-105 duration-50"
           >
             Send
           </button>
@@ -98,13 +98,13 @@ export const MessageInput = ({ selectedChat, setMessages, isChatEnabled }) => {
         disabled
         onChange={handleInputChange}
         placeholder="Type a message..."
-        className="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="flex-grow p-2 border placeholder-white font-bold text-sm rounded-lg focus:border-secondary focus:outline-none bg-gray-900"
       />
       {/* <input type="file" onChange={handleFileChange} /> */}
       <button
         onClick={handleSend}
         disabled
-        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="px-4 py-2 bg-secondary hover:text-white rounded-lg font-bold text-lg focus:outline-none focus:ring-2 hover:scale-105 duration-50"
       >
         Send
       </button>

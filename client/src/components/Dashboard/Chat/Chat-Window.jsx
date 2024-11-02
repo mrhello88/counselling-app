@@ -41,18 +41,18 @@ export const ChatWindow = () => {
         <>
           <div className="flex flex-col justify-between h-screen">
             <div className="h-full">
-              <div className="flex items-center gap-2 py-2 px-4">
+              <div className="flex bg-gray-800 items-center gap-2 py-2 px-4">
                 <img
                   className="w-12 rounded-full"
                   src="/src/assets/reactIcon.png"
                   alt="demy logo"
                 />
-                <span className="text-black text-xl font-medium capitalize">
-                  Chat with: {chatUser?.personalInfo?.name}
-                </span>
+                <h1 className="text-secondary text-xl font-medium capitalize">
+                  Chat with: <span className="text-white">{chatUser?.personalInfo?.name}</span> 
+                </h1>
               </div>
               <div className="">
-                <ul className="overflow-y-scroll h-[497px] bg-white border border-gray-300 px-4 pt-2">
+                <ul className="overflow-y-scroll h-[29.1rem] bg-gray-800  border-t-4 border-secondary px-4 pt-2">
                   {messages?.map((obj) => (
                     <li
                       key={obj._id}

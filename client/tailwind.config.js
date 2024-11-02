@@ -4,11 +4,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#3490dc", // Your primary color
-        secondary: "#ffed4a", // Your secondary color
+        primary: '#000000', // black color
+        secondary: '#FACC15', // yellow color
+        white:" #FFFFFF",
       },
-    },
   },
+},
   plugins: [require("tailwind-scrollbar-hide")],
 };
- 

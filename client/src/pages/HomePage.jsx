@@ -31,7 +31,7 @@ const counselors = [
     experience: 12,
     rating: 4.9,
     clientsHelped: 500,
-    imageUrl: "/placeholder.svg?height=300&width=400",
+    imageUrl: "https://thumbs.dreamstime.com/b/counselor-working-teenage-girl-high-school-student-office-educational-building-psychologist-counselor-working-teenage-319959791.jpg",
     bio: "Dr. Emily Johnson specializes in helping students navigate their academic journey and make informed decisions about their educational path.",
   },
   {
@@ -40,7 +40,7 @@ const counselors = [
     experience: 8,
     rating: 4.7,
     clientsHelped: 350,
-    imageUrl: "/placeholder.svg?height=300&width=400",
+    imageUrl: "https://img.freepik.com/free-vector/hand-drawn-speech-therapy-illustration_23-2149211795.jpg?semt=ais_hybrid",
     bio: "Michael Chen is passionate about assisting students in exploring career options and developing strategies for professional success.",
   },
   {
@@ -49,12 +49,14 @@ const counselors = [
     experience: 10,
     rating: 4.8,
     clientsHelped: 400,
-    imageUrl: "/placeholder.svg?height=300&width=400",
+    imageUrl: "https://www.shutterstock.com/image-photo/teenage-girl-high-school-student-260nw-2283738385.jpg",
     bio: "Sarah Patel provides compassionate mental health support to help students thrive both academically and personally.",
   },
 ];
 
 const Card = ({ children, className }) => {
+
+
   return (
     <div className={`rounded-lg shadow-md bg-white dark:bg-gray-800 ${className}`}>
       {children}
@@ -67,10 +69,10 @@ const CardContent = ({ children, className }) => {
 };
 
 const Button = ({ children, onClick, variant = "outline", className }) => {
-  const baseStyle = `px-4 py-2 rounded-md focus:outline-none transition-all duration-200`;
+  const baseStyle = `px-4 py-2 rounded-md focus:outline-none transition-all  duration-200`;
   const variantStyle =
     variant === "outline"
-      ? "border border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-300"
+      ? " text-gray-700  dark:text-gray-300"
       : "bg-primary text-white"; // Modify variants as needed
 
   return (
@@ -104,7 +106,7 @@ function EnhancedDottedGlobe({ isDark = false }) {
     }
     return dots;
   };
-
+// rotating circle
   return (
     <motion.div
       className="w-80 h-80 relative"
@@ -123,13 +125,13 @@ function EnhancedDottedGlobe({ isDark = false }) {
           >
             <stop
               offset="0%"
-              stopColor={isDark ? "#4338ca" : "#60a5fa"}
+              stopColor={isDark ? "#000000" : "#000000"}
               stopOpacity="0.8"
             />
             <stop
               offset="100%"
-              stopColor={isDark ? "#312e81" : "#3b82f6"}
-              stopOpacity="0.2"
+              stopColor={isDark ? "#000000" : "#FACC15"}
+              stopOpacity="0.7"
             />
           </radialGradient>
         </defs>
@@ -192,7 +194,7 @@ function CounselorCard({ counselor }) {
     >
       <Card className="w-full overflow-hidden transition-all duration-300 hover:shadow-xl bg-gradient-to-br from-primary/5 to-primary/20 dark:from-primary-dark/5 dark:to-primary-dark/20">
         <CardContent className="p-0">
-          <div className="relative h-48 overflow-hidden">
+          <div className="relative h-48 overflow-hidden text-white">
             <img
               src={counselor.imageUrl}
               alt={`${counselor.name}, Counselor`}
@@ -210,7 +212,7 @@ function CounselorCard({ counselor }) {
                 <h3 className="text-xl font-bold text-white mb-1">
                   {counselor.name}
                 </h3>
-                <Badge className="bg-primary/80 text-primary-foreground">
+                <Badge className="bg-primary/80 text-primary-foreground  text-white">
                   {counselor.specialization}
                 </Badge>
               </div>
@@ -226,13 +228,13 @@ function CounselorCard({ counselor }) {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.5 }}
             >
-              <div className="flex items-center">
+              <div className="flex items-center text-white">
                 <Clock className="w-4 h-4 mr-1 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">
+                <span className="text-sm text-muted-foreground  ">
                   {counselor.experience} years exp.
                 </span>
               </div>
-              <div className="flex items-center">
+              <div className="flex items-center text-white">
                 <Users className="w-4 h-4 mr-1 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">
                   {counselor.clientsHelped}+ clients
@@ -247,27 +249,29 @@ function CounselorCard({ counselor }) {
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <p className="text-sm text-muted-foreground mb-4 text-white">
                     {counselor.bio}
                   </p>
                 </motion.div>
               )}
             </AnimatePresence>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <motion.div  whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 variant="outline"
-                className="w-full"
+                className="w-full  border border-secondary"
                 onClick={() => setIsExpanded(!isExpanded)}
               >
                 {isExpanded ? (
                   <>
-                    <ChevronUp className="w-4 h-4 mr-2" />
-                    Show Less
+                    <ChevronUp className="w-4 h-4 mr-2 " />
+                   <span className="text-secondary hover:text-white hover:scale-105 text-lg duration-150">Show Less</span> 
                   </>
                 ) : (
                   <>
-                    <ChevronDown className="w-4 h-4 mr-2" />
-                    Read More
+                    <ChevronDown className="w-4 h-4 mr-2 " />
+                   <span className="text-secondary hover:text-white hover:scale-105 text-lg duration-300"> Read More</span> 
+
+                   
                   </>
                 )}
               </Button>
@@ -282,15 +286,15 @@ function CounselorCard({ counselor }) {
 function WavyLine({ color = "currentColor" }) {
   return (
     <svg
-      className="w-full h-24 -mt-1"
+      className="w-full h-20 -mt-1"
       viewBox="0 0 1440 100"
       preserveAspectRatio="none"
     >
       <defs>
         <linearGradient id="wave-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="rgba(96, 165, 250, 0.7)" />
-          <stop offset="50%" stopColor="rgba(59, 130, 246, 0.7)" />
-          <stop offset="100%" stopColor="rgba(37, 99, 235, 0.7)" />
+          <stop offset="0%" stopColor="#FACC15" />
+          <stop offset="50%" stopColor="#FACC15" />
+          <stop offset="100%" stopColor="#FACC15" />
         </linearGradient>
       </defs>
       <motion.path
@@ -360,7 +364,7 @@ function FloatingShapes() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <motion.div
-        className="absolute top-1/4 left-1/4 w-16 h-16 bg-primary/20 rounded-full"
+        className="absolute top-32 left-52 w-16 h-16 bg-secondary rounded-full"
         animate={{
           y: [0, -20, 0],
           x: [0, 10, 0],
@@ -369,16 +373,16 @@ function FloatingShapes() {
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute top-3/4 right-1/4 w-24 h-24 bg-secondary/20 rounded-lg"
+        className="absolute top-80 right-16 w-24 h-24 bg-secondary rounded-lg"
         animate={{
-          y: [0, 30, 0],
-          x: [0, -15, 0],
+          y: [0, 50, 0],
+          x: [0, 0, 0],
           rotate: [0, -180, -360],
         }}
         transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute bottom-1/4 left-1/3 w-20 h-20 border-4 border-primary/30 rounded-full"
+        className="absolute bottom-32 left-96 w-20 h-20 border-4 border-secondary  rounded-full"
         animate={{
           scale: [1, 1.1, 1],
           rotate: [0, 90, 0],
@@ -390,6 +394,7 @@ function FloatingShapes() {
 }
 
 export function HomePage() {
+  // const { isLoggedIn, LogoutUser} = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [theme, setTheme] = useState("light"); // Default theme state
 
@@ -400,116 +405,8 @@ export function HomePage() {
   return (
     <>
       <div
-        className={`flex flex-col min-h-screen overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 ${theme}`}
-      >
-        <header className="bg-gradient-to-r from-primary to-primary-dark text-white py-2 px-4 relative">
-          <FloatingShapes />
-          <div className="container mx-auto flex justify-between items-center relative z-10">
-            <div className="flex items-center space-x-4">
-              <a
-                href="https://facebook.com"
-                className="hover:text-secondary transition-colors"
-                title="Follow us on Facebook"
-              >
-                <Facebook size={18} />
-              </a>
-              <a
-                href="https://twitter.com"
-                className="hover:text-secondary transition-colors"
-                title="Follow us on Twitter"
-              >
-                <Twitter size={18} />
-              </a>
-              <a
-                href="https://instagram.com"
-                className="hover:text-secondary transition-colors"
-                title="Follow us on Instagram"
-              >
-                <Instagram size={18} />
-              </a>
-              <a
-                href="https://linkedin.com"
-                className="hover:text-secondary transition-colors"
-                title="Connect with us on LinkedIn"
-              >
-                <Linkedin size={18} />
-              </a>
-            </div>
-            <div className="flex items-center space-x-4">
-              <a
-                href="mailto:info@studentcounseling.com"
-                className="flex items-center hover:text-secondary transition-colors"
-              >
-                <Mail size={18} className="mr-2" />
-                info@studentcounseling.com
-              </a>
-              <a
-                href="tel:+1234567890"
-                className="flex items-center hover:text-secondary transition-colors"
-              >
-                <Phone size={18} className="mr-2" />
-                +1 (234) 567-890
-              </a>
-            </div>
-          </div>
-        </header>
-        <nav className="bg-white dark:bg-gray-800 shadow-md py-4 px-4 sticky top-0 z-10 transition-colors duration-300">
-          <div className="container mx-auto flex justify-between items-center">
-            <Link
-              to="/"
-              className="text-2xl font-bold text-primary dark:text-white"
-            >
-              StudentCounsel
-            </Link>
-            <div className="hidden md:flex space-x-6">
-              <Link
-                to="/"
-                className="hover:text-primary dark:hover:text-primary-light transition-colors"
-              >
-                Home
-              </Link>
-              <Link
-                to="/services"
-                className="hover:text-primary dark:hover:text-primary-light transition-colors"
-              >
-                Services
-              </Link>
-              <Link
-                to="/about"
-                className="hover:text-primary dark:hover:text-primary-light transition-colors"
-              >
-                About Us
-              </Link>
-              <Link
-                to="/counselors"
-                className="hover:text-primary dark:hover:text-primary-light transition-colors"
-              >
-                Counselors
-              </Link>
-              <Link
-                to="/contact"
-                className="hover:text-primary dark:hover:text-primary-light transition-colors"
-              >
-                Contact
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={toggleTheme}
-                className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 transition-colors duration-300"
-                aria-label="Toggle dark mode"
-              >
-                {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
-              </button>
-              <button
-                className="md:hidden"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
-            </div>
-          </div>
-        </nav>
+      className={`flex flex-col w-full min-h-screen overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 ${theme}`}
+      > 
         {isMenuOpen && (
           <div className="md:hidden bg-white dark:bg-gray-800 shadow-md py-4 px-4">
             <div className="flex flex-col space-y-4">
@@ -543,32 +440,33 @@ export function HomePage() {
               >
                 Contact
               </Link>
+             
             </div>
           </div>
         )}
         <main className="flex-grow">
           <section className="bg-gradient-to-b from-primary to-primary-light dark:from-primary-dark dark:to-primary text-white py-20 relative overflow-hidden transition-colors duration-300">
             <FloatingShapes />
-            <div className="container mx-auto px-4 relative z-10">
+            <div className="container mx-auto pt-32 px-4 relative z-10">
               <div className="flex flex-col md:flex-row items-center">
-                <div className="md:w-1/2 mb-10 md:mb-0">
-                  <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                    Your Path to Success Starts Here
+                <div className="md:w-1/2 mb-10 pb-32 md:mb-0">
+                  <h1 className="text-3xl md:text-4xl font-bold mb-6">
+                    Your Path to <span className="text-5xl font-bold text-secondary">Success</span> Starts Here.
                   </h1>
                   <p className="text-xl mb-8">
                     Get personalized education and career counseling to unlock
                     your full potential.
                   </p>
                   <div>
-                    <button className="inline-block mr-4 bg-white text-primary hover:bg-secondary hover:text-white transition-colors duration-300">
+                    <button className=" hover:scale-110 py-4 px-6 text-2xl font-bold rounded-md inline-block mr-4 text-primary bg-secondary hover:bg-secondary hover:text-white transition-colors duration-300">
                       Get Started
                     </button>
-                    <button className="inline-block text-white border-white hover:bg-white hover:text-primary transition-colors duration-300">
+                    <button className="hover:scale-110 py-4 px-6 text-2xl font-bold rounded-md inline-block  bg-primary hover:text-secondary transition-colors duration-300">
                       Learn More
                     </button>
                   </div>
                 </div>
-                <div className="md:w-1/2 flex justify-center">
+                <div className="md:w-1/2 -mt-44 flex justify-center">
                   <EnhancedDottedGlobe />
                 </div>
               </div>
@@ -602,7 +500,7 @@ export function HomePage() {
                 Book a session with one of our expert counselors and start your
                 journey to success.
               </p>
-              <button className="bg-white text-primary hover:bg-secondary hover:text-white transition-colors duration-300">
+              <button className=" hover:scale-110 py-4 px-6 text-2xl font-bold rounded-md inline-block mr-4 text-primary bg-secondary hover:bg-secondary hover:text-white transition-colors duration-300">
                 Book a Session
               </button>
             </div>
