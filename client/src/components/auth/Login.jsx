@@ -18,7 +18,11 @@ export const LoginPage = () => {
           state: { ...location.state },
         }); // Redirect to the intended session
       } else {
-        navigate("/counselorList"); // Default redirect after successful login
+        if(loginSuccess.data.role === "student" && loginSuccess.data.friends.length <= 0){
+          return  navigate("/counselorList"); // Default redirect after successful login
+        }else{
+          navigate("/user-dashboard");
+        }
       }
     } else {
       console.log("Login failed. Staying on login page or showing error.");

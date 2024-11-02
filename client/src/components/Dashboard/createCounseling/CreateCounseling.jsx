@@ -1,20 +1,34 @@
 import { useState } from "react";
 import { useAuth } from "../../../store/auth";
+import { toast } from "react-toastify";
+import { createCounselingSchemaZod } from "../../../zod-validation/createCounselingZod";
+
 export const CreateSession = () => {
-  const [data, setData] = useState({ category: "", duration: 30, price: ""});
+  const [data, setData] = useState({ category: "", duration: "", price: "" });
+  const [errors, setErrors] = useState({});
   const { postCreateCounseling } = useAuth();
   const handleChange = (e) => {
-    setData({
-      ...data,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setData((prevData) => ({
+      ...prevData,
+      [name]:
+        name === "duration" || name === "price"
+          ? value === " "
+            ? null
+            : Number(value) // Set to null if empty, otherwise convert to number
+          : value,
+    }));
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (data.duration === "" || data.category === "" || data.price === "") {
-      console.log("select the options");
+    const result = createCounselingSchemaZod.safeParse(data);
+    if (!result.success) {
+      const fieldErrors = result.error.format();
+      setErrors(fieldErrors);
+      toast.error("Please fix the errors in the form.");
       return;
     }
     // Add your submission logic here
@@ -46,6 +60,9 @@ export const CreateSession = () => {
               Scholarship Counseling
             </option>
           </select>
+          {errors.category && (
+            <p className="text-red-500 text-sm">{errors.category._errors[0]}</p>
+          )}
         </div>
 
         {/* Duration Selector */}
@@ -60,9 +77,11 @@ export const CreateSession = () => {
             className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           >
             <option value="">Select Duration</option>
-            <option value="30">30 minutes</option>
             <option value="45">45 minutes</option>
           </select>
+          {errors.duration && (
+            <p className="text-red-500 text-sm">{errors.duration._errors[0]}</p>
+          )}
         </div>
 
         {/* Price Input */}
@@ -71,13 +90,16 @@ export const CreateSession = () => {
             Price
           </label>
           <input
-            type="text"
             name="price"
+            type="number"
             value={data.price}
             onChange={handleChange}
             className="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             placeholder="Enter price in Rs"
           />
+          {errors.price && (
+            <p className="text-red-500 text-sm">{errors.price._errors[0]}</p>
+          )}
         </div>
 
         {/* Submit Button */}
