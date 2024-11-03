@@ -15,6 +15,12 @@ const UserSchema = new mongoose.Schema(
         type: String,
       },
     },
+    Token:{
+      type:String,
+    },
+    TokenExpires:{
+      type:Date,
+    },
     role: { type: String, required: true },
     profile: { type: String },
     counseling: {

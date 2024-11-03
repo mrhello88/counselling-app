@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../../store/auth";
+import { Link } from "react-router-dom";
 import { counselorPersonalInfoSchema } from "../../../zod-validation/counselorZod.js";
 import { counselorEducationSchema } from "../../../zod-validation/counselorZod.js";
 import { counselorPaymentSchema } from "../../../zod-validation/counselorZod.js";
@@ -61,73 +62,83 @@ export const CounselorRegister = () => {
     switch (step) {
       case 1:
         return (
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Personal Information</h2>
-            <input
-              type="text"
-              name="name"
-              placeholder="Name"
-              value={Data.personalInfo.name}
-              onChange={(e) =>
-                handleInputChange("personalInfo", "name", e.target.value)
-              }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {errors?.personalInfo?.name && (
-              <p className="text-red-500">
-                {errors.personalInfo.name._errors.join(", ")}
-              </p>
-            )}
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={Data.personalInfo.email}
-              onChange={(e) =>
-                handleInputChange("personalInfo", "email", e.target.value)
-              }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {errors?.personalInfo?.email && (
-              <p className="text-red-500">
-                {errors.personalInfo.email._errors.join(", ")}
-              </p>
-            )}
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={Data.personalInfo.password}
-              onChange={(e) =>
-                handleInputChange("personalInfo", "password", e.target.value)
-              }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {errors?.personalInfo?.password && (
-              <p className="text-red-500">
-                {errors.personalInfo.password._errors.join(", ")}
-              </p>
-            )}
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={Data.personalInfo.confirmPassword}
-              onChange={(e) =>
-                handleInputChange(
-                  "personalInfo",
-                  "confirmPassword",
-                  e.target.value
-                )
-              }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {errors?.personalInfo?.confirmPassword && (
-              <p className="text-red-500">
-                {errors.personalInfo.confirmPassword._errors.join(", ")}
-              </p>
-            )}
-          </div>
+          <>
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold">Personal Information</h2>
+              <input
+                type="text"
+                name="name"
+                placeholder="Name"
+                value={Data.personalInfo.name}
+                onChange={(e) =>
+                  handleInputChange("personalInfo", "name", e.target.value)
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              {errors?.personalInfo?.name && (
+                <p className="text-red-500">
+                  {errors.personalInfo.name._errors.join(", ")}
+                </p>
+              )}
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={Data.personalInfo.email}
+                onChange={(e) =>
+                  handleInputChange("personalInfo", "email", e.target.value)
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              {errors?.personalInfo?.email && (
+                <p className="text-red-500">
+                  {errors.personalInfo.email._errors.join(", ")}
+                </p>
+              )}
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={Data.personalInfo.password}
+                onChange={(e) =>
+                  handleInputChange("personalInfo", "password", e.target.value)
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              {errors?.personalInfo?.password && (
+                <p className="text-red-500">
+                  {errors.personalInfo.password._errors.join(", ")}
+                </p>
+              )}
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                value={Data.personalInfo.confirmPassword}
+                onChange={(e) =>
+                  handleInputChange(
+                    "personalInfo",
+                    "confirmPassword",
+                    e.target.value
+                  )
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              {errors?.personalInfo?.confirmPassword && (
+                <p className="text-red-500">
+                  {errors.personalInfo.confirmPassword._errors.join(", ")}
+                </p>
+              )}
+            </div>
+            <div className="mt-4 flex justify-between">
+              <Link
+                to="/login/counselor"
+                className="text-blue-500 text-sm hover:underline"
+              >
+                Login
+              </Link>
+            </div>
+          </>
         );
       case 2:
         return (
@@ -234,7 +245,7 @@ export const CounselorRegister = () => {
               <p className="text-red-500">
                 {errors.education.description._errors[0]}
               </p>
-            )} 
+            )}
             <input
               type="file"
               accept="application/pdf"

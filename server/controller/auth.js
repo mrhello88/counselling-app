@@ -6,19 +6,33 @@ const crypto = require("crypto");
 const cryptoSchema = require("../model/CryptoToken");
 const sendMail = require("../utils/nodeMailer");
 exports.postLogin = async (req, res) => {
-  const { email } = req.body; // Destructure the email from req.body
   try {
+    const { email, role, password } = req.body; // Destructure the email from req.body
     // Find the user by email
-    const user = await UserSchema.findOne({ "personalInfo.email": email });
+    const user = await UserSchema.findOne({
+      "personalInfo.email": email,
+      role,
+    });
 
     // If the user does not exist, return an error response
     if (!user) {
       return res
         .status(401)
-        .json({ message: "User does not exist", success: false });
+        .json({ message: `${role} does not exist`, success: false });
     }
+    // // Compare the provided password with the stored password hash
+    // const isMatch = await bcryptjs.compare(
+    //   password,
+    //   user.personalInfo.password
+    // );
 
-    const { personalInfo, role } = user;
+    // // If the password does not match, return an error response
+    // if (!isMatch) {
+    //   return res
+    //     .status(401)
+    //     .json({ message: "Invalid credentials", success: false });
+    // }
+    const { personalInfo } = user;
 
     // Create JWT token
     const token = jwt.sign(
@@ -31,7 +45,7 @@ exports.postLogin = async (req, res) => {
       },
       process.env.JWT_SECRET_KEY, // Replace with your secret key
       {
-        expiresIn: 259200, // Token expiry time in seconds (3 days) 
+        expiresIn: 259200, // Token expiry time in seconds (3 days)
       }
     );
 
@@ -39,10 +53,10 @@ exports.postLogin = async (req, res) => {
     // Set the token in the response cookie
 
     // Return success response to React
-    return res.status(200).json({ 
+    return res.status(200).json({
       message: "Login successfully",
       token, // Send the token back to React (optional)
-      data: user, 
+      data: user,
       success: true,
     });
   } catch (error) {
@@ -55,21 +69,21 @@ exports.postRegister = async (req, res, next) => {
     const { role, personalInfo } = req.body.registerUser;
     if (role === "counselor") {
       const { education, payment } = req.body.registerUser;
-      const filePath = req.files?.file?.[0]?.filename; 
+      const filePath = req.files?.file?.[0]?.filename;
 
       // Check if the user already exists
       const user = await UserSchema.findOne({
         "personalInfo.email": personalInfo.email,
-      }); 
+      });
 
       if (user) {
-        return res 
+        return res
           .status(409)
           .json({ message: "User already exist", success: false });
       }
 
       // Generate token and hash password
-      const token = crypto.randomBytes(32).toString("hex"); 
+      const token = crypto.randomBytes(32).toString("hex");
       const bcryptPassword = await bcryptjs.hash(personalInfo.password, 12);
       personalInfo.password = bcryptPassword;
       //removing 'confirmPassword' from personalInfo
@@ -118,7 +132,7 @@ exports.postRegister = async (req, res, next) => {
       await saveCryptotoken.save();
       if (saveCryptotoken) {
         // Send email with token
-        sendMail(personalInfo.email, token);
+        sendMail(personalInfo.email, token, "verify");
         return res
           .status(200)
           .json({ message: "Check your Email!", success: true });
@@ -152,15 +166,17 @@ exports.getUser = async (req, res, next) => {
         .status(404)
         .json({ message: "Counselor not found", success: false });
     }
-    return res.status(200).json({ data: counselorData, message:"user LoggedIn",success: true });
+    return res
+      .status(200)
+      .json({ data: counselorData, message: "user LoggedIn", success: true });
   } catch (error) {
     return res.status(500).json({ message: "Server error", success: false });
   }
 };
 
 exports.getVerify = async (req, res, next) => {
-  const cryptoToken = req.params.token;
   try {
+    const cryptoToken = req.params.token;
     // Find user by token in cryptoSchema
     const cryptoUser = await cryptoSchema.findOne({ token: cryptoToken });
     if (!cryptoUser) {
@@ -245,6 +261,60 @@ exports.getVerify = async (req, res, next) => {
         success: true,
       });
     }
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", success: false });
+  }
+};
+
+exports.postEmailResetPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const hash = crypto.randomBytes(32);
+    const token = hash.toString("hex");
+    const user = await UserSchema.findOne({
+      "personalInfo.email": email,
+    });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "Not Found the User", success: false });
+    }
+
+    user.Token = token;
+    user.TokenExpires = Date.now() + 60000;
+    await user.save();
+    sendMail(user.personalInfo.email, token, "reset");
+    return res
+      .status(200)
+      .json({ message: "Check your Email!", success: true });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", success: false });
+  }
+};
+
+exports.postResetPassword = async (req, res, next) => {
+  try {
+    const { token, password } = req.body;
+    const user = await UserSchema.findOne({
+      Token: token,
+      TokenExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(401).json({
+        message: "Token has expired. Please try again.",
+        success: false,
+      });
+    }
+    const bcryptPassword = await bcryptjs.hash(personalInfo.password, 12);
+    user.Token = undefined;
+    user.TokenExpires = undefined;
+    user.personalInfo.password = bcryptPassword;
+    await user.save();
+    return res
+      .status(200)
+      .json({ message: "Password Reset Successfully", success: true });
   } catch (error) {
     return res.status(500).json({ message: "Server error", success: false });
   }
