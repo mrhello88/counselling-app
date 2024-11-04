@@ -35,7 +35,7 @@ export const CounselorList = () => {
   return (
     <div className="flex">
       {/* Sidebar Filters */}
-      <aside className="w-1/4 p-4 bg-gray-100">
+      <aside className="w-1/4 p-4 bg-gray-400 ">
         <h2 className="text-xl font-semibold mb-4">Filters</h2>
         {/* Filter by Category */}
         <div className="mb-4">
@@ -84,7 +84,7 @@ export const CounselorList = () => {
       </aside>
 
       {/* Counselor Cards */}
-      <main className="w-3/4 p-4">
+      <main className="w-3/4 p-4 ">
         <h2 className="text-2xl font-semibold mb-6">Counselor's List</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {counselors.map((counselor) => (

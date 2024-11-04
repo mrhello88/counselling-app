@@ -13,14 +13,14 @@ const isValidDateComponents = (year, month, day) => {
   if (month < 1 || month > 12) return false; // Invalid month
   const daysInMonth = [
     31,
-    isLeapYear(year) ? 29 : 28,
-    31,
+    isLeapYear(year) ? 29 : 28, 
+    31,  
     30,
     31,
     30,
+    31, 
     31,
-    31,
-    30,
+    30, 
     31,
     30,
     31,

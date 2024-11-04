@@ -10,26 +10,20 @@ export const Navbar = () => {
     userAuthentication();
   }, [isLoggedIn]);
   return (
-    <nav className="bg-[#0f172a] p-4 ">
-      <div className="container mx-auto flex justify-between items-center  ">
+    <nav className="bg-primary p-4 ">
+      <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
-        <div className="flex justify-between items-center space-x-8">
-          <div className="text-white font-bold text-xl w-[30px] ">
-            <img
-              className="w- h-12"
-              src="../../../public/css/asset/colorfulbird.png"
-              alt="logo"
-            />
+        <div className="flex justify-between items-center space-x-52 ">
+          <div className="text-secondary font-bold text-xl  pl-5  duration-300 hover:scale-125">
+            <h2 className="text-2xl cursor-pointer">StudentCounselor</h2>
           </div>
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-4 text-lg ">
-            <NavLink
+          <div className="hidden md:flex space-x-8 text-lg font-bold w-full h-12 items-center">
+          <NavLink
               to="/"
               className={({ isActive }) =>
-                ` ${
-                  isActive
-                    ? "hover:text-[#38bdf8] text-white"
-                    : " text-[#38bdf8]"
+                ` ${isActive ? "text-white hover:text-secondary scale-115" : "hover:scale-125 text-secondary"
+                  // "text-secondary hover:text-white scale-115" : "hover:scale-125 text-secondary"
                 }`
               }
             >
@@ -43,10 +37,8 @@ export const Navbar = () => {
                     <NavLink
                       to="/user-dashboard"
                       className={({ isActive }) =>
-                        ` ${
-                          isActive
-                            ? "hover:text-[#38bdf8] text-white"
-                            : " text-[#38bdf8]"
+                        ` ${isActive ? "text-white hover:text-secondary scale-115" : "hover:scale-125 text-secondary"
+                          // "text-secondary hover:text-white scale-115" : "hover:scale-125 text-secondary "
                         }`
                       }
                     >
@@ -59,10 +51,8 @@ export const Navbar = () => {
                     <NavLink
                       to="/user-dashboard"
                       className={({ isActive }) =>
-                        ` ${
-                          isActive
-                            ? "hover:text-[#38bdf8] text-white"
-                            : " text-[#38bdf8]"
+                        ` ${isActive ? "text-white hover:text-secondary scale-115" : "hover:scale-125  text-secondary"
+                          // "text-secondary hover:text-white scale-115" : "hover:scale-125 text-secondary"
                         }`
                       }
                     >
@@ -76,14 +66,29 @@ export const Navbar = () => {
             <NavLink
               to="/counselorList"
               className={({ isActive }) =>
-                ` ${
-                  isActive
-                    ? "hover:text-[#38bdf8] text-white"
-                    : " text-[#38bdf8]"
+                ` ${isActive ? "text-white hover:text-secondary scale-115" : "hover:scale-125 text-secondary"
                 }`
               }
             >
               Counselors
+            </NavLink>
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                ` ${isActive ? "text-white hover:text-secondary scale-115" : "hover:scale-125 text-secondary"
+                }`
+              }
+            >
+            Service
+            </NavLink>
+            <NavLink
+              to=""
+              className={({ isActive }) =>
+                ` ${isActive ? "text-white hover:text-secondary scale-115" : "hover:scale-125 text-secondary"
+                }`
+              }
+            >
+            About Us
             </NavLink>
           </div>
         </div>
@@ -97,7 +102,7 @@ export const Navbar = () => {
                 onClick={() => {
                   LogoutUser();
                 }}
-                className="hidden md:block bg-[#38bdf8] mx-12 text-white px-4 py-2 rounded hover:bg-[#0ea5e9]"
+                className="hidden md:block  mx-12  px-4 py-2 rounded text-primary bg-secondary hover:text-white font-bold text-xl duration-300 hover:scale-110"
               >
                 Log Out
               </NavLink>
@@ -106,16 +111,16 @@ export const Navbar = () => {
             <>
               <NavLink
                 to={"/login"}
-                className="hidden md:block bg-[#38bdf8] mx-12 text-white px-4 py-2 rounded hover:bg-[#0ea5e9]"
+                className="hidden md:block mx-12 px-4 py-2 rounded  text-primary bg-secondary hover:text-white font-bold text-xl duration-300 hover:scale-110"
               >
                 Log In
               </NavLink>
 
               <NavLink
                 to="/register"
-                className="hidden md:block bg-[#38bdf8] text-white px-4 py-2 rounded hover:bg-[#0ea5e9]"
+                className="hidden md:block px-4 py-2 rounded  text-primary bg-secondary hover:text-white font-bold text-xl duration-300 hover:scale-110"
               >
-                Register
+                Book a session
               </NavLink>
             </>
           )}
@@ -133,32 +138,32 @@ export const Navbar = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden mt-2">
-          <a href="/" className="block text-white py-2 px-4 hover:bg-[#1e293b]">
+          <a href="/" className="block py-2 px-4 hover:bg-secondary text-primary">
             Home
           </a>
           <a
             href="/user-dashboard"
-            className="block text-white py-2 px-4 hover:bg-[#1e293b]"
+            className="block py-2 px-4 hover:bg-secondary text-primary"
           >
             User
           </a>
           <a
             href="/about"
-            className="block text-white py-2 px-4 hover:bg-[#1e293b]"
+            className="block py-2 px-4 hover:bg-secondary text-primary"
           >
             About
           </a>
-          <a href="#" className="block text-white py-2 px-4 hover:bg-[#1e293b]">
+          <a href="#" className="block py-2 px-4 hover:bg-secondary text-primary">
             Register
           </a>
           <a
             href="/register"
-            className="block text-white py-2 px-4 hover:bg-[#1e293b]"
+            className="block py-2 px-4 hover:bg-secondary text-primary"
           >
             Contact
           </a>
           <button className="w-full text-left bg-[#38bdf8] text-white py-2 px-4 mt-2 hover:bg-[#0ea5e9]">
-            Get Started
+           Book a Session
           </button>
         </div>
       )}
