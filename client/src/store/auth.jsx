@@ -155,14 +155,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const postResetPassword = async (token, password) => {
+  const postResetPassword = async (token, password, userId) => {
     try {
       const response = await fetch(`http://localhost:3000/password-reset`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ token, password }),
+        body: JSON.stringify({ token, password, userId }),
       });
       const res_data = await response.json();
       if (res_data.success) {

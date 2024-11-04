@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendMail = (email, token="", purpose="") => {
+const sendMail = (email, token = "", purpose = "", userId="") => {
   transporter.sendMail({
     from: process.env.EMAIL, // Correct 'from' email
     to: email,
@@ -62,9 +62,9 @@ const sendMail = (email, token="", purpose="") => {
                       <a
                         href="http://localhost:5173/${
                           purpose === "verify"
-                            ? "register/verify"
-                            : "password-reset"
-                        }/${token}"
+                            ? `register/verify/${token}`
+                            : `password-reset/${token}/${userId}`
+                        }"
                         style="display: inline-block; padding: 10px 20px; background-color: #5cb85c; color: #ffffff; text-decoration: none; border-radius: 5px; font-size: 16px;"
                       >
                         ${

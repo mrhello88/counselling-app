@@ -282,9 +282,9 @@ exports.postEmailResetPassword = async (req, res, next) => {
     }
 
     user.Token = token;
-    user.TokenExpires = Date.now() + 60000;
+    user.TokenExpires = Date.now() + 300000;
     await user.save();
-    sendMail(user.personalInfo.email, token, "reset");
+    sendMail(user.personalInfo.email, token, "reset", user._id.toString());
     return res
       .status(200)
       .json({ message: "Check your Email!", success: true });
@@ -295,11 +295,18 @@ exports.postEmailResetPassword = async (req, res, next) => {
 
 exports.postResetPassword = async (req, res, next) => {
   try {
-    const { token, password } = req.body;
-    const user = await UserSchema.findOne({
-      Token: token,
-      TokenExpires: { $gt: Date.now() },
-    });
+    const { token, password, userId } = req.body;
+    const user = await UserSchema.findOneAndUpdate(
+      { _id: userId, Token: token, TokenExpires: { $gt: Date.now() } },
+      {
+        $set: {
+          "personalInfo.password": await bcryptjs.hash(password, 12),
+          Token: undefined,
+          TokenExpires: undefined,
+        },
+      },
+      { new: true }
+    );
 
     if (!user) {
       return res.status(401).json({
@@ -307,11 +314,7 @@ exports.postResetPassword = async (req, res, next) => {
         success: false,
       });
     }
-    const bcryptPassword = await bcryptjs.hash(password, 12);
-    user.Token = undefined;
-    user.TokenExpires = undefined;
-    user.personalInfo.password = bcryptPassword;
-    await user.save();
+
     return res
       .status(200)
       .json({ message: "Password Reset Successfully", success: true });
