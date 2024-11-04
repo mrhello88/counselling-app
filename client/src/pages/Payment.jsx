@@ -31,7 +31,7 @@ export const Payment = () => {
     }
     if (location.state.scheduleSessionData) {
       const { scheduleSessionData } = location.state;
-      const response = await postCounselorAdvice(scheduleSessionData);
+      const response = await postCounselingSession(scheduleSessionData);
       if (response.success) {
         navigate("/user-dashboard");
       }

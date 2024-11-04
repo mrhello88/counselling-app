@@ -24,14 +24,14 @@ export const AuthProvider = ({ children }) => {
     return localStorage.removeItem("token");
   };
 
-  const userLogin = async (email) => {
+  const userLogin = async (email, role, password) => {
     try {
       const response = await fetch("http://localhost:3000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email }), // Send email to backend
+        body: JSON.stringify({ email, role, password }), // Send email to backend
       });
       const res_data = await response.json();
       if (res_data.success) {
@@ -128,6 +128,60 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const postEmailResetPassword = async (email) => {
+    try {
+      const response = await fetch(`http://localhost:3000/email-reset`, {
+        method: "POSt",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+      const res_data = await response.json();
+      if (res_data.success) {
+        toast.success(res_data.message);
+        return res_data;
+      } else {
+        console.log(res_data.message);
+        // If the backend response indicates failure, show the error message
+        toast.error(res_data.message || "User Not Found");
+        return res_data;
+      }
+    } catch (error) {
+      console.log("Error when reset password email verification", error);
+      toast.error(
+        "An unexpected error occurred while reset password email verification."
+      );
+    }
+  };
+
+  const postResetPassword = async (token, password) => {
+    try {
+      const response = await fetch(`http://localhost:3000/password-reset`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token, password }),
+      });
+      const res_data = await response.json();
+      if (res_data.success) {
+        toast.success(res_data.message);
+        return res_data;
+      } else {
+        console.log(res_data.message);
+        // If the backend response indicates failure, show the error message
+        toast.error(res_data.message || "Try again to reset Password");
+        return res_data;
+      }
+    } catch (error) {
+      console.log("Error when user reset forget password", error);
+      toast.error(
+        "An unexpected error occurred while user reset forget password."
+      );
+    }
+  };
+
   const getCounselors = async () => {
     try {
       const response = await fetch(`http://localhost:3000/counselors`, {
@@ -162,15 +216,14 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ counselorId: scheduleSessionData.counselorId }),
       });
       const res_data = await response.json();
-
       if (res_data.success) {
-        await postCounselingSession(scheduleSessionData);
-        return res_data;
-        // Add logic to update the UI (sidebar) nbcd bgnh
-      } else {
+        userAuthentication();
+        console.log("Counseling session scheduled successfully!");
+        toast.success(res_data.message || "Advice bought successfully");
+      } else if (res_data.success === false) {
         console.log(res_data.message);
         // If the backend response indicates failure, show the error message
-        toast.error(res_data.message || "Advice not bought successfully");
+        toast.error(res_data.message);
       }
     } catch (error) {
       console.error("Error fetching advice list");
@@ -381,7 +434,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const postCounselingSession = async (formData) => {
+  const postCounselingSession = async (scheduleSessionData) => {
     try {
       const response = await fetch(
         "http://localhost:3000/counseling-schedule",
@@ -391,18 +444,19 @@ export const AuthProvider = ({ children }) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${user.token}`,
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(scheduleSessionData),
         }
       );
       const res_data = await response.json();
+
       if (res_data.success) {
-        userAuthentication();
-        console.log("Counseling session scheduled successfully!");
-        toast.success(res_data.message || "Advice bought successfully");
-      } else if (res_data.success === false) {
+        await postCounselorAdvice(scheduleSessionData);
+        return res_data;
+        // Add logic to update the UI (sidebar) nbcd bgnh
+      } else {
         console.log(res_data.message);
         // If the backend response indicates failure, show the error message
-        toast.error(res_data.message);
+        toast.error(res_data.message || "Advice not bought successfully");
       }
     } catch (error) {
       console.error("Error post counsling schedule");
@@ -448,6 +502,8 @@ export const AuthProvider = ({ children }) => {
         postUserMessage,
         storeTokenInLS,
         postCounselorAdvice,
+        postEmailResetPassword,
+        postResetPassword,
         fetchProfileData,
         getCounselors,
         getUserMessages,

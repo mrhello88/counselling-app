@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAuth } from "../../../store/auth";
+import { toast } from "react-toastify";
 
 export const VerifyUser = () => {
   const { token } = useParams(); // Extract the token from the URL
@@ -16,6 +17,7 @@ export const VerifyUser = () => {
         if (data.role === "student") {
           navigate("/counselorList");
         } else {
+          toast.info("Create Counseling to Show Profile");
           navigate("/user-dashboard");
         }
       } catch (error) {
@@ -25,7 +27,6 @@ export const VerifyUser = () => {
 
     authenticateUser(); // Call the async function to execute the user verification
   }, [VerifyUser, isLoggedIn]);
-
 
   return <div>Verifying User...</div>;
 };

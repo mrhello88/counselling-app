@@ -4,7 +4,10 @@ const UserSchema = require("../model/User");
 exports.getCounselor = async (req, res) => {
   try {
     // Find the user by ID and populate both the counselor and counseling references
-    const counselor = await UserSchema.find({ role: "counselor" })
+    const counselor = await UserSchema.find({
+      role: "counselor",
+      counseling: { $exists: true, $ne: null }, // Check if the counseling field exists and is not null
+    })
       .populate("counselor") // Populate the counselor field
       .populate("counseling"); // Populate the counseling field
 

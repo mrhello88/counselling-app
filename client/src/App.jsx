@@ -21,6 +21,9 @@ import { CounselorProfile } from "./components/CounselorProfile/CounselorProfile
 import { CounselorList } from "./components/FilterCounselors/CounselorList";
 import { HomePage } from "./pages/HomePage";
 import { useAuth } from "./store/auth";
+import { Login } from "./pages/Login";
+import { VerifyEmailReset } from "./components/auth/ForgetPassword/VerifyEmailReset";
+import { ResetForgetPassword } from "./components/auth/ForgetPassword/ResetForgetPassword";
 // import { CounsellorDashboard } from "./pages/C-Dashboard";
 
 export const App = () => {
@@ -74,11 +77,21 @@ export const App = () => {
           </>
         ) : (
           <>
-            <Route path="/login" element={<LoginPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/login/student"
+              element={<LoginPage role={"student"} />}
+            />
+            <Route
+              path="/login/counselor"
+              element={<LoginPage role={"counselor"} />}
+            />
             <Route path="/register" element={<Register />} />
             <Route path="/register/student" element={<StudentRegister />} />
             <Route path="/register/counselor" element={<CounselorRegister />} />
             <Route path="/register/verify/:token" element={<VerifyUser />} />
+            <Route path={"/email-reset"} element={<VerifyEmailReset />} />
+            <Route path={"/password-reset/:token"} element={<ResetForgetPassword />} />
           </>
         )}
         <Route

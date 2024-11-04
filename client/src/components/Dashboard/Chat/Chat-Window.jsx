@@ -10,7 +10,7 @@ dayjs.extend(utc);
 dayjs.extend(duration);
 
 export const ChatWindow = () => {
-  const { selectedChat } = useOutletContext();
+  const { selectedChat } = useOutletContext(); 
   const { chatUser, userId } = selectedChat;
 
   const [messages, setMessages] = useState([]);
@@ -18,7 +18,6 @@ export const ChatWindow = () => {
   const [status, setStatus] = useState("loading"); // loading, before, during, end
   const [remainingTime, setRemainingTime] = useState(null);
   const { getUserMessages, getCounselingSession, isLoggedIn } = useAuth();
-  console.log(messages, "this is messages");
   useEffect(() => {
     if (chatUser?._id) {
       const fetchData = async () => {
