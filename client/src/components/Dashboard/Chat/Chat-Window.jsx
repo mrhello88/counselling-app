@@ -110,7 +110,7 @@ export const ChatWindow = () => {
                   <li
                     key={obj._id}
                     className={`mb-2 p-2 max-w-xs rounded-lg ${
-                      obj.senderId === userId.toString()
+                      obj.senderId === userId
                         ? "bg-blue-500 text-white self-end ml-auto"
                         : "bg-gray-200 text-gray-800 self-start"
                     }`}

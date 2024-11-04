@@ -1,3 +1,4 @@
+import {useState} from "react"
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../store/auth";
@@ -5,14 +6,14 @@ export const ResetForgetPassword = () => {
   const [password, setPassword] = useState("");
   const { token } = useParams(); // Extract the token from the URL
   const navigate = useNavigate();
-  const { getResetPassword } = useAuth();
+  const { postResetPassword } = useAuth();
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password === "") {
       toast.error("fill the inputs");
       return;
     }
-    getResetPassword(token, password);
+    postResetPassword(token, password);
     setPassword("");
     navigate("/email-reset");
   };

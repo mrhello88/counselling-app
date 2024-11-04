@@ -20,18 +20,18 @@ exports.postLogin = async (req, res) => {
         .status(401)
         .json({ message: `${role} does not exist`, success: false });
     }
-    // // Compare the provided password with the stored password hash
-    // const isMatch = await bcryptjs.compare(
-    //   password,
-    //   user.personalInfo.password
-    // );
+    // Compare the provided password with the stored password hash
+    const isMatch = await bcryptjs.compare(
+      password,
+      user.personalInfo.password
+    );
 
-    // // If the password does not match, return an error response
-    // if (!isMatch) {
-    //   return res
-    //     .status(401)
-    //     .json({ message: "Invalid credentials", success: false });
-    // }
+    // If the password does not match, return an error response
+    if (!isMatch) {
+      return res
+        .status(401)
+        .json({ message: "Invalid credentials", success: false });
+    }
     const { personalInfo } = user;
 
     // Create JWT token
@@ -100,7 +100,7 @@ exports.postRegister = async (req, res, next) => {
       await saveCryptotoken.save();
       if (saveCryptotoken) {
         // Send email with token
-        sendMail(personalInfo.email, token);
+        sendMail(personalInfo.email, token, "verify");
         return res
           .status(200)
           .json({ message: "Check your Email!", success: true });
@@ -307,7 +307,7 @@ exports.postResetPassword = async (req, res, next) => {
         success: false,
       });
     }
-    const bcryptPassword = await bcryptjs.hash(personalInfo.password, 12);
+    const bcryptPassword = await bcryptjs.hash(password, 12);
     user.Token = undefined;
     user.TokenExpires = undefined;
     user.personalInfo.password = bcryptPassword;
