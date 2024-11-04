@@ -10,7 +10,7 @@ dayjs.extend(utc);
 dayjs.extend(duration);
 
 export const ChatWindow = () => {
-  const { selectedChat } = useOutletContext(); 
+  const { selectedChat } = useOutletContext();
   const { chatUser, userId } = selectedChat;
 
   const [messages, setMessages] = useState([]);
@@ -51,13 +51,13 @@ export const ChatWindow = () => {
         // During Session Countdown
       } else if (now.isAfter(sessionStart) && now.isBefore(sessionEnd)) {
         setStatus("during");
-        const elapsed = dayjs.duration(now.diff(sessionStart)); // Calculate elapsed time
+        const remaining = dayjs.duration(now.diff(sessionStart)); // Calculate remaining time
 
         setRemainingTime({
-          days: elapsed.days(),
-          hours: elapsed.hours(),
-          minutes: elapsed.minutes(),
-          seconds: elapsed.seconds(),
+          days: remaining.days(),
+          hours: remaining.hours(),
+          minutes: remaining.minutes(),
+          seconds: remaining.seconds(),
         });
 
         // Post-Session
@@ -93,7 +93,7 @@ export const ChatWindow = () => {
                   </div>
                 ) : status === "during" && remainingTime ? (
                   <div style={{ fontSize: "25px" }}>
-                    <span>Remaining Time: </span>
+                    <span>Remaining Duration: </span>
                     <span>{remainingTime.days}</span>:
                     <span>{remainingTime.hours}</span>:
                     <span>{remainingTime.minutes}</span>:
@@ -110,7 +110,7 @@ export const ChatWindow = () => {
                   <li
                     key={obj._id}
                     className={`mb-2 p-2 max-w-xs rounded-lg ${
-                      obj.senderId === userId.toString()
+                      obj.senderId === userId
                         ? "bg-blue-500 text-white self-end ml-auto"
                         : "bg-gray-200 text-gray-800 self-start"
                     }`}

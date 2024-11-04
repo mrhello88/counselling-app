@@ -364,6 +364,7 @@ export const CounselorRegister = () => {
         personalInfo: Data.personalInfo,
         education: Data.education,
         payment: Data.payment,
+        role:"counselor"
       };
       const formData = new FormData();
       // Append nested objects individually as JSON strings

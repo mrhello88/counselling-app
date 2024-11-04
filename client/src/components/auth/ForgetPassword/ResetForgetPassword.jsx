@@ -1,26 +1,27 @@
+import {useState} from "react"
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../store/auth";
 export const ResetForgetPassword = () => {
   const [password, setPassword] = useState("");
-  const { token } = useParams(); // Extract the token from the URL
+  const { token, userId } = useParams(); // Extract the token from the URL
   const navigate = useNavigate();
-  const { getResetPassword } = useAuth();
+  const { postResetPassword } = useAuth();
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password === "") {
       toast.error("fill the inputs");
       return;
     }
-    getResetPassword(token, password);
+    postResetPassword(token, password, userId);
     setPassword("");
-    navigate("/email-reset");
+    navigate("/");
   };
   return (
     <>
       <div className="flex items-center justify-center h-screen bg-gray-100">
         <div className="bg-white p-8 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+          <h2 className="text-2xl font-bold mb-6 text-center">New Password</h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
@@ -42,7 +43,7 @@ export const ResetForgetPassword = () => {
               type="submit"
               className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
             >
-              Login
+              Change Password
             </button>
           </form>
         </div>

@@ -91,7 +91,7 @@ export const App = () => {
             <Route path="/register/counselor" element={<CounselorRegister />} />
             <Route path="/register/verify/:token" element={<VerifyUser />} />
             <Route path={"/email-reset"} element={<VerifyEmailReset />} />
-            <Route path={"/password-reset/:token"} element={<ResetForgetPassword />} />
+            <Route path={"/password-reset/:token/:userId"} element={<ResetForgetPassword />} />
           </>
         )}
         <Route
