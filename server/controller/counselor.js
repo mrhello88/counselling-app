@@ -99,7 +99,10 @@ exports.postCreateCounseling = async (req, res, next) => {
 exports.getUCounselors = async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const user = await UserSchema.findById(userId).populate("friends");
+    const user = await UserSchema.findById(userId)
+      .populate("friends")
+      .populate("counselor")
+      .populate("counseling");
     return res
       .status(200)
       .json({ data: user, success: true, message: "User Friends list" });

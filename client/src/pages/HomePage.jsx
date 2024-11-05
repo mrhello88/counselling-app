@@ -23,42 +23,74 @@ import {
   Sun,
   Moon,
 } from "lucide-react";
+import { useAuth } from "../store/auth";
 
-const counselors = [
-  {
-    name: "Dr. Emily Johnson",
-    specialization: "Academic Counseling",
-    experience: 12,
-    rating: 4.9,
-    clientsHelped: 500,
-    imageUrl: "https://thumbs.dreamstime.com/b/counselor-working-teenage-girl-high-school-student-office-educational-building-psychologist-counselor-working-teenage-319959791.jpg",
-    bio: "Dr. Emily Johnson specializes in helping students navigate their academic journey and make informed decisions about their educational path.",
-  },
-  {
-    name: "Michael Chen",
-    specialization: "Career Guidance",
-    experience: 8,
-    rating: 4.7,
-    clientsHelped: 350,
-    imageUrl: "https://img.freepik.com/free-vector/hand-drawn-speech-therapy-illustration_23-2149211795.jpg?semt=ais_hybrid",
-    bio: "Michael Chen is passionate about assisting students in exploring career options and developing strategies for professional success.",
-  },
-  {
-    name: "Sarah Patel",
-    specialization: "Mental Health Support",
-    experience: 10,
-    rating: 4.8,
-    clientsHelped: 400,
-    imageUrl: "https://www.shutterstock.com/image-photo/teenage-girl-high-school-student-260nw-2283738385.jpg",
-    bio: "Sarah Patel provides compassionate mental health support to help students thrive both academically and personally.",
-  },
-];
+// const counselors = [
+//   {
+//     name: "Dr. Emily Johnson",
+//     specialization: "Academic Counseling",
+//     experience: 12,
+//     rating: 4.9,
+//     clientsHelped: 500,
+//     imageUrl:
+//       "https://thumbs.dreamstime.com/b/counselor-working-teenage-girl-high-school-student-office-educational-building-psychologist-counselor-working-teenage-319959791.jpg",
+//     bio: "Dr. Emily Johnson specializes in helping students navigate their academic journey and make informed decisions about their educational path.",
+//   },
+//   {
+//     name: "Michael Chen",
+//     specialization: "Career Guidance",
+//     experience: 8,
+//     rating: 4.7,
+//     clientsHelped: 350,
+//     imageUrl:
+//       "https://img.freepik.com/free-vector/hand-drawn-speech-therapy-illustration_23-2149211795.jpg?semt=ais_hybrid",
+//     bio: "Michael Chen is passionate about assisting students in exploring career options and developing strategies for professional success.",
+//   },
+//   {
+//     name: "Sarah Patel",
+//     specialization: "Mental Health Support",
+//     experience: 10,
+//     rating: 4.8,
+//     clientsHelped: 400,
+//     imageUrl:
+//       "https://www.shutterstock.com/image-photo/teenage-girl-high-school-student-260nw-2283738385.jpg",
+//     bio: "Sarah Patel provides compassionate mental health support to help students thrive both academically and personally.",
+//   },
+//   {
+//     name: "Dr. Emily Johnson",
+//     specialization: "Academic Counseling",
+//     experience: 12,
+//     rating: 4.9,
+//     clientsHelped: 500,
+//     imageUrl:
+//       "https://thumbs.dreamstime.com/b/counselor-working-teenage-girl-high-school-student-office-educational-building-psychologist-counselor-working-teenage-319959791.jpg",
+//     bio: "Dr. Emily Johnson specializes in helping students navigate their academic journey and make informed decisions about their educational path.",
+//   },
+//   {
+//     name: "Michael Chen",
+//     specialization: "Career Guidance",
+//     experience: 8,
+//     rating: 4.7,
+//     clientsHelped: 350,
+//     imageUrl:
+//       "https://img.freepik.com/free-vector/hand-drawn-speech-therapy-illustration_23-2149211795.jpg?semt=ais_hybrid",
+//     bio: "Michael Chen is passionate about assisting students in exploring career options and developing strategies for professional success.",
+//   },
+//   {
+//     name: "Sarah Patel",
+//     specialization: "Mental Health Support",
+//     experience: 10,
+//     rating: 4.8,
+//     clientsHelped: 400,
+//     imageUrl:
+//       "https://www.shutterstock.com/image-photo/teenage-girl-high-school-student-260nw-2283738385.jpg",
+//     bio: "Sarah Patel provides compassionate mental health support to help students thrive both academically and personally.",
+//   },
+// ];
 
 const Card = ({ children, className }) => {
-
-
   return (
-    <div className={`rounded-lg shadow-md bg-white dark:bg-gray-800 ${className}`}>
+    <div className={`rounded-lg shadow-md bg-gray-800 ${className}`}>
       {children}
     </div>
   );
@@ -76,7 +108,10 @@ const Button = ({ children, onClick, variant = "outline", className }) => {
       : "bg-primary text-white"; // Modify variants as needed
 
   return (
-    <button onClick={onClick} className={`${baseStyle} ${variantStyle} ${className}`}>
+    <button
+      onClick={onClick}
+      className={`${baseStyle} ${variantStyle} ${className}`}
+    >
       {children}
     </button>
   );
@@ -89,7 +124,11 @@ const Badge = ({ children, className, variant = "secondary" }) => {
       ? "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
       : "bg-primary text-white"; // Modify variants as needed
 
-  return <span className={`${baseStyle} ${variantStyle} ${className}`}>{children}</span>;
+  return (
+    <span className={`${baseStyle} ${variantStyle} ${className}`}>
+      {children}
+    </span>
+  );
 };
 
 function EnhancedDottedGlobe({ isDark = false }) {
@@ -106,7 +145,7 @@ function EnhancedDottedGlobe({ isDark = false }) {
     }
     return dots;
   };
-// rotating circle
+  // rotating circle
   return (
     <motion.div
       className="w-80 h-80 relative"
@@ -196,8 +235,8 @@ function CounselorCard({ counselor }) {
         <CardContent className="p-0">
           <div className="relative h-48 overflow-hidden text-white">
             <img
-              src={counselor.imageUrl}
-              alt={`${counselor.name}, Counselor`}
+              src={`http://localhost:3000/images/${counselor.profile}`}
+              alt={`${counselor.personalInfo.name}, Counselor`}
               className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
               onError={handleError}
             />
@@ -210,14 +249,14 @@ function CounselorCard({ counselor }) {
             >
               <div>
                 <h3 className="text-xl font-bold text-white mb-1">
-                  {counselor.name}
+                  {counselor.personalInfo.name}
                 </h3>
                 <Badge className="bg-primary/80 text-primary-foreground  text-white">
-                  {counselor.specialization}
+                  {counselor.counselor.education.category}
                 </Badge>
               </div>
               <div className="flex items-center bg-primary/80 text-primary-foreground px-2 py-1 rounded-full">
-                <span className="font-bold">{counselor.rating.toFixed(1)}</span>
+                <span className="font-bold">4.6</span>
               </div>
             </motion.div>
           </div>
@@ -231,13 +270,13 @@ function CounselorCard({ counselor }) {
               <div className="flex items-center text-white">
                 <Clock className="w-4 h-4 mr-1 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground  ">
-                  {counselor.experience} years exp.
+                  {counselor.counselor.education.experience} exp.
                 </span>
               </div>
               <div className="flex items-center text-white">
                 <Users className="w-4 h-4 mr-1 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">
-                  {counselor.clientsHelped}+ clients
+                  {counselor.friends.length}+ clients
                 </span>
               </div>
             </motion.div>
@@ -250,28 +289,31 @@ function CounselorCard({ counselor }) {
                   transition={{ duration: 0.3 }}
                 >
                   <p className="text-sm text-muted-foreground mb-4 text-white">
-                    {counselor.bio}
+                    {counselor.counselor.education.description}
                   </p>
                 </motion.div>
               )}
             </AnimatePresence>
-            <motion.div  whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 variant="outline"
-                className="w-full  border border-secondary"
+                className="w-full border border-secondary"
                 onClick={() => setIsExpanded(!isExpanded)}
               >
                 {isExpanded ? (
                   <>
                     <ChevronUp className="w-4 h-4 mr-2 " />
-                   <span className="text-secondary hover:text-white hover:scale-105 text-lg duration-150">Show Less</span> 
+                    <span className="text-secondary hover:text-white hover:scale-105 text-lg duration-150">
+                      Show Less
+                    </span>
                   </>
                 ) : (
                   <>
                     <ChevronDown className="w-4 h-4 mr-2 " />
-                   <span className="text-secondary hover:text-white hover:scale-105 text-lg duration-300"> Read More</span> 
-
-                   
+                    <span className="text-secondary hover:text-white hover:scale-105 text-lg duration-300">
+                      {" "}
+                      Read More
+                    </span>
                   </>
                 )}
               </Button>
@@ -401,12 +443,25 @@ export function HomePage() {
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
   };
+  const { getCounselors } = useAuth();
+  // Dummy data for counselors
 
+  const [counselors, setCounselors] = useState([]);
+  useEffect(() => {
+    const counselorList = async () => {
+      const data = await getCounselors();
+      setCounselors(data || []);
+    };
+    counselorList();
+  }, [getCounselors]);
+  if (!counselors) {
+    return <p>Loading... at counselorList</p>;
+  }
   return (
     <>
       <div
-      className={`flex flex-col w-full min-h-screen overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 ${theme}`}
-      > 
+        className={`flex flex-col w-full min-h-screen overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 ${theme}`}
+      >
         {isMenuOpen && (
           <div className="md:hidden bg-white dark:bg-gray-800 shadow-md py-4 px-4">
             <div className="flex flex-col space-y-4">
@@ -440,7 +495,6 @@ export function HomePage() {
               >
                 Contact
               </Link>
-             
             </div>
           </div>
         )}
@@ -451,7 +505,11 @@ export function HomePage() {
               <div className="flex flex-col md:flex-row items-center">
                 <div className="md:w-1/2 mb-10 pb-32 md:mb-0">
                   <h1 className="text-3xl md:text-4xl font-bold mb-6">
-                    Your Path to <span className="text-5xl font-bold text-secondary">Success</span> Starts Here.
+                    Your Path to{" "}
+                    <span className="text-5xl font-bold text-secondary">
+                      Success
+                    </span>{" "}
+                    Starts Here.
                   </h1>
                   <p className="text-xl mb-8">
                     Get personalized education and career counseling to unlock
@@ -481,6 +539,7 @@ export function HomePage() {
               <h2 className="text-3xl font-bold text-center mb-12 dark:text-white">
                 Our Expert Counselors
               </h2>
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {/* Map through counselors data here */}
                 {counselors.map((counselor, index) => (
@@ -490,7 +549,7 @@ export function HomePage() {
             </div>
           </section>
 
-          <section className="bg-gradient-to-r from-primary to-primary-dark dark:from-primary-dark dark:to-primary text-white py-20 relative transition-colors duration-300">
+          {/* <section className="bg-gradient-to-r from-primary to-primary-dark dark:from-primary-dark dark:to-primary text-white py-20 relative transition-colors duration-300">
             <FloatingShapes />
             <div className="container mx-auto px-4 text-center relative z-10">
               <h2 className="text-3xl font-bold mb-8">
@@ -504,7 +563,7 @@ export function HomePage() {
                 Book a Session
               </button>
             </div>
-          </section>
+          </section> */}
         </main>
       </div>
     </>
