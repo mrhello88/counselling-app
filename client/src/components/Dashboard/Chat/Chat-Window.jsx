@@ -10,7 +10,7 @@ dayjs.extend(utc);
 dayjs.extend(duration);
 
 export const ChatWindow = () => {
-  const { selectedChat } = useOutletContext(); 
+  const { selectedChat } = useOutletContext();
   const { chatUser, userId } = selectedChat;
 
   const [messages, setMessages] = useState([]);
@@ -71,64 +71,67 @@ export const ChatWindow = () => {
   }, [schedule.startDate, schedule.endDate]);
 
   return (
-    <>
+    <div className="">
       {isLoggedIn && chatUser?._id ? (
-        <div className="flex flex-col justify-between h-screen">
-          <div className="h-full">
-            <div className="flex items-center gap-2 py-2 px-4 bg-gray-800">
-              <img
-                className="w-12 rounded-full"
-                src="/src/assets/reactIcon.png"
-                alt="demy logo"
-              />
-              <span className="text-black text-xl font-medium capitalize">
-               <span className="text-secondary font-bold"> Chat with: </span><span className="text-white font-bold">{chatUser?.personalInfo?.name}</span>
-                {status === "before" && remainingTime ? (
-                  <div style={{ fontSize: "25px" }}>
-                    <span>Session Starts In: </span>
-                    <span>{remainingTime.days}</span>:
-                    <span>{remainingTime.hours}</span>:
-                    <span>{remainingTime.minutes}</span>:
-                    <span>{remainingTime.seconds}</span>
-                  </div>
-                ) : status === "during" && remainingTime ? (
-                  <div style={{ fontSize: "25px" }}>
-                    <span>Remaining Time: </span>
-                    <span>{remainingTime.days}</span>:
-                    <span>{remainingTime.hours}</span>:
-                    <span>{remainingTime.minutes}</span>:
-                    <span>{remainingTime.seconds}</span>
-                  </div>
-                ) : (
-                  status === "end" && <p className="text-white font-bold">Session End</p>
-                )}
-              </span>
-            </div>
-            <div>
-              <ul className="overflow-y-scroll h-[28.6rem] bg-gray-800 border-t-2 border-secondary px-4 pt-2">
-                {messages?.map((obj) => (
-                  <li
-                    key={obj._id}
-                    className={`mb-2 p-2 max-w-xs rounded-lg ${
-                      obj.senderId === userId.toString()
-                        ? "bg-blue-500 text-white self-end ml-auto"
-                        : "bg-gray-200 text-gray-800 self-start"
-                    }`}
-                  >
-                    <p>{obj.message}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <MessageInput
-              selectedChat={selectedChat}
-              setMessages={setMessages}
-              isChatEnabled={status === "during"}
+        <div className="flex flex-col">
+          <div className="flex items-center gap-2 py-2 px-4 bg-gray-800">
+            <img
+              className="w-12 rounded-full"
+              src="/src/assets/reactIcon.png"
+              alt="demy logo"
             />
+            <span className="text-black text-xl font-medium capitalize">
+              <span className="text-secondary font-bold"> Chat with: </span>
+              <span className="text-white font-bold">
+                {chatUser?.personalInfo?.name}
+              </span>
+              {status === "before" && remainingTime ? (
+                <div style={{ fontSize: "25px" }}>
+                  <span>Session Starts In: </span>
+                  <span>{remainingTime.days}</span>:
+                  <span>{remainingTime.hours}</span>:
+                  <span>{remainingTime.minutes}</span>:
+                  <span>{remainingTime.seconds}</span>
+                </div>
+              ) : status === "during" && remainingTime ? (
+                <div style={{ fontSize: "25px" }}>
+                  <span>Remaining Time: </span>
+                  <span>{remainingTime.days}</span>:
+                  <span>{remainingTime.hours}</span>:
+                  <span>{remainingTime.minutes}</span>:
+                  <span>{remainingTime.seconds}</span>
+                </div>
+              ) : (
+                status === "end" && (
+                  <p className="text-white font-bold">Session End</p>
+                )
+              )}
+            </span>
           </div>
+          <div>
+            <ul className="overflow-y-scroll h-[44rem] md:h-[29.2rem] bg-gray-800 border-t-2 border-secondary ">
+              {messages?.map((obj) => (
+                <li
+                  key={obj._id}
+                  className={`mb-2 p-2 max-w-xs rounded-lg ${
+                    obj.senderId === userId.toString()
+                      ? "bg-blue-500 text-white self-end ml-auto"
+                      : "bg-gray-200 text-gray-800 self-start"
+                  }`}
+                >
+                  <p>{obj.message}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <MessageInput
+            selectedChat={selectedChat}
+            setMessages={setMessages}
+            isChatEnabled={status === "during"}
+          />
         </div>
       ) : (
-        <div className="h-screen flex items-center justify-center">
+        <div className="flex items-center justify-center my-24 bg-red-200">
           <div className="bg-white p-8 rounded-lg shadow-lg text-center">
             <h1 className="text-4xl font-bold text-gray-800">Welcome</h1>
             <p className="text-gray-600 mt-4 text-lg">
@@ -137,6 +140,7 @@ export const ChatWindow = () => {
           </div>
         </div>
       )}
-    </>
-  );
+          
+    </div>
+  );
 };

@@ -34,9 +34,7 @@ export const App = () => {
   }, [isLoggedIn]);
   return (
     <Router>
-      <div className="">
-        <Navbar />
-      </div>
+      <Navbar />
       <Routes>
         {/* <Route path={`/`} element={<Home />} /> */}
         {isLoggedIn ? (
@@ -91,7 +89,10 @@ export const App = () => {
             <Route path="/register/counselor" element={<CounselorRegister />} />
             <Route path="/register/verify/:token" element={<VerifyUser />} />
             <Route path={"/email-reset"} element={<VerifyEmailReset />} />
-            <Route path={"/password-reset/:token"} element={<ResetForgetPassword />} />
+            <Route
+              path={"/password-reset/:token"}
+              element={<ResetForgetPassword />}
+            />
           </>
         )}
         <Route
@@ -102,7 +103,7 @@ export const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/counselorList" element={<CounselorList />} />
       </Routes>
-      <Footer />
+      {/* <Footer /> */}
     </Router>
   );
 };

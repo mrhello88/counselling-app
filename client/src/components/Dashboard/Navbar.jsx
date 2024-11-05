@@ -9,7 +9,7 @@ const Navbar = () => {
     userAuthentication();
   }, []);
   return (
-    <div className="flex justify-between items-center py-2 bg-gray-900 px-8 ">
+    <div className="flex justify-between items-center py-2 bg-gray-900 px-8 w-full ">
       <div className="text-xl  capitalize font-bold">
         <h1 className="text-secondary">Dashboard: <span className="text-white">{userData?.personalInfo?.name}</span></h1>
       </div>

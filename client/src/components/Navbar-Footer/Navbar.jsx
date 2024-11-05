@@ -10,19 +10,22 @@ export const Navbar = () => {
     userAuthentication();
   }, [isLoggedIn]);
   return (
-    <nav className="bg-primary p-4 ">
-      <div className="container mx-auto flex justify-between items-center">
+    <nav className="bg-primary p-4">
+      <div className="  flex justify-between items-center">
         {/* Logo */}
-        <div className="flex justify-between items-center space-x-52 ">
-          <div className="text-secondary font-bold text-xl  pl-5  duration-300 hover:scale-125">
+        <div className="flex justify-between items-center lg:space-x-52">
+          <div className="text-secondary font-bold text-xl pl-5  duration-300 hover:scale-125">
             <h2 className="text-2xl cursor-pointer">StudentCounselor</h2>
           </div>
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8 text-lg font-bold w-full h-12 items-center">
-          <NavLink
+            <NavLink
               to="/"
               className={({ isActive }) =>
-                ` ${isActive ? "text-white hover:text-secondary scale-115" : "hover:scale-125 text-secondary"
+                ` ${
+                  isActive
+                    ? "text-white hover:text-secondary scale-115"
+                    : "hover:scale-125 text-secondary"
                   // "text-secondary hover:text-white scale-115" : "hover:scale-125 text-secondary"
                 }`
               }
@@ -37,7 +40,10 @@ export const Navbar = () => {
                     <NavLink
                       to="/user-dashboard"
                       className={({ isActive }) =>
-                        ` ${isActive ? "text-white hover:text-secondary scale-115" : "hover:scale-125 text-secondary"
+                        ` ${
+                          isActive
+                            ? "text-white hover:text-secondary scale-115"
+                            : "hover:scale-125 text-secondary"
                           // "text-secondary hover:text-white scale-115" : "hover:scale-125 text-secondary "
                         }`
                       }
@@ -51,7 +57,10 @@ export const Navbar = () => {
                     <NavLink
                       to="/user-dashboard"
                       className={({ isActive }) =>
-                        ` ${isActive ? "text-white hover:text-secondary scale-115" : "hover:scale-125  text-secondary"
+                        ` ${
+                          isActive
+                            ? "text-white hover:text-secondary scale-115"
+                            : "hover:scale-125  text-secondary"
                           // "text-secondary hover:text-white scale-115" : "hover:scale-125 text-secondary"
                         }`
                       }
@@ -66,7 +75,10 @@ export const Navbar = () => {
             <NavLink
               to="/counselorList"
               className={({ isActive }) =>
-                ` ${isActive ? "text-white hover:text-secondary scale-115" : "hover:scale-125 text-secondary"
+                ` ${
+                  isActive
+                    ? "text-white hover:text-secondary scale-115"
+                    : "hover:scale-125 text-secondary"
                 }`
               }
             >
@@ -75,26 +87,32 @@ export const Navbar = () => {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                ` ${isActive ? "text-white hover:text-secondary scale-115" : "hover:scale-125 text-secondary"
+                ` ${
+                  isActive
+                    ? "text-white hover:text-secondary scale-115"
+                    : "hover:scale-125 text-secondary"
                 }`
               }
             >
-            Service
+              Service
             </NavLink>
             <NavLink
               to=""
               className={({ isActive }) =>
-                ` ${isActive ? "text-white hover:text-secondary scale-115" : "hover:scale-125 text-secondary"
+                ` ${
+                  isActive
+                    ? "text-white hover:text-secondary scale-115"
+                    : "hover:scale-125 text-secondary"
                 }`
               }
             >
-            About Us
+              About Us
             </NavLink>
           </div>
         </div>
 
         {/* CTA Button */}
-        <div className="hidden md:flex text-lg">
+        <div className="hidden md:flex lg:text-lg">
           {isLoggedIn ? (
             <>
               <NavLink
@@ -102,7 +120,7 @@ export const Navbar = () => {
                 onClick={() => {
                   LogoutUser();
                 }}
-                className="hidden md:block  mx-12  px-4 py-2 rounded text-primary bg-secondary hover:text-white font-bold text-xl duration-300 hover:scale-110"
+                className="hidden md:block  lg:mx-12  px-4 py-2 rounded text-primary bg-secondary hover:text-white font-bold text-xl duration-300 hover:scale-110"
               >
                 Log Out
               </NavLink>
@@ -134,11 +152,13 @@ export const Navbar = () => {
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
-
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden mt-2">
-          <a href="/" className="block py-2 px-4 hover:bg-secondary text-primary">
+          <a
+            href="/"
+            className="block py-2 px-4 hover:bg-secondary text-primary"
+          >
             Home
           </a>
           <a
@@ -153,7 +173,10 @@ export const Navbar = () => {
           >
             About
           </a>
-          <a href="#" className="block py-2 px-4 hover:bg-secondary text-primary">
+          <a
+            href="#"
+            className="block py-2 px-4 hover:bg-secondary text-primary"
+          >
             Register
           </a>
           <a
@@ -163,10 +186,11 @@ export const Navbar = () => {
             Contact
           </a>
           <button className="w-full text-left bg-[#38bdf8] text-white py-2 px-4 mt-2 hover:bg-[#0ea5e9]">
-           Book a Session
+            Book a Session
           </button>
         </div>
       )}
-    </nav>
-  );
+        
+    </nav>
+  );
 };
