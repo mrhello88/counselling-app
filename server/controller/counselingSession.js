@@ -75,8 +75,8 @@ exports.postscheduleCounseling = async (req, res) => {
     });
 
     await session.save();
-    sendMail(counselor.personalInfo.email, "counselor");
-    sendMail(req.user.personalInfo.email, "student");
+    sendMail(counselor.personalInfo.email, "","counselor");
+    sendMail(req.user.personalInfo.email, "","student");
     return res
       .status(200)
       .json({

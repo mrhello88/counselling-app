@@ -17,8 +17,6 @@ export const LoginPage = ({ role }) => {
       return;
     }
     const loginSuccess = await userLogin(email, role, password); // Assuming userLogin returns a success flag or token
-    setEmail("");
-    setPassword("");
     if (loginSuccess) {
       // If there is a path to return to after login
       if (location.state?.navigateToPayment) {

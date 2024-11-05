@@ -51,13 +51,13 @@ export const ChatWindow = () => {
         // During Session Countdown
       } else if (now.isAfter(sessionStart) && now.isBefore(sessionEnd)) {
         setStatus("during");
-        const elapsed = dayjs.duration(now.diff(sessionStart)); // Calculate elapsed time
+        const remaining = dayjs.duration(now.diff(sessionStart)); // Calculate remaining time
 
         setRemainingTime({
-          days: elapsed.days(),
-          hours: elapsed.hours(),
-          minutes: elapsed.minutes(),
-          seconds: elapsed.seconds(),
+          days: remaining.days(),
+          hours: remaining.hours(),
+          minutes: remaining.minutes(),
+          seconds: remaining.seconds(),
         });
 
         // Post-Session
