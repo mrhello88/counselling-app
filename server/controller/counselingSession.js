@@ -60,12 +60,10 @@ exports.postscheduleCounseling = async (req, res) => {
       data: session,
     });
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        message: "Failed to schedule counseling session",
-        success: true,
-      });
+    return res.status(500).json({
+      message: "Failed to schedule counseling session",
+      success: true,
+    });
   }
 };
 
@@ -73,7 +71,7 @@ exports.getscheduleCounseling = async (req, res, next) => {
   try {
     const counselorId = req.params.counselorId;
     const studentId = req.user._id;
-    const isStudentRequest = req.user.role;
+    const isStudentRequest = req.user.role === "student";
 
     // Define the session query based on the user's role
     const sessionQuery = isStudentRequest
