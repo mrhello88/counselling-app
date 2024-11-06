@@ -42,6 +42,25 @@ exports.postscheduleCounseling = async (req, res) => {
       res.status(404).json({ message: "counselor not found", success: false });
     }
 
+    // Check if a session between the student and counselor already exists
+    const existingSession = await CounselingSession.findOne({
+      counselorId,
+      studentId: req.user._id,
+    });
+    // If session exists, update it
+    if (existingSession) {
+      existingSession.startDate = startDate;
+      existingSession.endDate = endDate;
+      existingSession.duration = duration;
+      await existingSession.save();
+
+      return res.status(200).json({
+        message: "Counseling session updated successfully",
+        data: existingSession,
+        success: true,
+      });
+    }
+
     // If session doesn't exist, create a new one
     const session = new CounselingSession({
       counselorId,
@@ -75,17 +94,15 @@ exports.getscheduleCounseling = async (req, res, next) => {
 
     // Define the session query based on the user's role
     const sessionQuery = isStudentRequest
-      ? { counselorId, studentId, startDate: { $gt: Date.now() } } // Student request, upcoming sessions only
+      ? { counselorId, studentId } // Student request, upcoming sessions only
       : {
           counselorId: studentId,
           studentId: counselorId,
-          startDate: { $gt: Date.now() },
-        }; // Counselor request, upcoming sessions only
+        };
+    // Counselor request, upcoming sessions only
 
     // Find the soonest upcoming session
-    const counselingSession = await CounselingSession.findOne(
-      sessionQuery
-    ).sort({ startDate: 1 });
+    const counselingSession = await CounselingSession.findOne(sessionQuery);
 
     if (!counselingSession) {
       return res.status(404).json({
@@ -106,24 +123,3 @@ exports.getscheduleCounseling = async (req, res, next) => {
     });
   }
 };
-
-//  // Check if a session between the student and counselor already exists
-//  const existingSession = await CounselingSession.findOne({
-//   counselorId,
-//   studentId: req.user._id,
-// });
-
-// console.log(new Date(startDate + "UTC"),endDate,"postScheduleCounseling")
-// // If session exists, update it
-// if (existingSession) {
-//   existingSession.startDate = startDate;
-//   existingSession.endDate = endDate;
-//   existingSession.duration = duration;
-//   await existingSession.save();
-
-//   return res.status(200).json({
-//     message: "Counseling session updated successfully",
-//     data: existingSession,
-//     success: true,
-//   });
-// }

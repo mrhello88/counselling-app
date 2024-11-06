@@ -98,7 +98,7 @@ export const MessageInput = ({ selectedChat, setMessages, isChatEnabled }) => {
             disabled
             onChange={handleInputChange}
             placeholder="Type a message..."
-            className="flex-grow p-2 placeholder:text-white font-bold text-sm border border-gray-300 bg-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-grow p-2 placeholder:text-white text-white font-bold text-sm border border-gray-300 bg-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           {/* <input type="file" onChange={handleFileChange} /> */}
           <button

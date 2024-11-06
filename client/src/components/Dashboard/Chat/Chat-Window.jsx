@@ -81,7 +81,7 @@ export const ChatWindow = () => {
                 src="/src/assets/reactIcon.png"
                 alt="demy logo"
               />
-              <span className="text-black text-xl font-medium capitalize">
+              <span className="text-white text-xl font-medium capitalize">
                 <span className="text-secondary font-bold"> Chat with: </span>
                 <span className="text-white font-bold">
                   {chatUser?.personalInfo?.name}

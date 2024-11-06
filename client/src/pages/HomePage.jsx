@@ -25,69 +25,6 @@ import {
 } from "lucide-react";
 import { useAuth } from "../store/auth";
 
-// const counselors = [
-//   {
-//     name: "Dr. Emily Johnson",
-//     specialization: "Academic Counseling",
-//     experience: 12,
-//     rating: 4.9,
-//     clientsHelped: 500,
-//     imageUrl:
-//       "https://thumbs.dreamstime.com/b/counselor-working-teenage-girl-high-school-student-office-educational-building-psychologist-counselor-working-teenage-319959791.jpg",
-//     bio: "Dr. Emily Johnson specializes in helping students navigate their academic journey and make informed decisions about their educational path.",
-//   },
-//   {
-//     name: "Michael Chen",
-//     specialization: "Career Guidance",
-//     experience: 8,
-//     rating: 4.7,
-//     clientsHelped: 350,
-//     imageUrl:
-//       "https://img.freepik.com/free-vector/hand-drawn-speech-therapy-illustration_23-2149211795.jpg?semt=ais_hybrid",
-//     bio: "Michael Chen is passionate about assisting students in exploring career options and developing strategies for professional success.",
-//   },
-//   {
-//     name: "Sarah Patel",
-//     specialization: "Mental Health Support",
-//     experience: 10,
-//     rating: 4.8,
-//     clientsHelped: 400,
-//     imageUrl:
-//       "https://www.shutterstock.com/image-photo/teenage-girl-high-school-student-260nw-2283738385.jpg",
-//     bio: "Sarah Patel provides compassionate mental health support to help students thrive both academically and personally.",
-//   },
-//   {
-//     name: "Dr. Emily Johnson",
-//     specialization: "Academic Counseling",
-//     experience: 12,
-//     rating: 4.9,
-//     clientsHelped: 500,
-//     imageUrl:
-//       "https://thumbs.dreamstime.com/b/counselor-working-teenage-girl-high-school-student-office-educational-building-psychologist-counselor-working-teenage-319959791.jpg",
-//     bio: "Dr. Emily Johnson specializes in helping students navigate their academic journey and make informed decisions about their educational path.",
-//   },
-//   {
-//     name: "Michael Chen",
-//     specialization: "Career Guidance",
-//     experience: 8,
-//     rating: 4.7,
-//     clientsHelped: 350,
-//     imageUrl:
-//       "https://img.freepik.com/free-vector/hand-drawn-speech-therapy-illustration_23-2149211795.jpg?semt=ais_hybrid",
-//     bio: "Michael Chen is passionate about assisting students in exploring career options and developing strategies for professional success.",
-//   },
-//   {
-//     name: "Sarah Patel",
-//     specialization: "Mental Health Support",
-//     experience: 10,
-//     rating: 4.8,
-//     clientsHelped: 400,
-//     imageUrl:
-//       "https://www.shutterstock.com/image-photo/teenage-girl-high-school-student-260nw-2283738385.jpg",
-//     bio: "Sarah Patel provides compassionate mental health support to help students thrive both academically and personally.",
-//   },
-// ];
-
 const Card = ({ children, className }) => {
   return (
     <div className={`rounded-lg shadow-md bg-gray-800 ${className}`}>
@@ -443,7 +380,7 @@ export function HomePage() {
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
   };
-  const { getCounselors } = useAuth();
+  const { getCounselors, isLoggedIn } = useAuth();
   // Dummy data for counselors
 
   const [counselors, setCounselors] = useState([]);
@@ -453,7 +390,7 @@ export function HomePage() {
       setCounselors(data || []);
     };
     counselorList();
-  }, [getCounselors]);
+  }, [getCounselors, isLoggedIn]);
   if (!counselors) {
     return <p>Loading... at counselorList</p>;
   }
@@ -542,14 +479,14 @@ export function HomePage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {/* Map through counselors data here */}
-                {counselors.map((counselor, index) => (
+                {counselors?.map((counselor, index) => (
                   <CounselorCard key={index} counselor={counselor} />
                 ))}
               </div>
             </div>
           </section>
 
-          {/* <section className="bg-gradient-to-r from-primary to-primary-dark dark:from-primary-dark dark:to-primary text-white py-20 relative transition-colors duration-300">
+          <section className="bg-gradient-to-r from-primary to-primary-dark dark:from-primary-dark dark:to-primary text-white py-20 relative transition-colors duration-300">
             <FloatingShapes />
             <div className="container mx-auto px-4 text-center relative z-10">
               <h2 className="text-3xl font-bold mb-8">
@@ -563,7 +500,7 @@ export function HomePage() {
                 Book a Session
               </button>
             </div>
-          </section> */}
+          </section>
         </main>
       </div>
     </>
