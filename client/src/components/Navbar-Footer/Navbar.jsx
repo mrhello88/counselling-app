@@ -14,7 +14,7 @@ export const Navbar = () => {
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <div className="flex justify-between items-center space-x-52 ">
-          <div className="text-secondary font-bold text-xl  pl-5  duration-300 hover:scale-125">
+          <div className="text-secondary font-bold text-xl pl-5 duration-300 hover:scale-125">
             <h2 className="text-2xl cursor-pointer">StudentCounselor</h2>
           </div>
           {/* Desktop Menu */}
@@ -111,7 +111,7 @@ export const Navbar = () => {
             <>
               <NavLink
                 to={"/login"}
-                className="hidden md:block mx-12 px-4 py-2 rounded  text-primary bg-secondary hover:text-white font-bold text-xl duration-300 hover:scale-110"
+                className="hidden md:block mx-12 px-4 py-2 rounded text-primary bg-secondary hover:text-white font-bold text-xl duration-300 hover:scale-110"
               >
                 Log In
               </NavLink>

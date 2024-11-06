@@ -24,6 +24,7 @@ import { useAuth } from "./store/auth";
 import { Login } from "./pages/Login";
 import { VerifyEmailReset } from "./components/auth/ForgetPassword/VerifyEmailReset";
 import { ResetForgetPassword } from "./components/auth/ForgetPassword/ResetForgetPassword";
+import { AdminDashboard } from "./components/AdminDashboard/AdminDashboard";
 // import { CounsellorDashboard } from "./pages/C-Dashboard";
 
 export const App = () => {
@@ -101,6 +102,7 @@ export const App = () => {
         <Route path="/payment" element={<Payment />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/counselorList" element={<CounselorList />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard/>} />
       </Routes>
       <Footer />
     </Router>

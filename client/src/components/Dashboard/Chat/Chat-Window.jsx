@@ -74,7 +74,7 @@ export const ChatWindow = () => {
     <>
       {isLoggedIn && chatUser?._id ? (
         <div className="flex flex-col justify-between h-screen">
-          <div className="h-full">
+          <div className="">
             <div className="flex items-center gap-2 py-2 px-4 bg-gray-800">
               <img
                 className="w-12 rounded-full"
@@ -82,7 +82,10 @@ export const ChatWindow = () => {
                 alt="demy logo"
               />
               <span className="text-black text-xl font-medium capitalize">
-               <span className="text-secondary font-bold"> Chat with: </span><span className="text-white font-bold">{chatUser?.personalInfo?.name}</span>
+                <span className="text-secondary font-bold"> Chat with: </span>
+                <span className="text-white font-bold">
+                  {chatUser?.personalInfo?.name}
+                </span>
                 {status === "before" && remainingTime ? (
                   <div style={{ fontSize: "25px" }}>
                     <span>Session Starts In: </span>
@@ -100,12 +103,14 @@ export const ChatWindow = () => {
                     <span>{remainingTime.seconds}</span>
                   </div>
                 ) : (
-                  status === "end" && <p className="text-white font-bold">Session End</p>
+                  status === "end" && (
+                    <p className="text-white font-bold">Session End</p>
+                  )
                 )}
               </span>
             </div>
-            <div>
-              <ul className="overflow-y-scroll h-[28.6rem] bg-gray-800 border-t-2 border-secondary px-4 pt-2">
+            <div className="">
+              <ul className="overflow-y-scroll h-[30.4rem] bg-gray-800 border-t-2 border-secondary px-4 pt-2">
                 {messages?.map((obj) => (
                   <li
                     key={obj._id}
@@ -137,6 +142,7 @@ export const ChatWindow = () => {
           </div>
         </div>
       )}
-    </>
-  );
+          
+    </>
+  );
 };

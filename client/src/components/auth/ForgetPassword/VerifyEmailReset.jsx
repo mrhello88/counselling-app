@@ -1,24 +1,41 @@
 import { useState } from "react";
 import { useAuth } from "../../../store/auth";
 import { toast } from "react-toastify";
+import { emailResetPasswordZodSchema } from "../../../zod-validation/emailResetPasswordZod";
+import { useNavigate } from "react-router-dom";
 
 export const VerifyEmailReset = () => {
   const [email, setEmail] = useState("");
-  const {postEmailResetPassword} = useAuth()
-  const handleSubmit = async (e) =>{
-     e.preventDefault()
-    if(email === ""){
-      toast.error("please fill the email box")
-      return
+  const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
+  const { postEmailResetPassword } = useAuth();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Pass email as an object to match the schema structure
+    const result = emailResetPasswordZodSchema.safeParse({ email });
+
+    if (!result.success) {
+      const fieldErrors = result.error.format();
+      setErrors(fieldErrors);
+      toast.error("Please fix the errors in the form.");
+      return;
     }
-    postEmailResetPassword(email)
-    setEmail("")
-  }
+
+    postEmailResetPassword(email);
+    // navigate("/")
+    setEmail("");
+
+  };
+
   return (
     <>
       <div className="flex items-center justify-center h-screen bg-gray-100">
         <div className="bg-white p-8 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold mb-6 text-center">Email For Reset Password</h2>
+          <h2 className="text-2xl font-bold mb-6 text-center">
+            Email For Reset Password
+          </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
@@ -30,11 +47,23 @@ export const VerifyEmailReset = () => {
               <input
                 type="email"
                 id="email"
+                name="email" // Add the name attribute
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    email: "", // Reset error for the "email" field
+                  }));
+                }}
                 required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               />
+              {errors.email && (
+                <p className="text-red-500 text-sm">
+                  {errors.email._errors[0]}
+                </p>
+              )}
             </div>
             <button
               type="submit"

@@ -1,96 +1,55 @@
 import React from "react";
-// import { Facebook, Twitter, Instagram, GitHub } from "lucide-react";
+import { Link } from "react-router-dom";
+
 export const Footer = () => {
   return (
-    <footer className="bg-[#0f172a] text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+    <footer className="bg-primary text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-8 md:space-y-0">
+          {/* Left side: Website name and navigation links */}
           <div>
-            <h2 className="text-2xl font-bold mb-4">Company</h2>
-            <ul className="space-y-2">
+            <h2 className="text-secondary text-2xl font-bold">
+              Your Website Name
+            </h2>
+            <ul className="mt-4 space-y-2">
               <li>
-                <a href="#" className="hover:text-[#38bdf8]">
+                <Link to="#" className="hover:text-secondary">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link to="#" className="hover:text-secondary">
                   About Us
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-[#38bdf8]">
-                  Our Services
-                </a>
+                <Link to="#" className="hover:text-secondary">
+                  Services
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-[#38bdf8]">
-                  Privacy Policy
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-[#38bdf8]">
-                  Affiliate Program
-                </a>
+                <Link to="/admin/dashboard" className="hover:text-secondary">
+                  Admin
+                </Link>
               </li>
             </ul>
           </div>
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Get Help</h2>
-            <ul className="space-y-2">
-              <li>
-                <a href="#" className="hover:text-[#38bdf8]">
-                  FAQ
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-[#38bdf8]">
-                  Shipping
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-[#38bdf8]">
-                  Returns
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-[#38bdf8]">
-                  Order Status
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Online Shop</h2>
-            <ul className="space-y-2">
-              <li>
-                <a href="#" className="hover:text-[#38bdf8]">
-                  Watch
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-[#38bdf8]">
-                  Bag
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-[#38bdf8]">
-                  Shoes
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-[#38bdf8]">
-                  Dress
-                </a>
-              </li>
-            </ul>
+
+          {/* Right side: Footer links like Terms and Privacy */}
+          <div className="text-sm md:text-base flex flex-col md:flex-row md:space-x-6">
+            <Link to="#" className="hover:text-secondary">
+              Terms of Service
+            </Link>
+            <Link to="#" className="hover:text-secondary">
+              Privacy Policy
+            </Link>
           </div>
         </div>
-        <div className="mt-8 border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p>&copy; 2023 Your Company Name. All rights reserved.</p>
-          <div className="mt-4 md:mt-0">
-            <a href="#" className="hover:text-[#38bdf8] mr-4">
-              Terms of Service
-            </a>
-            <a href="#" className="hover:text-[#38bdf8]">
-              Privacy Policy
-            </a>
-          </div>
+
+        {/* Bottom area */}
+        <div className="mt-8 border-t border-gray-700 pt-4 text-center text-sm">
+          &copy; {new Date().getFullYear()} Your Company Name. All rights
+          reserved.
         </div>
       </div>
     </footer>

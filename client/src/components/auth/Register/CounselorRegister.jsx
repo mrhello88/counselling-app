@@ -364,7 +364,7 @@ export const CounselorRegister = () => {
         personalInfo: Data.personalInfo,
         education: Data.education,
         payment: Data.payment,
-        role:"counselor"
+        role: "counselor",
       };
       const formData = new FormData();
       // Append nested objects individually as JSON strings
@@ -401,47 +401,49 @@ export const CounselorRegister = () => {
 
   return (
     <>
-      <form
-        onSubmit={(e) => submitHandler(e)}
-        className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md"
-      >
-        {renderStep()}
-        <div className="flex justify-between mt-6">
-          <button
-            type="button" // Explicitly set type to "button"
-            className={`px-4 py-2 bg-blue-500 text-white rounded ${
-              step === 1
-                ? "bg-gray-400 cursor-not-allowed"
-                : "hover:bg-blue-700"
-            }`}
-            onClick={handlePrevious}
-            disabled={step === 1}
-          >
-            Previous
-          </button>
-          {step < 3 ? (
-            <>
-              <button
-                type="button" // Explicitly set type to "button"
-                className={`px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700`}
-                onClick={handleNext}
-              >
-                Next
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
-                type="submit" // This button is the submit button
-                onClick={handleNext}
-              >
-                Submit
-              </button>
-            </>
-          )}
-        </div>
-      </form>
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <form
+          onSubmit={(e) => submitHandler(e)}
+          className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md"
+        >
+          {renderStep()}
+          <div className="flex justify-between mt-6">
+            <button
+              type="button" // Explicitly set type to "button"
+              className={`px-4 py-2 rounded text-primary bg-secondary hover:text-black font-bold text-xl duration-300 hover:scale-110 ${
+                step === 1
+                  ? "bg-primary cursor-not-allowed"
+                  : "hover:bg-secondary"
+              }`}
+              onClick={handlePrevious}
+              disabled={step === 1}
+            >
+              Previous
+            </button>
+            {step < 3 ? (
+              <>
+                <button
+                  type="button" // Explicitly set type to "button"
+                  className="px-4 py-2 rounded text-primary bg-secondary hover:text-black font-bold text-xl duration-300 hover:scale-110"
+                  onClick={handleNext}
+                >
+                  Next
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  className="px-4 py-2 rounded text-primary bg-secondary hover:text-black font-bold text-xl duration-300 hover:scale-110"
+                  type="submit" // This button is the submit button
+                  onClick={handleNext}
+                >
+                  Submit
+                </button>
+              </>
+            )}
+          </div>
+        </form>
+      </div>
     </>
   );
 };

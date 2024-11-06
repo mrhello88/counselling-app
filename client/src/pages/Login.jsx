@@ -6,13 +6,13 @@ export const Login = () => {
       <div className="space-y-4">
         <Link
           to={"/login/student"}
-          className="w-64 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600"
+          className="w-64 py-2 bg-primary p-8 text-xl text-white font-semibold mr-4 rounded-lg hover:bg-secondary"
         >
           Login as Student
         </Link>
         <Link
           to={"/login/counselor"}
-          className="w-64 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600"
+          className="w-64 py-2 bg-secondary p-8 text-xl text-white font-semibold mr-4 rounded-lg hover:bg-primary"
         >
           Login as Counselor
         </Link>

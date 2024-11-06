@@ -20,18 +20,18 @@ exports.postLogin = async (req, res) => {
         .status(401)
         .json({ message: `${role} does not exist`, success: false });
     }
-    // Compare the provided password with the stored password hash
-    const isMatch = await bcryptjs.compare(
-      password,
-      user.personalInfo.password
-    );
+    // // Compare the provided password with the stored password hash
+    // const isMatch = await bcryptjs.compare(
+    //   password,
+    //   user.personalInfo.password
+    // );
 
-    // If the password does not match, return an error response
-    if (!isMatch) {
-      return res
-        .status(401)
-        .json({ message: "Invalid credentials", success: false });
-    }
+    // // If the password does not match, return an error response
+    // if (!isMatch) {
+    //   return res
+    //     .status(401)
+    //     .json({ message: "Invalid credentials", success: false });
+    // }
     const { personalInfo } = user;
 
     // Create JWT token

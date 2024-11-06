@@ -1,18 +1,26 @@
-import {useState} from "react"
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../store/auth";
+import { resetPasswordZodSchema } from "../../../zod-validation/resetPasswordZod";
+import { toast } from "react-toastify";
+
 export const ResetForgetPassword = () => {
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
   const { token, userId } = useParams(); // Extract the token from the URL
   const navigate = useNavigate();
   const { postResetPassword } = useAuth();
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (password === "") {
-      toast.error("fill the inputs");
+    const result = resetPasswordZodSchema.safeParse({password});
+    if (!result.success) {
+      const fieldErrors = result.error.format();
+      setErrors(fieldErrors);
+      toast.error("Please fix the errors in the form.");
       return;
     }
+
     postResetPassword(token, password, userId);
     setPassword("");
     navigate("/");
@@ -34,10 +42,21 @@ export const ResetForgetPassword = () => {
                 type="password"
                 id="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    [e.target.name]: "",
+                  }));
+                }}
                 required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               />
+              {errors.password && (
+                <p className="text-red-500 text-sm">
+                  {errors.password._errors[0]}
+                </p>
+              )}
             </div>
             <button
               type="submit"

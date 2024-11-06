@@ -43,9 +43,11 @@ export const SideBar = ({ onSelectChat }) => {
             <>
               <Link
                 to={"/user-dashboard"}
-                className={`my-4 text-sm block ${activeUser === index <3
-                    ? "bg-white text-black" : "bg-gray-600 text-black"
-                  } hover:text-black hover:bg-white p-2 rounded`}
+                className={`my-4 text-sm block ${
+                  activeUser === index < 3
+                    ? "bg-white text-black"
+                    : "bg-gray-600 text-black"
+                } hover:text-black hover:bg-white p-2 rounded`}
                 onClick={() => useClickHandler(items)}
               >
                 <div className="flex items-center justify-start cursor-pointer gap-4">
@@ -65,12 +67,16 @@ export const SideBar = ({ onSelectChat }) => {
           ))}
         </ul>
       </div>
-      <div className="my-8 ">
-        <Link to="#" className=" text-2xl flex items-center gap-4">
-          <FaBook className="text-secondary" size={24} />
-          <span className="text-white font-bold hover:text-secondary hover:scale-110 duration-300 ml-4 text-2xl">Book Library</span> 
-        </Link>
-      </div>
+      {userData?.role === "student" && (
+        <div className="my-8 ">
+          <Link to="#" className=" text-2xl flex items-center gap-4">
+            <FaBook className="text-secondary" size={24} />
+            <span className="text-white font-bold hover:text-secondary hover:scale-110 duration-300 ml-4 text-2xl">
+              Book Library
+            </span>
+          </Link>
+        </div>
+      )}
       {userData?.role === "counselor" && (
         <div className="my-8">
           <Link
@@ -78,14 +84,19 @@ export const SideBar = ({ onSelectChat }) => {
             className="text-secondary text-2xl flex items-center gap-4"
           >
             <MdCreate className="text-secondary" size={24} />
-            <span className="text-white font-bold hover:text-secondary hover:scale-110 duration-300 ml-4 text-2xl"> Create Counseling</span> 
+            <span className="text-white font-bold hover:text-secondary hover:scale-110 duration-300 ml-4 text-2xl">
+              {" "}
+              Create Counseling
+            </span>
           </Link>
         </div>
       )}
       <div className="my-8">
         <Link to="#" className=" flex items-center gap-4">
           <MdLogout className="text-secondary" size={24} />
-         <span className="text-white font-bold hover:text-secondary hover:scale-110 duration-300 ml-4 text-2xl">LogOut</span> 
+          <span className="text-white font-bold hover:text-secondary hover:scale-110 duration-300 ml-4 text-2xl">
+            LogOut
+          </span>
         </Link>
       </div>
     </div>

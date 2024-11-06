@@ -11,8 +11,8 @@ export const UserDashboard = () => {
 
   return (
     <>
-      <section className="">
-        <div className="flex justify-around container h-full">
+      <section className="h-screen">
+        <div className="flex justify-around container">
           <div className="w-1/4 ">
             <SideBar onSelectChat={handleSelectChat} />
           </div>
