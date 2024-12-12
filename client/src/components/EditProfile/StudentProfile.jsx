@@ -1,8 +1,20 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../../store/auth";
-
+import { useAuth } from "../../context/Context";
+import { LoadingOverlay } from "../Loading/Loading";
+import { toast } from "react-toastify";
 export const StudentProfilePage = () => {
-  const { fetchProfileData, postUpdatedStudentProfile, user } = useAuth();
+  const {
+    postData,
+    apiLoading,
+    fetchData,
+    isLoggedIn,
+  } = useAuth();
+  // const {
+  //   fetchProfileData,
+  //   postUpdatedStudentProfile,
+  //   postData,
+  //   apiLoading,
+  // } = useAuth();
   const [profileData, setProfileData] = useState([]);
   // const { profileData } = user || {}; // Ensure user is defined
   const [isEditing, setIsEditing] = useState(false);
@@ -11,12 +23,20 @@ export const StudentProfilePage = () => {
   const [profileImage, setProfileImage] = useState("");
 
   useEffect(() => {
-    const getTheProfileData = async () => {
-      const data = await fetchProfileData(); // Fetch profile data on mount
-      setProfileData(data || []);
+    const fetchingData = async () => {
+      try {
+        const responseData = await fetchData("http://localhost:3000/profile");
+        if (responseData.success) {
+          setProfileData(responseData.data || []);
+        } else {
+          toast.error(responseData.message);
+        }     
+      } catch (error) {
+        toast.error("An unexpected error occurred while fetching profile data");
+      }
     };
-    getTheProfileData();
-  }, [isEditing]);
+    fetchingData();
+  }, [isEditing, fetchData, isLoggedIn]);
 
   // Set form data once profileData is available
   useEffect(() => {
@@ -57,15 +77,28 @@ export const StudentProfilePage = () => {
     for (const key in formData) {
       updatedFormData.append(key, formData[key]);
     }
-    await postUpdatedStudentProfile(updatedFormData);
-    setIsEditing(false); // Exit editing mode after submission
+
+    // Call API to update profile data
+    try {
+      const responseData = await postData(
+        "http://localhost:3000/update-student-profile",
+        updatedFormData
+      );
+      if (responseData.success) {
+        toast.success(responseData.message);
+        // fetchProfileData();
+        setIsEditing(false); // Disable editing mode after submission
+      } else {
+        toast.error(responseData.message);
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred while updating profile");
+    }
   };
 
-  // Display loading if profileData is not yet available
-  if (!profileData || !profileData.personalInfo) {
-    return <div>Loading ......</div>;
+  if (apiLoading) {
+    return apiLoading && <LoadingOverlay />;
   }
-
   return (
     <div className="max-w-2xl mx-auto p-8 bg-white shadow-md rounded-lg">
       <div className="text-center">

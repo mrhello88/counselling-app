@@ -31,10 +31,10 @@ exports.postscheduleCounseling = async (req, res) => {
   try {
     const { counselorId, startDate, endDate, duration } = req.body;
 
-    if (req.user.role === "counselor") {
+    if (req.user.role === "counselor" || "admin") {
       return res.status(403).json({
-        message: "counselor can't create own session",
-        success: false,
+        message: `${req.user.role} can't create session`,
+        success: false, 
       });
     }
     const counselor = await UserSchema.findById(counselorId);

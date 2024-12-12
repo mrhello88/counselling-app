@@ -1,30 +1,53 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../store/auth";
+import { useAuth } from "../../../context/Context";
 import { resetPasswordZodSchema } from "../../../zod-validation/resetPasswordZod";
 import { toast } from "react-toastify";
+import { LoadingOverlay } from "../../Loading/Loading";
 
 export const ResetForgetPassword = () => {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const { token, userId } = useParams(); // Extract the token from the URL
   const navigate = useNavigate();
-  const { postResetPassword } = useAuth();
-  const handleSubmit = (e) => {
+  const { postData, apiLoading} = useAuth();
+  // const { postResetPassword, postData } = useAuth();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = resetPasswordZodSchema.safeParse({password});
+    const result = resetPasswordZodSchema.safeParse({ password });
     if (!result.success) {
       const fieldErrors = result.error.format();
       setErrors(fieldErrors);
       toast.error("Please fix the errors in the form.");
       return;
     }
-
-    postResetPassword(token, password, userId);
-    setPassword("");
-    navigate("/");
+    try {
+      const responseData = await postData(
+        `http://localhost:3000/password-reset`,
+        {
+          token,
+          password,
+          userId,
+        }
+      );
+      if (responseData.success) {
+        toast.success(responseData.message);
+        setPassword("");
+        navigate("/");
+      } else {
+        toast.error(responseData.message);
+      }
+    } catch (error) {
+      toast.error(
+        "An unexpected error occurred while reset password email verification."
+      );
+    }
   };
+  if (apiLoading) {
+    return apiLoading && <LoadingOverlay />;
+  }
   return (
     <>
       <div className="flex items-center justify-center h-screen bg-gray-100">

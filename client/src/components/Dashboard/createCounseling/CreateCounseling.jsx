@@ -1,12 +1,15 @@
 import { useState } from "react";
-import { useAuth } from "../../../store/auth";
+import { useAuth } from "../../../context/Context";
 import { toast } from "react-toastify";
 import { createCounselingSchemaZod } from "../../../zod-validation/createCounselingZod";
+import { LoadingOverlay } from "../../Loading/Loading";
 
 export const CreateSession = () => {
   const [data, setData] = useState({ category: "", duration: "", price: "" });
   const [errors, setErrors] = useState({});
-  const { postCreateCounseling } = useAuth();
+  const { postData, apiLoading} = useAuth();
+  // const { postCreateCounseling, apiLoading, postData } = useAuth();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData((prevData) => ({
@@ -21,7 +24,7 @@ export const CreateSession = () => {
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const result = createCounselingSchemaZod.safeParse(data);
@@ -32,10 +35,24 @@ export const CreateSession = () => {
       return;
     }
     // Add your submission logic here
-    postCreateCounseling(data);
-    setData({ category: "", duration: "", price: "" });
+    try {
+      const responseData = await postData(
+        "http://localhost:3000/create-counseling",
+        data
+      );
+      if (responseData.success) {
+        toast.success(responseData.message);
+        setData({ category: "", duration: "", price: "" });
+      } else {
+        toast.error(responseData.message);
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred while counseling creating");
+    }
   };
-
+  if (apiLoading) {
+    return apiLoading && <LoadingOverlay />;
+  }
   return (
     <div className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-md">
       <h2 className="text-2xl font-semibold mb-6 text-center">

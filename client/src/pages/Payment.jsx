@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../store/auth";
+import { useAuth } from "../context/Context";
 import { paymentFormSchema } from "../zod-validation/paymentZod";
+import { LoadingOverlay } from "../components/Loading/Loading";
+import { toast } from "react-toastify";
 export const Payment = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { postCounselingSession, postCounselorAdvice } = useAuth();
+  // const { postCounselingSession, postData, apiLoading, postCounselorAdvice } = useAuth();
+  const { postData, apiLoading, fetchData } = useAuth();
+
   const [errors, setErrors] = useState({});
   const [paymentInfo, setPaymentInfo] = useState({
     cardNumber: "",
@@ -30,14 +34,40 @@ export const Payment = () => {
       return;
     }
     if (location.state.scheduleSessionData) {
-      const { scheduleSessionData } = location.state;
-      const response = await postCounselingSession(scheduleSessionData);
-      if (response.success) {
-        navigate("/user-dashboard");
+      try {
+        const { scheduleSessionData } = location.state;
+        const counselingResponseData = await postData(
+          "http://localhost:3000/counseling-schedule",
+          scheduleSessionData
+        );
+        if (counselingResponseData.success) {
+          const responseAdviceData = await postData(
+            `http://localhost:3000/buy-advice`,
+            { counselorId: scheduleSessionData.counselorId }
+          );
+          if (counselingResponseData.success) {
+            const responseData = await fetchData("http://localhost:3000/user");
+            if (responseData.success) {
+              toast.success(responseAdviceData.message);
+              navigate("/user-dashboard");
+            }
+          } else {
+            toast.error(responseAdviceData.message || "Registration failed.");
+          }
+        } else {
+          toast.error(counselingResponseData.message);
+        }
+      } catch (error) {
+        console.log(error)
+        toast.error(
+          "An unexpected error occurred while post counsling schedule"
+        );
       }
     }
   };
-
+  if (apiLoading) {
+    return apiLoading && <LoadingOverlay />;
+  }
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">

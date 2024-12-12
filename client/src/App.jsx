@@ -1,6 +1,6 @@
 import "../public/css/App.css";
 import "react-toastify/dist/ReactToastify.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar-Footer/Navbar";
 import { UserDashboard } from "./pages/U-Dashboard";
@@ -20,19 +20,32 @@ import { CreateSession } from "./components/Dashboard/createCounseling/CreateCou
 import { CounselorProfile } from "./components/CounselorProfile/CounselorProfile";
 import { CounselorList } from "./components/FilterCounselors/CounselorList";
 import { HomePage } from "./pages/HomePage";
-import { useAuth } from "./store/auth";
+import { useAuth } from "./context/Context";
 import { Login } from "./pages/Login";
 import { VerifyEmailReset } from "./components/auth/ForgetPassword/VerifyEmailReset";
 import { ResetForgetPassword } from "./components/auth/ForgetPassword/ResetForgetPassword";
 import { AdminDashboard } from "./components/AdminDashboard/AdminDashboard";
-// import { CounsellorDashboard } from "./pages/C-Dashboard";
+import { toast } from "react-toastify";
 
 export const App = () => {
-  const { isLoggedIn, userAuthentication, user } = useAuth();
-  const { userData } = user;
+  const { isLoggedIn, fetchData } = useAuth();
+  const [userData, setUserData] = useState({});
   useEffect(() => {
-    userAuthentication();
-  }, [isLoggedIn]);
+    const fetchingData = async () => {
+      try {
+        const responseData = await fetchData("http://localhost:3000/user");
+        if (responseData.success) {
+          setUserData(responseData.data || {});
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        toast.error("An unexpected error occurred while fetching user data.");
+      }
+    };
+    // Call the async function inside useEffect
+    fetchingData();
+  }, [isLoggedIn, fetchData]);
+
   return (
     <Router>
       <div className="">
@@ -43,14 +56,18 @@ export const App = () => {
         {isLoggedIn ? (
           <>
             {userData.role === "student" && userData.friends.length > 0 ? (
-              <Route path="/user-dashboard" element={<UserDashboard />}>
-                <Route index element={<ChatWindow />} />
+              <>
+                <Route path="/user-dashboard" element={<UserDashboard />}>
+                  <Route index element={<ChatWindow />} />
+                </Route>
                 <Route
-                  path="/user-dashboard/create-session"
-                  element={<CreateSession />}
+                  path="/profile/student"
+                  element={<StudentProfilePage />}
                 />
-              </Route>
-            ) : null}
+              </>
+            ) : (
+              <Route path="/" element={<HomePage />} />
+            )}
             {userData.role === "counselor" ? (
               <>
                 <Route path="/user-dashboard" element={<UserDashboard />}>
@@ -65,15 +82,19 @@ export const App = () => {
                   element={<CounselorProfilePage />}
                 />
               </>
-            ) : null}
-            {userData.role === "counselor" ? (
-              <Route
-                path="/profile/counselor"
-                element={<CounselorProfilePage />}
-              />
-            ) : null}
-            {userData.role === "student" && userData.friends.length > 0 ? (
-              <Route path="/profile/student" element={<StudentProfilePage />} />
+            ) : (
+              <Route path="/" element={<HomePage />} />
+            )}
+            {userData.role === "admin" ? (
+             <>
+             <Route path="/user-dashboard" element={<UserDashboard />}>
+               <Route index element={<ChatWindow />} />
+             </Route>
+             {/* <Route
+               path="/profile/student"
+               element={<StudentProfilePage />}
+             /> */}
+           </>
             ) : null}
           </>
         ) : (
@@ -92,17 +113,20 @@ export const App = () => {
             <Route path="/register/counselor" element={<CounselorRegister />} />
             <Route path="/register/verify/:token" element={<VerifyUser />} />
             <Route path={"/email-reset"} element={<VerifyEmailReset />} />
-            <Route path={"/password-reset/:token/:userId"} element={<ResetForgetPassword />} />
+            <Route
+              path={"/password-reset/:token/:userId"}
+              element={<ResetForgetPassword />}
+            />
           </>
         )}
         <Route
           path="/counselor-profile/:counselorId"
           element={<CounselorProfile />}
         />
+        <Route path="/login/admin" element={<LoginPage role={"admin"} />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/counselorList" element={<CounselorList />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard/>} />
       </Routes>
       <Footer />
     </Router>

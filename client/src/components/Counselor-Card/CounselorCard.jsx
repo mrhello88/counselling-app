@@ -1,15 +1,10 @@
 // import { useAuth } from "../../store/auth";
-import React from 'react';
-import {FaEnvelope,FaBriefcase } from 'react-icons/fa';
+import React from "react";
+import { FaEnvelope, FaBriefcase } from "react-icons/fa";
 import { LiaCcMastercard } from "react-icons/lia";
 import { TbCategoryPlus } from "react-icons/tb";
 import { IoPricetagsOutline } from "react-icons/io5";
 export const CounselorCard = ({ counselorData, handlCounselorProfile }) => {
-  // const { postCounselorAdvice } = useAuth();
-  // const handleBuy = async (counselor) => {
-  //   postCounselorAdvice(counselor);
-  // };
-
   return (
     <div className="bg-primary space-y-3  shadow-md rounded-lg p-4 flex flex-col items-center">
       <img
@@ -17,26 +12,42 @@ export const CounselorCard = ({ counselorData, handlCounselorProfile }) => {
         alt="Profile"
         className="w-24 h-24 rounded-full mb-4 shadow-lg"
       />
-      <h3 className="text-3xl font-bold text-secondary">{counselorData.personalInfo?.name}</h3>
+      <h3 className="text-3xl font-bold text-secondary">
+        {counselorData.personalInfo?.name}
+      </h3>
       {/* <div className="flex items-center space-x-2">
           <FontAwesomeIcon icon={faEnvelope} />
           <a href={`mailto:${counselorData.personalInfo?.email}`} className="text-teal-600 hover:underline">
             {counselorData.personalInfo?.email || 'example@gmail.com'}
           </a>
         </div> */}
-      
 
-<div className='font-semibold text-white text-xl flex flex-col space-y-2 '>
-     <div className='flex items-center justify-between w-full '>
-     <p className="flex items-center">{counselorData.counselor?.education.degree}</p>
-     <p className="flex items-center"> <FaBriefcase className="mr-2 text-secondary" /> {counselorData.counselor?.education.experience}</p>
-     </div>
-    <div className='flex items-center justify-between w-full'>
-    <p className="flex items-center"><TbCategoryPlus className="mr-2 text-secondary"/> {counselorData.counseling?.category}</p>
-    <p className="flex items-center"><IoPricetagsOutline className="mr-2 text-secondary"/>${counselorData.counseling?.price}</p>
-    </div>
-<p className="mb-2 flex items-center justify-center"><FaEnvelope className=" mr-2 text-secondary" /> {counselorData.personalInfo?.email}</p>
-</div>
+      <div className="font-semibold text-white text-xl flex flex-col space-y-2 ">
+        <div className="flex items-center justify-between w-full ">
+          <p className="flex items-center">
+            {counselorData.counselor?.education.degree}
+          </p>
+          <p className="flex items-center">
+            {" "}
+            <FaBriefcase className="mr-2 text-secondary" />{" "}
+            {counselorData.counselor?.education.experience}
+          </p>
+        </div>
+        <div className="flex items-center justify-between w-full">
+          <p className="flex items-center">
+            <TbCategoryPlus className="mr-2 text-secondary" />{" "}
+            {counselorData.counseling?.category}
+          </p>
+          <p className="flex items-center">
+            <IoPricetagsOutline className="mr-2 text-secondary" />$
+            {counselorData.counseling?.price}
+          </p>
+        </div>
+        <p className="mb-2 flex items-center justify-center">
+          <FaEnvelope className=" mr-2 text-secondary" />{" "}
+          {counselorData.personalInfo?.email}
+        </p>
+      </div>
 
       <button
         onClick={(e) => handlCounselorProfile(e, counselorData?._id)}
@@ -45,15 +56,5 @@ export const CounselorCard = ({ counselorData, handlCounselorProfile }) => {
         Profile
       </button>
     </div>
-    // <div className="bg-white p-4 rounded shadow-md">
-    //   <h3>{counselor.personalInfo.name}</h3>
-    //   <p>{counselor.personalInfo.email}</p>
-    //   <button
-    //     className="bg-blue-500 text-white px-4 py-2 rounded"
-    //     onClick={() => handleBuy(counselor)}
-    //   >
-    //     Buy Advice
-    //   </button>
-    // </div>
   );
 };

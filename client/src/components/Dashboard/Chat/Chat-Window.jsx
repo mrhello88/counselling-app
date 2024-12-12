@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { MessageInput } from "./MessageInput";
 import { useOutletContext } from "react-router-dom";
-import { useAuth } from "../../../store/auth";
+import { useAuth } from "../../../context/Context";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import duration from "dayjs/plugin/duration";
-
+import { toast } from "react-toastify";
+import { LoadingOverlay } from "../../Loading/Loading";
 dayjs.extend(utc);
 dayjs.extend(duration);
 
@@ -17,18 +18,50 @@ export const ChatWindow = () => {
   const [schedule, setSchedule] = useState({});
   const [status, setStatus] = useState("loading"); // loading, before, during, end
   const [remainingTime, setRemainingTime] = useState(null);
-  const { getUserMessages, getCounselingSession, isLoggedIn } = useAuth();
+  // const { getUserMessages, getCounselingSession, isLoggedIn } = useAuth();
+  const { fetchData, apiLoading, isLoggedIn, onlineStatus, setOnlineStatus } = useAuth();
   useEffect(() => {
-    if (chatUser?._id) {
-      const fetchData = async () => {
-        const fetchedMessages = await getUserMessages(chatUser._id);
-        const fetchSchedule = await getCounselingSession(chatUser._id);
-        setMessages(fetchedMessages || []);
-        setSchedule(fetchSchedule || {});
-      };
-      fetchData();
-    }
-  }, [chatUser?._id, isLoggedIn, getUserMessages]);
+    if (!chatUser?._id) return; // Early return if chatUser ID is unavailable
+
+    const fetchingData = async () => {
+      try {
+        // Fetch messages and schedule concurrently
+        const [messagesResponse, scheduleResponse, userStatusResoponse] = await Promise.all([
+          fetchData(`http://localhost:3000/get/${chatUser._id}`),
+          fetchData(
+            `http://localhost:3000/counseling-schedule/${chatUser._id}`
+          ),
+          fetchData(`http://localhost:3000/user-status/${chatUser._id}`)
+        ]);
+
+         // Handle messages response
+         if (userStatusResoponse.success) {
+          setOnlineStatus(userStatusResoponse.data || "");
+        } else {
+          toast.error(userStatusResoponse.message || "Failed to fetch userStatus");
+        }
+
+        // Handle messages response
+        if (messagesResponse.success) {
+          setMessages(messagesResponse.data || []);
+        } else {
+          toast.error(messagesResponse.message || "Failed to fetch messages");
+        }
+
+        // Handle schedule response
+        if (scheduleResponse.success) {
+          setSchedule(scheduleResponse.data || {});
+        } else {
+          toast.error(scheduleResponse.message || "Failed to fetch schedule");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("An unexpected error occurred while fetching data.");
+      }
+    };
+
+    fetchingData();
+  }, [chatUser?._id, isLoggedIn, fetchData]); // Dependency array
 
   useEffect(() => {
     const sessionEnd = dayjs.utc(schedule.endDate);
@@ -69,16 +102,23 @@ export const ChatWindow = () => {
 
     return () => clearInterval(intervalId);
   }, [schedule.startDate, schedule.endDate]);
-
+  // if (apiLoading) {
+  //   return <LoadingOverlay />;
+  // }
   return (
     <>
       {isLoggedIn && chatUser?._id ? (
         <div className="flex flex-col justify-between h-screen">
           <div className="">
             <div className="flex items-center gap-2 py-2 px-4 bg-gray-800">
+              {onlineStatus.status === "online" ? (
+                <span className="text-green-500">• Online</span> // Green icon for online
+              ) : (
+                <span className="text-gray-500">• Offline</span> // Gray icon for offline
+              )}
               <img
                 className="w-12 rounded-full"
-                src="/src/assets/reactIcon.png"
+                src={`http://localhost:3000/images/${chatUser?.profile}`}
                 alt="demy logo"
               />
               <span className="text-white text-xl font-medium capitalize">
@@ -114,13 +154,13 @@ export const ChatWindow = () => {
                 {messages?.map((obj) => (
                   <li
                     key={obj._id}
-                    className={`mb-2 p-2 max-w-xs rounded-lg ${
+                    className={`mb-2 p-2 w-full max-w-xs rounded-lg break-words text-base font-medium ${
                       obj.senderId === userId
-                        ? "bg-blue-500 text-white self-end ml-auto"
-                        : "bg-gray-200 text-gray-800 self-start"
+                        ? "bg-yellow-500 text-black ml-auto"
+                        : "bg-gray-200 text-gray-800"
                     }`}
                   >
-                    <p>{obj.message}</p>
+                    <p className="leading-relaxed">{obj.message}</p>
                   </li>
                 ))}
               </ul>

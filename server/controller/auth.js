@@ -151,7 +151,7 @@ exports.getUser = async (req, res, next) => {
     if (role === "student") {
       return res.status(200).json({
         data: req.user,
-        message: "this is student not counselor",
+        message: "this is student",
         success: true,
       });
     }
@@ -161,7 +161,7 @@ exports.getUser = async (req, res, next) => {
       "personalInfo.email": personalInfo.email,
     }).populate("counselor");
 
-    if (!counselorData) {
+    if (!counselorData) { 
       return res
         .status(404)
         .json({ message: "Counselor not found", success: false });
@@ -219,7 +219,7 @@ exports.getVerify = async (req, res, next) => {
           expiresIn: 259200, // Token expiry time in seconds (3 days)
         }
       );
-      // await cryptoUser.deleteOne({ personalInfo: personalInfo.email }); // delete when the user Verify, not wait for 5min
+      await cryptoUser.deleteOne({ personalInfo: personalInfo.email }); // delete when the user Verify, not wait for 5min
       return res.status(200).json({
         message: "Session added successfully",
         token, // Send the token back to React (optional)
@@ -253,7 +253,7 @@ exports.getVerify = async (req, res, next) => {
           expiresIn: 259200, // Token expiry time in seconds (3 days)
         }
       );
-      // await cryptoUser.deleteOne({ personalInfo: personalInfo.email });
+      await cryptoUser.deleteOne({ personalInfo: personalInfo.email });
       return res.status(200).json({
         message: "Session added successfully",
         token, // Send the token back to React (optional)

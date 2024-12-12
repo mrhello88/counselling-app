@@ -14,7 +14,7 @@ router.post(
   zodValidator(zodUser, zodCounselorProfile),
   authController.postRegister
 );
-router.get("/user", authentication, authController.getUser);
+router.get("/user", authentication, authController.getUser); 
 router.get("/register/verify/:token", authController.getVerify);
 router.post("/email-reset", authController.postEmailResetPassword)
 router.post("/password-reset", authController.postResetPassword)

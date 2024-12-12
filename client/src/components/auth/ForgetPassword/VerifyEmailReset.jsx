@@ -1,15 +1,16 @@
 import { useState } from "react";
-import { useAuth } from "../../../store/auth";
+import { useAuth } from "../../../context/Context";
 import { toast } from "react-toastify";
 import { emailResetPasswordZodSchema } from "../../../zod-validation/emailResetPasswordZod";
 import { useNavigate } from "react-router-dom";
+import { LoadingOverlay } from "../../Loading/Loading";
 
 export const VerifyEmailReset = () => {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
-  const { postEmailResetPassword } = useAuth();
-
+  const { postData, apiLoading } = useAuth();
+  // const { postEmailResetPassword, postData } = useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -22,12 +23,26 @@ export const VerifyEmailReset = () => {
       toast.error("Please fix the errors in the form.");
       return;
     }
-
-    postEmailResetPassword(email);
-    // navigate("/")
-    setEmail("");
-
+    try {
+      const responseData = await postData(`http://localhost:3000/email-reset`, {
+        email,
+      });
+      if (responseData.success) {
+        toast.success(responseData.message);
+        navigate("/");
+        setEmail("");
+      } else {
+        toast.error(responseData.message);
+      }
+    } catch (error) {
+      toast.error(
+        "An unexpected error occurred while reset password email verification."
+      );
+    }
   };
+  if (apiLoading) {
+    return apiLoading && <LoadingOverlay />;
+  }
 
   return (
     <>

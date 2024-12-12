@@ -2,31 +2,40 @@ import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
-import { useAuth } from "../../store/auth";
+import { useAuth } from "../../context/Context";
 import { useNavigate, useParams } from "react-router-dom";
 import { counselingSessionSchemaZod } from "../../zod-validation/counselingSessionZod";
 import { toast } from "react-toastify";
+import { LoadingOverlay } from "../Loading/Loading";
 
 export const CounselorProfile = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [profileData, setProfileData] = useState({});
   const [errors, setErrors] = useState({});
-  const {
-    getCounselorProfile,
-    // postCounselingSession,
-    isLoggedIn,
-    // setFormDataSession,
-    // formDataSession,
-  } = useAuth();
+  // const {
+  //   getCounselorProfile,
+  //   isLoggedIn,
+  // } = useAuth();
+  const { fetchData, apiLoading, isLoggedIn } = useAuth();
   const { counselorId } = useParams();
   const navigate = useNavigate();
   useEffect(() => {
-    const counselorData = async () => {
-      const data = await getCounselorProfile(counselorId);
-      setProfileData(data || {});
+    const fetchingData = async () => {
+      try {
+        const responseData = await fetchData(
+          `http://localhost:3000/counselorProfile/${counselorId}`
+        );
+        if (responseData.success) {
+          setProfileData(responseData.data || {});
+        } else {
+          toast.error(responseData.message);
+        }
+      } catch (error) {
+        toast.error("An unexpected error occurred while fetching profile data");
+      }
     };
-    counselorData();
-  }, [getCounselorProfile]);
+    fetchingData();
+  }, [fetchData, isLoggedIn]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,22 +43,21 @@ export const CounselorProfile = () => {
       toast.error("Date is Required!");
       return;
     }
-    console.log(selectedDate,"this is date and time")
-   // Convert the selected date to UTC explicitly
-  const startDate = moment(selectedDate).format("YYYY-MM-DD HH:mm:ss");
-const result = counselingSessionSchemaZod.safeParse({ date: startDate });
+    // Convert the selected date to UTC explicitly
+    const startDate = moment(selectedDate).format("YYYY-MM-DD HH:mm:ss");
+    const result = counselingSessionSchemaZod.safeParse({ date: startDate });
 
-if (!result.success) {
-  const fieldErrors = result.error.format();
-  setErrors(fieldErrors);
-  toast.error("Please fix the errors in the form.");
-  return;
-}
+    if (!result.success) {
+      const fieldErrors = result.error.format();
+      setErrors(fieldErrors);
+      toast.error("Please fix the errors in the form.");
+      return;
+    }
 
-// Calculate end date in UTC as well
-const endDate = moment(selectedDate)
-  .add(profileData.counseling?.duration, "minutes")
-  .format("YYYY-MM-DD HH:mm:ss");
+    // Calculate end date in UTC as well
+    const endDate = moment(selectedDate)
+      .add(profileData.counseling?.duration, "minutes")
+      .format("YYYY-MM-DD HH:mm:ss");
 
     if (!isLoggedIn) {
       return navigate("/login", {
@@ -63,8 +71,8 @@ const endDate = moment(selectedDate)
           },
         },
       });
-    } 
-    console.log(startDate,endDate,"profile")
+    }
+
     navigate("/payment", {
       state: {
         navigateToPayment: `/payment`,
@@ -81,7 +89,7 @@ const endDate = moment(selectedDate)
   };
 
   if (!profileData?._id) {
-    return <p>Loading.... at counselorProfile</p>;
+    return <LoadingOverlay />;
   }
 
   return (

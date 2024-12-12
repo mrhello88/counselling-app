@@ -41,7 +41,7 @@ const cryptoSchema = new mongoose.Schema({
       createdAt: {
         type: Date,
         default: Date.now,
-        expires: 3000
+        expires: 300
       },
 });
 

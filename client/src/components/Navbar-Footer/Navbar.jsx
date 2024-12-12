@@ -1,28 +1,50 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../../store/auth";
+import { useAuth } from "../../context/Context";
+import { toast } from "react-toastify";
+import { LoadingOverlay } from "../Loading/Loading";
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isLoggedIn, LogoutUser, userAuthentication, user } = useAuth();
-  const { userData } = user;
+  const { isLoggedIn, fetchData, apiLoading, LogoutUser } = useAuth();
+  const [userData, setUserData] = useState({});
   useEffect(() => {
-    userAuthentication();
-  }, [isLoggedIn]);
+    const fetchingData = async () => {
+      try {
+        const responseData = await fetchData("http://localhost:3000/user");
+        if (responseData.success) {
+          setUserData(responseData.data || {});
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        toast.error("An unexpected error occurred while fetching user data.");
+      }
+    };
+    // Call the async function inside useEffect
+    fetchingData();
+  }, [isLoggedIn, fetchData]);
+  if (apiLoading) {
+    return apiLoading && <LoadingOverlay />;
+  }
   return (
     <nav className="bg-primary p-4 ">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <div className="flex justify-between items-center space-x-52 ">
           <div className="text-secondary font-bold text-xl pl-5 duration-300 hover:scale-125">
-            <h2 className="text-2xl cursor-pointer">StudentCounselor</h2>
+            <h2 className="text-2xl cursor-pointer">
+              StudentCounselor
+            </h2>
           </div>
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8 text-lg font-bold w-full h-12 items-center">
-          <NavLink
+            <NavLink
               to="/"
               className={({ isActive }) =>
-                ` ${isActive ? "text-white hover:text-secondary scale-115" : "hover:scale-125 text-secondary"
+                ` ${
+                  isActive
+                    ? "text-white hover:text-secondary scale-115"
+                    : "hover:scale-125 text-secondary"
                   // "text-secondary hover:text-white scale-115" : "hover:scale-125 text-secondary"
                 }`
               }
@@ -37,26 +59,32 @@ export const Navbar = () => {
                     <NavLink
                       to="/user-dashboard"
                       className={({ isActive }) =>
-                        ` ${isActive ? "text-white hover:text-secondary scale-115" : "hover:scale-125 text-secondary"
+                        ` ${
+                          isActive
+                            ? "text-white hover:text-secondary scale-115"
+                            : "hover:scale-125 text-secondary"
                           // "text-secondary hover:text-white scale-115" : "hover:scale-125 text-secondary "
                         }`
                       }
                     >
-                      User
+                      Dashboard
                     </NavLink>
                   </>
                 ) : null}
-                {userData.role === "counselor" ? (
+                {userData.role === "counselor" || "admin"? (
                   <>
                     <NavLink
                       to="/user-dashboard"
                       className={({ isActive }) =>
-                        ` ${isActive ? "text-white hover:text-secondary scale-115" : "hover:scale-125  text-secondary"
+                        ` ${
+                          isActive
+                            ? "text-white hover:text-secondary scale-115"
+                            : "hover:scale-125  text-secondary"
                           // "text-secondary hover:text-white scale-115" : "hover:scale-125 text-secondary"
                         }`
                       }
                     >
-                      User
+                      Dashboard
                     </NavLink>
                   </>
                 ) : null}
@@ -66,7 +94,10 @@ export const Navbar = () => {
             <NavLink
               to="/counselorList"
               className={({ isActive }) =>
-                ` ${isActive ? "text-white hover:text-secondary scale-115" : "hover:scale-125 text-secondary"
+                ` ${
+                  isActive
+                    ? "text-white hover:text-secondary scale-115"
+                    : "hover:scale-125 text-secondary"
                 }`
               }
             >
@@ -75,20 +106,26 @@ export const Navbar = () => {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                ` ${isActive ? "text-white hover:text-secondary scale-115" : "hover:scale-125 text-secondary"
+                ` ${
+                  isActive
+                    ? "text-white hover:text-secondary scale-115"
+                    : "hover:scale-125 text-secondary"
                 }`
               }
             >
-            Service
+              Service
             </NavLink>
             <NavLink
               to=""
               className={({ isActive }) =>
-                ` ${isActive ? "text-white hover:text-secondary scale-115" : "hover:scale-125 text-secondary"
+                ` ${
+                  isActive
+                    ? "text-white hover:text-secondary scale-115"
+                    : "hover:scale-125 text-secondary"
                 }`
               }
             >
-            About Us
+              About Us
             </NavLink>
           </div>
         </div>
@@ -134,11 +171,13 @@ export const Navbar = () => {
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
-
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden mt-2">
-          <a href="/" className="block py-2 px-4 hover:bg-secondary text-primary">
+          <a
+            href="/"
+            className="block py-2 px-4 hover:bg-secondary text-primary"
+          >
             Home
           </a>
           <a
@@ -153,7 +192,10 @@ export const Navbar = () => {
           >
             About
           </a>
-          <a href="#" className="block py-2 px-4 hover:bg-secondary text-primary">
+          <a
+            href="#"
+            className="block py-2 px-4 hover:bg-secondary text-primary"
+          >
             Register
           </a>
           <a
@@ -163,10 +205,11 @@ export const Navbar = () => {
             Contact
           </a>
           <button className="w-full text-left bg-[#38bdf8] text-white py-2 px-4 mt-2 hover:bg-[#0ea5e9]">
-           Book a Session
+            Book a Session
           </button>
         </div>
       )}
-    </nav>
-  );
+        
+    </nav>
+  );
 };

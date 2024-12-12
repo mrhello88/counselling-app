@@ -1,14 +1,17 @@
 import { useState } from "react";
-import { useAuth } from "../../../store/auth";
+import { useAuth } from "../../../context/Context.jsx";
 import { Link } from "react-router-dom";
 import { counselorPersonalInfoSchema } from "../../../zod-validation/counselorZod.js";
 import { counselorEducationSchema } from "../../../zod-validation/counselorZod.js";
 import { counselorPaymentSchema } from "../../../zod-validation/counselorZod.js";
 import { toast } from "react-toastify";
+import { LoadingOverlay } from "../../Loading/Loading.jsx";
 
 export const CounselorRegister = () => {
   const [step, setStep] = useState(1); // Track current step
-  const { userRegister } = useAuth();
+  // const { userRegister, postData, apiLoading, apiError } = useAuth();
+  const { postData, apiLoading} = useAuth();
+
   const [Data, setData] = useState({
     personalInfo: {
       name: "",
@@ -355,10 +358,8 @@ export const CounselorRegister = () => {
       setStep((prevStep) => prevStep - 1);
     }
   };
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
-    // Ensure the form is only submitted at the final step
-    // const hasError = validateStep();
     if (step === 4) {
       const data = {
         personalInfo: Data.personalInfo,
@@ -369,36 +370,50 @@ export const CounselorRegister = () => {
       const formData = new FormData();
       // Append nested objects individually as JSON strings
       formData.append("registerUser", JSON.stringify(data));
-
       // Add the file if it exists
-
       formData.append("file", Data.file);
-
-      userRegister(formData);
-      setStep(1);
-      setData({
-        personalInfo: {
-          name: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-        },
-        education: {
-          degree: "",
-          institution: "",
-          experience: "",
-          description: "",
-        },
-        payment: {
-          accountNumber: "",
-          bankName: "",
-          branchCode: "",
-        },
-        file: null,
-      });
+      try {
+        const responseData = await postData(
+          "http://localhost:3000/register",
+          formData
+        );
+        if (responseData.success) {
+          toast.success(responseData.message);
+          // Reset form and error
+          setErrors({});
+          setStep(1);
+          setData({
+            personalInfo: {
+              name: "",
+              email: "",
+              password: "",
+              confirmPassword: "",
+            },
+            education: {
+              degree: "",
+              institution: "",
+              experience: "",
+              description: "",
+            },
+            payment: {
+              accountNumber: "",
+              bankName: "",
+              branchCode: "",
+            },
+            file: null,
+          });
+        } else {
+          toast.error(responseData.message || "Registration failed.");
+          setStep(3);
+        }
+      } catch (error) {
+        toast.error("An unexpected error occurred during registration.");
+      }
     }
   };
-
+  if (apiLoading) {
+    return apiLoading && <LoadingOverlay />;
+  }
   return (
     <>
       <div className="flex items-center justify-center min-h-screen bg-gray-100">

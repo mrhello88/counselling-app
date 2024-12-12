@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { useAuth } from "../../../store/auth";
+import { useAuth } from "../../../context/Context";
 import { toast } from "react-toastify";
 import { studentSchemaZod } from "../../../zod-validation/studentZod";
 import { Link } from "react-router-dom";
+import { LoadingOverlay } from "../../Loading/Loading";
 export const StudentRegister = () => {
   const [data, setData] = useState({
     personalInfo: {
@@ -13,7 +14,9 @@ export const StudentRegister = () => {
     },
     role: "student",
   });
-  const { userRegister } = useAuth();
+  const { postData, apiLoading} = useAuth();
+  // const { userRegister, postData, apiLoading, apiError } = useAuth();
+
   const [errors, setErrors] = useState({});
   const handleChange = (section, e) => {
     const { name, value } = e.target;
@@ -28,7 +31,7 @@ export const StudentRegister = () => {
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const result = studentSchemaZod.safeParse(data);
@@ -41,20 +44,33 @@ export const StudentRegister = () => {
     const formData = new FormData();
     formData.append("registerUser", JSON.stringify(data));
     // Submit form data (you can replace this with an API call)
-    userRegister(formData);
-
-    // Reset form and error
-    setErrors({});
-    setData({
-      personalInfo: {
-        name: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-      },
-    });
+    try {
+      const responseData = await postData(
+        "http://localhost:3000/register",
+        formData
+      );
+      if (responseData.success) {
+        toast.success(responseData.message);
+        // Reset form and error
+        setErrors({});
+        setData({
+          personalInfo: {
+            name: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+          },
+        });
+      } else {
+        toast.error(responseData.message || "Registration failed.");
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred during registration.");
+    }
   };
-
+  if (apiLoading) {
+    return <LoadingOverlay />;
+  }
   return (
     <>
       <div className="flex items-center justify-center min-h-screen bg-gray-100">

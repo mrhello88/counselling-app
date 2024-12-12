@@ -35,9 +35,9 @@ exports.postCAdvice = async (req, res) => {
     const userId = req.user._id;
     const { counselorId } = req.body;
 
-    if (req.user.role === "counselor") {
+    if (req.user.role === "counselor" || "admin") {
       return res.status(403).json({
-        message: "You can't add counselor as student",
+        message: `You can't add counselor as ${req.user.role}`,
         success: false,
       });
     }
@@ -46,7 +46,7 @@ exports.postCAdvice = async (req, res) => {
     await UserSchema.findByIdAndUpdate(counselorId, {
       $addToSet: { friends: userId },
     });
-
+ 
     // Add counselor to user's counselor list
     const user = await UserSchema.findByIdAndUpdate(userId, {
       $addToSet: { friends: counselorId },

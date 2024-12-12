@@ -1,40 +1,53 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../../store/auth";
-
+import { useAuth } from "../../context/Context";
+import { LoadingOverlay } from "../Loading/Loading";
+import { toast } from "react-toastify";
 export const CounselorProfilePage = () => {
-  const { fetchProfileData, putUpdateProfileData } = useAuth();
+  const {
+    fetchData,
+    postData,
+    apiLoading,
+    isLoggedIn,
+  } = useAuth();
+  // const { fetchProfileData, putUpdateProfileData, postData, apiLoading } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-  const [profileData, setProfileData] = useState([])
-  console.log(profileData,"this is counselor profile")
+  const [profileData, setProfileData] = useState([]);
   const [formData, setFormData] = useState({});
   const [profileImage, setProfileImage] = useState("");
   const [file, setFile] = useState("");
   const [previewImage, setPreviewImage] = useState("");
   useEffect(() => {
-    const getTheProfileData = async ()=>{
-      const data = await fetchProfileData() // Fetch profile data on mount
-      setProfileData(data || [])
-    }
-    getTheProfileData()
-  },[isEditing]);
+    const fetchingData = async () => {
+      try {
+        const responseData = await fetchData("http://localhost:3000/profile");
+        if (responseData.success) {
+          setProfileData(responseData.data || []);
+        } else {
+          toast.error(responseData.message);
+        }
+      } catch (error) {
+        toast.error("An unexpected error occurred while fetching profile data");
+      }
+    };
+    fetchingData();
+  }, [isEditing, fetchData, isLoggedIn]);
   useEffect(() => {
     if (profileData) {
       // Set initial form data
       setFormData({
         name: profileData.personalInfo?.name || "",
         degree: profileData.counselor?.education.degree || "",
-        institution:profileData.counselor?.education?.institution || "",
+        institution: profileData.counselor?.education?.institution || "",
         experience: profileData.counselor?.education?.experience || "",
         description: profileData.counselor?.education?.description || "",
         accountNumber: profileData.counselor?.payment?.accountNumber || "",
         bankName: profileData.counselor?.payment?.bankName || "",
         branchCode: profileData.counselor?.payment?.branchCode || "",
-        
       });
-      setFile(profileData.counselor?.file)
+      setFile(profileData.counselor?.file);
       setPreviewImage(profileData?.profile); // Set initial profile image preview
     }
-  }, [profileData,previewImage]);
+  }, [profileData, previewImage]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -49,7 +62,7 @@ export const CounselorProfilePage = () => {
   const handleProfileImageChange = (e) => {
     const selectedFile = e.target.files[0];
     setProfileImage(selectedFile);
-    
+
     // Preview the image
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -62,14 +75,14 @@ export const CounselorProfilePage = () => {
     e.preventDefault();
 
     const formDataToSubmit = new FormData();
-    
+
     // Add files and profile image to FormData
     if (profileImage) {
       formDataToSubmit.append("profileImage", profileImage);
     }
     if (file) {
       formDataToSubmit.append("file", file);
-    } 
+    }
 
     // Append other form fields
     for (const key in formData) {
@@ -77,12 +90,25 @@ export const CounselorProfilePage = () => {
     }
 
     // Call API to update profile data
-    await putUpdateProfileData(formDataToSubmit);
-    setIsEditing(false); // Disable editing mode after submission
+    try {
+      const responseData = await postData(
+        "http://localhost:3000/update-profile",
+        formDataToSubmit
+      );
+      if (responseData.success) {
+        toast.success(responseData.message);
+        // fetchProfileData();
+        setIsEditing(false); // Disable editing mode after submission
+      } else {
+        toast.error(responseData.message);
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred while updating profile");
+    }
   };
 
-  if (!profileData) { 
-    return <p>Loading...</p>;
+  if (apiLoading) {
+    return apiLoading && <LoadingOverlay />;
   }
 
   return (
@@ -140,7 +166,9 @@ export const CounselorProfilePage = () => {
           </div>
 
           <div className="space-y-1">
-            <label className="block text-gray-700 font-semibold">Institution</label>
+            <label className="block text-gray-700 font-semibold">
+              Institution
+            </label>
             {isEditing ? (
               <input
                 type="text"
@@ -155,7 +183,9 @@ export const CounselorProfilePage = () => {
           </div>
 
           <div className="space-y-1">
-            <label className="block text-gray-700 font-semibold">Experience</label>
+            <label className="block text-gray-700 font-semibold">
+              Experience
+            </label>
             {isEditing ? (
               <input
                 type="text"
@@ -170,7 +200,9 @@ export const CounselorProfilePage = () => {
           </div>
 
           <div className="space-y-1 md:col-span-2">
-            <label className="block text-gray-700 font-semibold">Description</label>
+            <label className="block text-gray-700 font-semibold">
+              Description
+            </label>
             {isEditing ? (
               <textarea
                 name="description"
@@ -186,7 +218,9 @@ export const CounselorProfilePage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
           <div className="space-y-1">
-            <label className="block text-gray-700 font-semibold">Account Number</label>
+            <label className="block text-gray-700 font-semibold">
+              Account Number
+            </label>
             {isEditing ? (
               <input
                 type="text"
@@ -201,7 +235,9 @@ export const CounselorProfilePage = () => {
           </div>
 
           <div className="space-y-1">
-            <label className="block text-gray-700 font-semibold">Bank Name</label>
+            <label className="block text-gray-700 font-semibold">
+              Bank Name
+            </label>
             {isEditing ? (
               <input
                 type="text"
@@ -216,7 +252,9 @@ export const CounselorProfilePage = () => {
           </div>
 
           <div className="space-y-1">
-            <label className="block text-gray-700 font-semibold">Branch Code</label>
+            <label className="block text-gray-700 font-semibold">
+              Branch Code
+            </label>
             {isEditing ? (
               <input
                 type="text"
@@ -231,7 +269,9 @@ export const CounselorProfilePage = () => {
           </div>
 
           <div className="space-y-1 md:col-span-2">
-            <label className="block text-gray-700 font-semibold">Upload File</label>
+            <label className="block text-gray-700 font-semibold">
+              Upload File
+            </label>
             {isEditing && (
               <input
                 type="file"

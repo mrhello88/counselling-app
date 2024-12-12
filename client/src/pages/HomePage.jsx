@@ -23,7 +23,8 @@ import {
   Sun,
   Moon,
 } from "lucide-react";
-import { useAuth } from "../store/auth";
+import { useAuth } from "../context/Context";
+import { LoadingOverlay } from "../components/Loading/Loading";
 
 const Card = ({ children, className }) => {
   return (
@@ -380,19 +381,31 @@ export function HomePage() {
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
   };
-  const { getCounselors, isLoggedIn } = useAuth();
+  // const { getCounselors, fetchData, apiLoading } = useAuth();
+  const { fetchData, apiLoading, isLoggedIn} = useAuth();
   // Dummy data for counselors
 
   const [counselors, setCounselors] = useState([]);
   useEffect(() => {
-    const counselorList = async () => {
-      const data = await getCounselors();
-      setCounselors(data || []);
+    const fetchingData = async () => {
+      try {
+        const responseData = await fetchData(
+          `http://localhost:3000/counselors`
+        );
+        if (responseData.success) {
+          setCounselors(responseData.data || []);
+        } else {
+          toast.error(responseData.message);
+        }
+      } catch (error) {
+        toast.error("An unexpected error occurred while counselors list");
+      }
     };
-    counselorList();
-  }, [getCounselors, isLoggedIn]);
-  if (!counselors) {
-    return <p>Loading... at counselorList</p>;
+    fetchingData();
+  }, [fetchData, isLoggedIn]);
+
+  if (apiLoading) {
+    return <LoadingOverlay />;
   }
   return (
     <>

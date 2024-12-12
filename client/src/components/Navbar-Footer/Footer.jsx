@@ -13,7 +13,7 @@ export const Footer = () => {
             </h2>
             <ul className="mt-4 space-y-2">
               <li>
-                <Link to="#" className="hover:text-secondary">
+                <Link to="/" className="hover:text-secondary">
                   Home
                 </Link>
               </li>
@@ -28,7 +28,7 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/admin/dashboard" className="hover:text-secondary">
+                <Link to={"/login/admin"} className="hover:text-secondary">
                   Admin
                 </Link>
               </li>

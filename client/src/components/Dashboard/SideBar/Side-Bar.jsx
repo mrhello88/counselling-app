@@ -1,24 +1,41 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../../store/auth";
+import { useAuth } from "../../../context/Context";
 import { FaBook } from "react-icons/fa";
 import { MdCreate } from "react-icons/md";
 import { MdLogout } from "react-icons/md";
+import { LoadingOverlay } from "../../Loading/Loading";
+import { toast } from "react-toastify";
 export const SideBar = ({ onSelectChat }) => {
-  const { userFriends, token } = useAuth();
+  // const { userFriends, token } = useAuth();
+  const { fetchData, apiLoading, isLoggedIn, LogoutUser } = useAuth();
   const [userData, setUserData] = useState({});
   const [activeUser, setActiveUser] = useState("");
   useEffect(() => {
-    const userFreindeData = async () => {
-      const data = await userFriends();
-      setUserData(data || {});
+    const fetchingData = async () => {
+      try {
+        const responseData = await fetchData(
+          `http://localhost:3000/user/friends`
+        );
+        if (responseData.success) {
+          setUserData(responseData.data || {});
+        } else {
+          toast.error(responseData.message);
+        }
+      } catch (error) {
+        toast.error("An unexpected error occurred while friends list");
+      }
     };
-    userFreindeData();
-  }, [userFriends, token]);
+    fetchingData();
+  }, [fetchData, isLoggedIn]);
   const useClickHandler = (items) => {
     onSelectChat(items, userData?._id);
     setActiveUser(userData?.friends.indexOf(items));
   };
+
+  if (apiLoading) {
+    return <LoadingOverlay />;
+  }
   return (
     <div className="p-4 bg-black h-screen">
       <div className="flex items-center">
@@ -29,42 +46,85 @@ export const SideBar = ({ onSelectChat }) => {
         />
         <span className="text-white text-sm font-medium">Website Name</span>
       </div>
-      {/* <div className="my-8">
-        <Link to="#" className="text-white text-xl">
-          Dashboard
-        </Link>
-      </div> */}
       <div className="relative my-4">
         <h2 className="text-3xl font-bold  text-secondary hover:scale-110 duration-300 pl-4 uppercase ">
-          {userData?.role == "counselor" ? "Student'S" : "Counselor'S"}
+          {userData?.role == "counselor"
+            ? "Student'S"
+            : userData?.role == "admin"
+            ? "admin"
+            : "Counselor'S"}
         </h2>
         <ul className="max-h-[18rem] overflow-y-scroll scrollbar-hide shadow-lg rounded-lg my-4">
-          {userData?.friends?.map((items, index) => (
+          {userData?.role == "admin" ? (
             <>
               <Link
                 to={"/user-dashboard"}
-                className={`my-4 text-sm block ${
-                  activeUser === index < 3
-                    ? "bg-white text-black"
-                    : "bg-gray-600 text-black"
-                } hover:text-black hover:bg-white p-2 rounded`}
-                onClick={() => useClickHandler(items)}
+                className={`my-4 text-sm block bg-white text-black hover:text-black hover:bg-white p-2 rounded`}
+                // ${
+                //   activeUser === index < 3?
+                //      "bg-white text-black"
+                //     : "bg-gray-600 text-black"
+                // }
               >
-                <div className="flex items-center justify-start cursor-pointer gap-4">
-                  {/* {activeUser !== index ? "bg-white text-black" : "text-white"} */}
-                  <img
-                    className="w-16 h-16 rounded-full object-cover"
-                    src={`http://localhost:3000/images/${items?.profile}`}
-                    alt="Profile"
-                  />
-                  <div className="text-base">
-                    <p className="capitalize">{items.personalInfo?.name}</p>
-                    <span>{items.personalInfo?.email}</span>
-                  </div>
-                </div>
+                Overview
+              </Link>
+
+              <Link
+                to={"/user-dashboard"}
+                className={`my-4 text-sm block bg-white text-black hover:text-black hover:bg-white p-2 rounded`}
+                // ${
+                //   activeUser === index < 3
+                //     ? "bg-white text-black"
+                //     : "bg-gray-600 text-black"
+                // }
+              >
+                Counselors
+              </Link>
+
+              <Link
+                to={"/user-dashboard"}
+                className={`my-4 text-sm block bg-white text-black hover:text-black hover:bg-white p-2 rounded`}
+                // ${
+                //   activeUser === index < 3
+                //     ? "bg-white text-black"
+                //     : "bg-gray-600 text-black"
+                // }
+              >
+                Student
               </Link>
             </>
-          ))}
+          ) : (
+            <>
+              {userData?.friends?.map((items, index) => (
+                <>
+                  <Link
+                    key={items._id}
+                    to={"/user-dashboard"}
+                    className={`my-4 text-sm block ${
+                      activeUser === index < 3
+                        ? "bg-white text-black"
+                        : "bg-gray-600 text-black"
+                    } hover:text-black hover:bg-white p-2 rounded`}
+                    onClick={() => useClickHandler(items)}
+                  >
+                    <div className="flex items-center justify-start cursor-pointer gap-4">
+                      {/* {activeUser !== index ? "bg-white text-black" : "text-white"} */}
+
+                      <img
+                        className="w-16 h-16 rounded-full object-cover"
+                        src={`http://localhost:3000/images/${items?.profile}`}
+                        alt="Profile"
+                      />
+                      <div className="text-base">
+                        <p className="capitalize">{items.personalInfo?.name}</p>
+                        <span>{items.personalInfo?.email}</span>
+                      </div>
+                    </div>
+                  </Link>
+                </>
+              ))}
+            </>
+          )}
         </ul>
       </div>
       {userData?.role === "student" && (
@@ -92,7 +152,13 @@ export const SideBar = ({ onSelectChat }) => {
         </div>
       )}
       <div className="my-8">
-        <Link to="#" className=" flex items-center gap-4">
+        <Link
+          to={"/"}
+          onClick={() => {
+            LogoutUser();
+          }}
+          className=" flex items-center gap-4"
+        >
           <MdLogout className="text-secondary" size={24} />
           <span className="text-white font-bold hover:text-secondary hover:scale-110 duration-300 ml-4 text-2xl">
             LogOut
