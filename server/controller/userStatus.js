@@ -15,7 +15,7 @@ exports.getUserStatus = async (req, res, next) => {
       });
     }
 
-    // User status found
+    // User status found 
     return res.status(200).json({
       msg: "User status retrieved successfully",
       data: JSON.parse(userStatus), // Parse Redis data if needed

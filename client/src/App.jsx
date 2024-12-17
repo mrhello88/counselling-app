@@ -24,8 +24,11 @@ import { useAuth } from "./context/Context";
 import { Login } from "./pages/Login";
 import { VerifyEmailReset } from "./components/auth/ForgetPassword/VerifyEmailReset";
 import { ResetForgetPassword } from "./components/auth/ForgetPassword/ResetForgetPassword";
-import { AdminDashboard } from "./components/AdminDashboard/AdminDashboard";
 import { toast } from "react-toastify";
+import { AdminCounselorPage } from "./components/Dashboard/admin-dashboard/adminCounselorAccess/AdminCounselorAccess";
+import { AdminCounselorProfile } from "./components/Dashboard/admin-dashboard/adminCounselorAccess/adminCounselorProfile/AdminCounselorProfile";
+import { AdminStudentProfile } from "./components/Dashboard/admin-dashboard/adminStudentAccess/adminStudentProfile/AdminStudentProfile";
+import { AdminStudentPage } from "./components/Dashboard/admin-dashboard/adminStudentAccess/AdminStudentAccess";
 
 export const App = () => {
   const { isLoggedIn, fetchData } = useAuth();
@@ -53,11 +56,11 @@ export const App = () => {
       </div>
       <Routes>
         {/* <Route path={`/`} element={<Home />} /> */}
-        {isLoggedIn ? (
+        {isLoggedIn && userData.role ? (
           <>
             {userData.role === "student" && userData.friends.length > 0 ? (
               <>
-                <Route path="/user-dashboard" element={<UserDashboard />}>
+                <Route path="/dashboard" element={<UserDashboard />}>
                   <Route index element={<ChatWindow />} />
                 </Route>
                 <Route
@@ -70,10 +73,10 @@ export const App = () => {
             )}
             {userData.role === "counselor" ? (
               <>
-                <Route path="/user-dashboard" element={<UserDashboard />}>
+                <Route path="/dashboard" element={<UserDashboard />}>
                   <Route index element={<ChatWindow />} />
                   <Route
-                    path="/user-dashboard/create-session"
+                    path="/dashboard/create-session"
                     element={<CreateSession />}
                   />
                 </Route>
@@ -86,15 +89,31 @@ export const App = () => {
               <Route path="/" element={<HomePage />} />
             )}
             {userData.role === "admin" ? (
-             <>
-             <Route path="/user-dashboard" element={<UserDashboard />}>
-               <Route index element={<ChatWindow />} />
-             </Route>
-             {/* <Route
+              <>
+                <Route path="/dashboard" element={<UserDashboard />}>
+                  <Route index element={<ChatWindow />} />
+                  <Route
+                    path="/dashboard/admin-counselor"
+                    element={<AdminCounselorPage />}
+                  />
+                  <Route
+                    path="/dashboard/admin-student"
+                    element={<AdminStudentPage />}
+                  />
+                  <Route
+                    path="/dashboard/admin-counselor-profile/:counselorId"
+                    element={<AdminCounselorProfile />}
+                  />
+                  <Route
+                    path="/dashboard/admin-student-profile/:studentId"
+                    element={<AdminStudentProfile />}
+                  />
+                </Route>
+                {/* <Route
                path="/profile/student"
                element={<StudentProfilePage />}
              /> */}
-           </>
+              </>
             ) : null}
           </>
         ) : (

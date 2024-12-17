@@ -31,7 +31,7 @@ exports.postscheduleCounseling = async (req, res) => {
   try {
     const { counselorId, startDate, endDate, duration } = req.body;
 
-    if (req.user.role === "counselor" || "admin") {
+    if (req.user.role === "counselor" || req.user.role === "admin") {
       return res.status(403).json({
         message: `${req.user.role} can't create session`,
         success: false, 

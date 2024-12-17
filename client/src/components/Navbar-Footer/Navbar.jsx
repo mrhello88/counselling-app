@@ -23,18 +23,16 @@ export const Navbar = () => {
     // Call the async function inside useEffect
     fetchingData();
   }, [isLoggedIn, fetchData]);
-  if (apiLoading) {
-    return apiLoading && <LoadingOverlay />;
-  }
+  // if (apiLoading) {
+  //   return apiLoading && <LoadingOverlay />;
+  // }
   return (
     <nav className="bg-primary p-4 ">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <div className="flex justify-between items-center space-x-52 ">
           <div className="text-secondary font-bold text-xl pl-5 duration-300 hover:scale-125">
-            <h2 className="text-2xl cursor-pointer">
-              StudentCounselor
-            </h2>
+            <h2 className="text-2xl cursor-pointer">StudentCounselor</h2>
           </div>
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8 text-lg font-bold w-full h-12 items-center">
@@ -52,12 +50,12 @@ export const Navbar = () => {
               Home
             </NavLink>
 
-            {isLoggedIn && (
+            {isLoggedIn && userData.role && (
               <>
                 {userData.role === "student" && userData.friends.length > 0 ? (
                   <>
                     <NavLink
-                      to="/user-dashboard"
+                      to="/dashboard"
                       className={({ isActive }) =>
                         ` ${
                           isActive
@@ -71,10 +69,10 @@ export const Navbar = () => {
                     </NavLink>
                   </>
                 ) : null}
-                {userData.role === "counselor" || "admin"? (
+                {userData.role === "counselor" || userData.role === "admin" ? (
                   <>
                     <NavLink
-                      to="/user-dashboard"
+                      to="/dashboard"
                       className={({ isActive }) =>
                         ` ${
                           isActive
@@ -132,7 +130,7 @@ export const Navbar = () => {
 
         {/* CTA Button */}
         <div className="hidden md:flex text-lg">
-          {isLoggedIn ? (
+          {isLoggedIn && userData.role ? (
             <>
               <NavLink
                 to={"/"}
@@ -181,7 +179,7 @@ export const Navbar = () => {
             Home
           </a>
           <a
-            href="/user-dashboard"
+            href="/dashboard"
             className="block py-2 px-4 hover:bg-secondary text-primary"
           >
             User

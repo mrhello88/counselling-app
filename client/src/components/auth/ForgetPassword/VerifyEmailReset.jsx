@@ -40,9 +40,9 @@ export const VerifyEmailReset = () => {
       );
     }
   };
-  if (apiLoading) {
-    return apiLoading && <LoadingOverlay />;
-  }
+  // if (apiLoading) {
+  //   return apiLoading && <LoadingOverlay />;
+  // }
 
   return (
     <>

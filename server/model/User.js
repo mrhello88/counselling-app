@@ -27,6 +27,10 @@ const UserSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "createCounseling",
     },
+    status: {
+      type: String,
+      default: "active",
+    },
     counselor: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "counselorProfile",

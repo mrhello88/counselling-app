@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../../context/Context";
 import { FaBook } from "react-icons/fa";
 import { MdCreate } from "react-icons/md";
@@ -11,6 +11,7 @@ export const SideBar = ({ onSelectChat }) => {
   const { fetchData, apiLoading, isLoggedIn, LogoutUser } = useAuth();
   const [userData, setUserData] = useState({});
   const [activeUser, setActiveUser] = useState("");
+  const location = useLocation();
   useEffect(() => {
     const fetchingData = async () => {
       try {
@@ -33,9 +34,9 @@ export const SideBar = ({ onSelectChat }) => {
     setActiveUser(userData?.friends.indexOf(items));
   };
 
-  if (apiLoading) {
-    return <LoadingOverlay />;
-  }
+  // if (apiLoading) {
+  //   return <LoadingOverlay />;
+  // }
   return (
     <div className="p-4 bg-black h-screen">
       <div className="flex items-center">
@@ -58,37 +59,34 @@ export const SideBar = ({ onSelectChat }) => {
           {userData?.role == "admin" ? (
             <>
               <Link
-                to={"/user-dashboard"}
-                className={`my-4 text-sm block bg-white text-black hover:text-black hover:bg-white p-2 rounded`}
-                // ${
-                //   activeUser === index < 3?
-                //      "bg-white text-black"
-                //     : "bg-gray-600 text-black"
-                // }
+                to={"/dashboard"}
+                className={`my-4 text-sm block p-2 rounded ${
+                  location.pathname === "/dashboard"
+                    ? "bg-white text-black" // Active link with bg-white
+                    : "bg-secondary text-black" // Inactive link with bg-secondary
+                } hover:text-black hover:bg-white`}
               >
-                Overview
+                Home
               </Link>
 
               <Link
-                to={"/user-dashboard"}
-                className={`my-4 text-sm block bg-white text-black hover:text-black hover:bg-white p-2 rounded`}
-                // ${
-                //   activeUser === index < 3
-                //     ? "bg-white text-black"
-                //     : "bg-gray-600 text-black"
-                // }
+                to={"/dashboard/admin-counselor"}
+                className={`my-4 text-sm block p-2 rounded ${
+                  location.pathname === "/dashboard/admin-counselor"
+                    ? "bg-white text-black" // Active link with bg-white
+                    : "bg-secondary text-black" // Inactive link with bg-secondary
+                } hover:text-black hover:bg-white`}
               >
                 Counselors
               </Link>
 
               <Link
-                to={"/user-dashboard"}
-                className={`my-4 text-sm block bg-white text-black hover:text-black hover:bg-white p-2 rounded`}
-                // ${
-                //   activeUser === index < 3
-                //     ? "bg-white text-black"
-                //     : "bg-gray-600 text-black"
-                // }
+                to={"/dashboard/admin-student"}
+                className={`my-4 text-sm block p-2 rounded ${
+                  location.pathname === "/dashboard/admin-student"
+                    ? "bg-white text-black" // Active link with bg-white
+                    : "bg-secondary text-black" // Inactive link with bg-secondary
+                } hover:text-black hover:bg-white`}
               >
                 Student
               </Link>
@@ -99,7 +97,7 @@ export const SideBar = ({ onSelectChat }) => {
                 <>
                   <Link
                     key={items._id}
-                    to={"/user-dashboard"}
+                    to={"/dashboard"}
                     className={`my-4 text-sm block ${
                       activeUser === index < 3
                         ? "bg-white text-black"
@@ -140,7 +138,7 @@ export const SideBar = ({ onSelectChat }) => {
       {userData?.role === "counselor" && (
         <div className="my-8">
           <Link
-            to="/user-dashboard/create-session"
+            to="/dashboard/create-session"
             className="text-secondary text-2xl flex items-center gap-4"
           >
             <MdCreate className="text-secondary" size={24} />

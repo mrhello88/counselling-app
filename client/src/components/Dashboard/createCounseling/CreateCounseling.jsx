@@ -50,9 +50,9 @@ export const CreateSession = () => {
       toast.error("An unexpected error occurred while counseling creating");
     }
   };
-  if (apiLoading) {
-    return apiLoading && <LoadingOverlay />;
-  }
+  // if (apiLoading) {
+  //   return apiLoading && <LoadingOverlay />;
+  // }
   return (
     <div className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-md">
       <h2 className="text-2xl font-semibold mb-6 text-center">

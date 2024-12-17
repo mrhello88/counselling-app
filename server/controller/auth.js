@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const client = require("../utils/redisDatabase");
 const UserSchema = require("../model/User");
 const CounselorProfileSchema = require("../model/CounselorProfile");
 const bcryptjs = require("bcryptjs");
@@ -20,18 +21,22 @@ exports.postLogin = async (req, res) => {
         .status(401)
         .json({ message: `${role} does not exist`, success: false });
     }
-    // Compare the provided password with the stored password hash
-    const isMatch = await bcryptjs.compare(
-      password,
-      user.personalInfo.password
-    );
 
-    // If the password does not match, return an error response
-    if (!isMatch) {
-      return res
-        .status(401)
-        .json({ message: "Invalid credentials", success: false });
+    if (user.status === "disabled") {
+      return res.status(403).json({ message: "None", success: false });
     }
+    // Compare the provided password with the stored password hash
+    // const isMatch = await bcryptjs.compare(
+    //   password,
+    //   user.personalInfo.password
+    // );
+
+    // // If the password does not match, return an error response
+    // if (!isMatch) {
+    //   return res
+    //     .status(401)
+    //     .json({ message: "Invalid credentials", success: false });
+    // }
     const { personalInfo } = user;
 
     // Create JWT token
@@ -48,18 +53,30 @@ exports.postLogin = async (req, res) => {
         expiresIn: 259200, // Token expiry time in seconds (3 days)
       }
     );
-
     // Save session in the database
-    // Set the token in the response cookie
+    const userSession = await client.set(
+      token, // Key (token)
+      JSON.stringify({ userId: user._id, userData: user, token: token }), // Value (session data)
+      "EX", // Option for expiry time
+      259200 // Expiry time in seconds (3 days)
+    );
+
+    // Check Redis response. For some Redis clients, 'OK' may not be returned.
+    if (userSession !== "OK") {
+      return res.status(500).json({
+        message: "Failed to create user session in Redis",
+        success: false,
+      });
+    }
 
     // Return success response to React
     return res.status(200).json({
       message: "Login successfully",
-      token, // Send the token back to React (optional)
-      data: user,
+      token,
       success: true,
     });
   } catch (error) {
+    console.log(error.message);
     return res.status(500).json({ message: "Server error", success: false });
   }
 };
@@ -75,6 +92,10 @@ exports.postRegister = async (req, res, next) => {
       const user = await UserSchema.findOne({
         "personalInfo.email": personalInfo.email,
       });
+
+      if (user.status === "disabled") {
+        return res.status(403).json({ message: "None", success: false });
+      }
 
       if (user) {
         return res
@@ -146,12 +167,16 @@ exports.postRegister = async (req, res, next) => {
 exports.getUser = async (req, res, next) => {
   try {
     const { role, personalInfo } = req.user;
-
+    if (!role) {
+      return res
+        .status(401)
+        .json({ message: "User Has No Credentials", success: false });
+    }
     // If the user is a student, simply return the user data
-    if (role === "student") {
+    if (role === "student" || role === "admin") {
       return res.status(200).json({
         data: req.user,
-        message: "this is student",
+        message: "User Not Found",
         success: true,
       });
     }
@@ -161,7 +186,7 @@ exports.getUser = async (req, res, next) => {
       "personalInfo.email": personalInfo.email,
     }).populate("counselor");
 
-    if (!counselorData) { 
+    if (!counselorData) {
       return res
         .status(404)
         .json({ message: "Counselor not found", success: false });
@@ -219,11 +244,26 @@ exports.getVerify = async (req, res, next) => {
           expiresIn: 259200, // Token expiry time in seconds (3 days)
         }
       );
+
+      const userSession = await client.set(
+        token, // Key (token)
+        JSON.stringify({ userId: user._id, userData: user, token: token }), // Value (session data)
+        "EX", // Option for expiry time
+        259200 // Expiry time in seconds (3 days)
+      );
+
+      // Check Redis response. For some Redis clients, 'OK' may not be returned.
+      if (userSession !== "OK") {
+        return res.status(500).json({
+          message: "Failed to create user session in Redis",
+          success: false,
+        });
+      }
+
       await cryptoUser.deleteOne({ personalInfo: personalInfo.email }); // delete when the user Verify, not wait for 5min
       return res.status(200).json({
-        message: "Session added successfully",
-        token, // Send the token back to React (optional)
-        data: user,
+        message: "Register successfully",
+        token,
         success: true,
       });
     } else {
@@ -253,11 +293,26 @@ exports.getVerify = async (req, res, next) => {
           expiresIn: 259200, // Token expiry time in seconds (3 days)
         }
       );
+
+      const userSession = await client.set(
+        token, // Key (token)
+        JSON.stringify({ userId: user._id, userData: user, token: token }), // Value (session data)
+        "EX", // Option for expiry time
+        259200 // Expiry time in seconds (3 days)
+      );
+
+      // Check Redis response. For some Redis clients, 'OK' may not be returned.
+      if (userSession !== "OK") {
+        return res.status(500).json({
+          message: "Failed to create user session in Redis",
+          success: false,
+        });
+      }
+
       await cryptoUser.deleteOne({ personalInfo: personalInfo.email });
       return res.status(200).json({
-        message: "Session added successfully",
-        token, // Send the token back to React (optional)
-        data: user,
+        message: "Register successfully",
+        token,
         success: true,
       });
     }
@@ -279,6 +334,10 @@ exports.postEmailResetPassword = async (req, res, next) => {
       return res
         .status(404)
         .json({ message: "Not Found the User", success: false });
+    }
+
+    if (user.status === "disabled") {
+      return res.status(403).json({ message: "None", success: false });
     }
 
     user.Token = token;

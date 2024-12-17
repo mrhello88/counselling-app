@@ -45,9 +45,9 @@ export const ResetForgetPassword = () => {
       );
     }
   };
-  if (apiLoading) {
-    return apiLoading && <LoadingOverlay />;
-  }
+  // if (apiLoading) {
+  //   return apiLoading && <LoadingOverlay />;
+  // }
   return (
     <>
       <div className="flex items-center justify-center h-screen bg-gray-100">

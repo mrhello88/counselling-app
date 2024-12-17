@@ -12,20 +12,23 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [apiLoading, setApiLoading] = useState(false);
-  // const [apiError, setError] = useState(null);
   const [refreshFlag, setRefreshFlag] = useState(false);
   const [token, setToken] = useState(localStorage.getItem("token"));
-  const [onlineStatus, setOnlineStatus] = useState({status:"offline"});
+  const [onlineStatus, setOnlineStatus] = useState({ status: "offline" });
+  const [data, setData] = useState({ adminCounselor: "" });
+  const [isLoggedIn, setIsLoggedIn] = useState(!!token);
   const [state, dispatch] = useReducer(apiReducer, initialState);
   // const [data, setData] = useState({});   //if use the global state for data, so we need multiple functions for api's(fetch,post), and overwrite data over global state
   // setUser({ ...user, userData: res_data.data });  // by using this update data, if post data, then got the reponse and update the data according to it, where are we use
-  let isLoggedIn = !!token;
+
   const storeTokenInLS = (serverToken) => {
     localStorage.setItem("token", serverToken);
+    setIsLoggedIn(true);
     return setToken(localStorage.getItem("token"));
   };
   const LogoutUser = () => {
     setToken("");
+    setIsLoggedIn(false);
     return localStorage.removeItem("token");
   };
 
@@ -36,7 +39,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const axiosResponse = await axios.get(url, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem("token") || token}`,
         },
       });
       // Extract data
@@ -75,12 +78,14 @@ export const AuthProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log(axiosResponse);
+
       // Extract data
       // dispatch({ type: "SET_USER_DATA", payload: axiosResponse?.data?.data });
       return axiosResponse?.data;
     } catch (error) {
       const responseData = error?.response?.data;
-      return responseData
+      return responseData;
       // dispatch({ type: "SET_ERROR", payload: responseData });
     } finally {
       // dispatch({ type: "SET_LOADING", payload: false });
@@ -100,6 +105,8 @@ export const AuthProvider = ({ children }) => {
         storeTokenInLS,
         onlineStatus,
         setOnlineStatus,
+        data,
+        setData,
         state,
       }}
     >

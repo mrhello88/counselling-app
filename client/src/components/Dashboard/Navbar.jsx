@@ -21,9 +21,9 @@ const Navbar = () => {
     // Call the async function inside useEffect
     fetchingData();
   }, [isLoggedIn, fetchData]);
-  if (apiLoading) {
-    return <LoadingOverlay />;
-  }
+  // if (apiLoading) {
+  //   return <LoadingOverlay />;
+  // }
   return (
     <div className="flex justify-between items-center py-2 bg-gray-900 px-8 ">
       <div className="text-xl  capitalize font-bold">

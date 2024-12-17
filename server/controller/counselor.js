@@ -35,11 +35,11 @@ exports.postCAdvice = async (req, res) => {
     const userId = req.user._id;
     const { counselorId } = req.body;
 
-    if (req.user.role === "counselor" || "admin") {
+    if (req.user.role === "counselor" || req.user.role ===  "admin") {
       return res.status(403).json({
         message: `You can't add counselor as ${req.user.role}`,
         success: false,
-      });
+      }); 
     }
 
     // Add user to counselor's students list

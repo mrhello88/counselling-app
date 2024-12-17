@@ -68,9 +68,9 @@ export const StudentRegister = () => {
       toast.error("An unexpected error occurred during registration.");
     }
   };
-  if (apiLoading) {
-    return <LoadingOverlay />;
-  }
+  // if (apiLoading) {
+  //   return <LoadingOverlay />;
+  // }
   return (
     <>
       <div className="flex items-center justify-center min-h-screen bg-gray-100">

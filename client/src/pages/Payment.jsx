@@ -49,7 +49,7 @@ export const Payment = () => {
             const responseData = await fetchData("http://localhost:3000/user");
             if (responseData.success) {
               toast.success(responseAdviceData.message);
-              navigate("/user-dashboard");
+              navigate("/dashboard");
             }
           } else {
             toast.error(responseAdviceData.message || "Registration failed.");
@@ -65,9 +65,9 @@ export const Payment = () => {
       }
     }
   };
-  if (apiLoading) {
-    return apiLoading && <LoadingOverlay />;
-  }
+  // if (apiLoading) {
+  //   return apiLoading && <LoadingOverlay />;
+  // }
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">

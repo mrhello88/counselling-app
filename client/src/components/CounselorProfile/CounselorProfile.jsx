@@ -10,12 +10,12 @@ import { LoadingOverlay } from "../Loading/Loading";
 
 export const CounselorProfile = () => {
   const [selectedDate, setSelectedDate] = useState(null);
-  const [profileData, setProfileData] = useState({});
   const [errors, setErrors] = useState({});
   // const {
-  //   getCounselorProfile,
-  //   isLoggedIn,
-  // } = useAuth();
+    //   getCounselorProfile,
+    //   isLoggedIn,
+    // } = useAuth();
+    const [profileData, setProfileData] = useState({});
   const { fetchData, apiLoading, isLoggedIn } = useAuth();
   const { counselorId } = useParams();
   const navigate = useNavigate();
@@ -88,9 +88,9 @@ export const CounselorProfile = () => {
     // alert("Counseling session scheduled successfully!");
   };
 
-  if (!profileData?._id) {
-    return <LoadingOverlay />;
-  }
+  // if (!profileData?._id) {
+  //   return <LoadingOverlay />;
+  // }
 
   return (
     <div className="max-w-3xl mx-auto bg-white shadow-md rounded-lg p-6 mt-10">

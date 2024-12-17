@@ -404,9 +404,9 @@ export function HomePage() {
     fetchingData();
   }, [fetchData, isLoggedIn]);
 
-  if (apiLoading) {
-    return <LoadingOverlay />;
-  }
+  // if (apiLoading) {
+  //   return <LoadingOverlay />;
+  // }
   return (
     <>
       <div

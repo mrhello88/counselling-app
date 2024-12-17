@@ -7,13 +7,8 @@ import { LoadingOverlay } from "../../Loading/Loading";
 export const VerifyUser = () => {
   const { token } = useParams(); // Extract the token from the URL
   const navigate = useNavigate();
-  const {
-    fetchData,
-    apiLoading,
-    isLoggedIn,
-    LogoutUser,
-    storeTokenInLS,
-  } = useAuth(); // Assuming VerifyUser is a function from useAuth
+  const { fetchData, apiLoading, LogoutUser, storeTokenInLS } =
+    useAuth(); // Assuming VerifyUser is a function from useAuth
 
   // Effect to verify user and authenticate
   useEffect(() => {
@@ -22,17 +17,31 @@ export const VerifyUser = () => {
         const responseData = await fetchData(
           `http://localhost:3000/register/verify/${token}`
         );
-        console.log(responseData,"this isverfiy")
         if (responseData.success) {
           LogoutUser();
           storeTokenInLS(responseData.token);
-          toast.success(responseData.message);
-          if (responseData.data.role === "student") {
-            navigate("/counselorList");
+          const responseUserData = await fetchData(
+            "http://localhost:3000/user"
+          );
+          if (responseUserData.success) {
+            toast.success(responseData.message);
+            const { role, friends } = responseUserData.data;
+            if (role === "student" && (!friends || friends.length === 0)) {
+              navigate("/counselorList");
+            } else if (role === "counselor") {
+              toast.info("Create Counseling to Show Profile");
+              navigate("/dashboard");
+            } else if (
+              role === "admin" ||
+              (role === "student" && (friends || friends.length > 0))
+            ) {
+              navigate("/dashboard");
+            }
           } else {
-            toast.info("Create Counseling to Show Profile");
-            navigate("/user-dashboard");
+            toast.error(responseUserData.message);
           }
+        } else {
+          toast.error(responseData.message);
         }
       } catch (error) {
         toast.error("An unexpected error occurred while verifyUser.");
@@ -40,9 +49,9 @@ export const VerifyUser = () => {
     };
 
     fetchingData(); // Call the async function to execute the user verification
-  }, [fetchData, isLoggedIn]);
+  }, [fetchData]);
 
-  if (apiLoading) {
-    return <LoadingOverlay />;
-  }
+  // if (apiLoading) {
+  //   return <LoadingOverlay />;
+  // }
 };

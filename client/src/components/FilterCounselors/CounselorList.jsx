@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/Context";
-import { CounselorCard } from "../Counselor-Card/CounselorCard";
+import { CounselorCard } from "../Cards/Counselor-Card/CounselorCard";
 import { LoadingOverlay } from "../Loading/Loading";
 import { toast } from "react-toastify";
 export const CounselorList = () => {
@@ -40,9 +40,9 @@ export const CounselorList = () => {
     navigate(`/counselor-profile/${counselorId}`);
   };
 
-  if (apiLoading) {
-    return <LoadingOverlay />;
-  }
+  // if (apiLoading) {
+  //   return <LoadingOverlay />;
+  // }
 
   return (
     <div className="flex">
@@ -113,6 +113,11 @@ export const CounselorList = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {counselors
             .filter((counselor) => {
+              // Exclude counselors with "disabled" status
+              if (counselor.status === "disabled") {
+                return false;
+              }
+
               // Filter by Category
               if (
                 filters.category &&

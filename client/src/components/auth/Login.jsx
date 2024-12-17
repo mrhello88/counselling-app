@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useAuth } from "../../context/Context";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -7,7 +7,8 @@ import { LoadingOverlay } from "../Loading/Loading";
 export const LoginPage = ({ role }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { apiLoading, postData, LogoutUser, storeTokenInLS } = useAuth();
+  const { apiLoading, fetchData, postData, LogoutUser, storeTokenInLS } =
+    useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -24,21 +25,24 @@ export const LoginPage = ({ role }) => {
         role,
         password,
       });
-
       if (responseData.success) {
         LogoutUser(); // If logout is required before login, ensure this is intentional.
         storeTokenInLS(responseData.token); // Ensure this function is correctly implemented.
-        toast.success(responseData.message || "Login successful!");
-        // Redirect logic
-        const { role, friends } = responseData.data;
-        if (location.state?.navigateToPayment) {
-          navigate(location.state.navigateToPayment, {
-            state: { ...location.state },
-          });
-        } else if (role === "student" && (!friends || friends.length === 0)) {
-          navigate("/counselorList");
+        const responseUserData = await fetchData("http://localhost:3000/user");
+        if (responseUserData.success) {
+          toast.success(responseData.message || "Login successfully!");
+          const { role, friends } = responseUserData.data;
+          if (location.state?.navigateToPayment) {
+            navigate(location.state?.navigateToPayment, {
+              state: { ...location?.state },
+            });
+          } else if (role === "student" && (!friends || friends.length === 0)) {
+            navigate("/counselorList");
+          } else {
+            navigate("/dashboard");
+          }
         } else {
-          navigate("/user-dashboard");
+          toast.error(responseUserData.message);
         }
       } else {
         toast.error(responseData.message || "Login failed.");
@@ -48,9 +52,9 @@ export const LoginPage = ({ role }) => {
       toast.error("An unexpected error occurred during login.");
     }
   };
-  if (apiLoading) {
-    return <LoadingOverlay />;
-  }
+  // if (apiLoading) {
+  //   return <LoadingOverlay />;
+  // }
   return (
     <>
       <div className="h-screen flex items-center justify-center">
