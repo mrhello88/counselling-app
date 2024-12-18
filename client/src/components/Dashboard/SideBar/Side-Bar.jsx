@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../../context/Context";
-import { FaBook } from "react-icons/fa";
 import { MdCreate } from "react-icons/md";
 import { MdLogout } from "react-icons/md";
+import { FaBook, FaUserGraduate, FaUserTie, FaHome } from "react-icons/fa";
+import { MdUploadFile } from "react-icons/md"; // Example Material Design Icon
 import { LoadingOverlay } from "../../Loading/Loading";
 import { toast } from "react-toastify";
 export const SideBar = ({ onSelectChat }) => {
@@ -58,38 +59,53 @@ export const SideBar = ({ onSelectChat }) => {
         <ul className="max-h-[18rem] overflow-y-scroll scrollbar-hide shadow-lg rounded-lg my-4">
           {userData?.role == "admin" ? (
             <>
-              <Link
-                to={"/dashboard"}
-                className={`my-4 text-sm block p-2 rounded ${
-                  location.pathname === "/dashboard"
-                    ? "bg-white text-black" // Active link with bg-white
-                    : "bg-secondary text-black" // Inactive link with bg-secondary
-                } hover:text-black hover:bg-white`}
-              >
-                Home
-              </Link>
+              <div className="my-8">
+                <Link
+                  to={"/dashboard"}
+                  className="text-2xl flex items-center gap-4"
+                >
+                  <FaHome className="text-secondary" size={24} />
+                  <span className="text-white font-bold hover:text-secondary hover:scale-110 duration-300 ml-4 text-2xl">
+                    Home
+                  </span>
+                </Link>
+              </div>
 
-              <Link
-                to={"/dashboard/admin-counselor"}
-                className={`my-4 text-sm block p-2 rounded ${
-                  location.pathname === "/dashboard/admin-counselor"
-                    ? "bg-white text-black" // Active link with bg-white
-                    : "bg-secondary text-black" // Inactive link with bg-secondary
-                } hover:text-black hover:bg-white`}
-              >
-                Counselors
-              </Link>
+              <div className="my-8">
+                <Link
+                  to={"/dashboard/admin-counselor"}
+                  className="text-2xl flex items-center gap-4"
+                >
+                  <FaUserTie className="text-secondary" size={24} />
+                  <span className="text-white font-bold hover:text-secondary hover:scale-110 duration-300 ml-4 text-2xl">
+                    Counselor
+                  </span>
+                </Link>
+              </div>
 
-              <Link
-                to={"/dashboard/admin-student"}
-                className={`my-4 text-sm block p-2 rounded ${
-                  location.pathname === "/dashboard/admin-student"
-                    ? "bg-white text-black" // Active link with bg-white
-                    : "bg-secondary text-black" // Inactive link with bg-secondary
-                } hover:text-black hover:bg-white`}
-              >
-                Student
-              </Link>
+              <div className="my-8">
+                <Link
+                  to={"/dashboard/admin-student"}
+                  className="text-2xl flex items-center gap-4"
+                >
+                  <FaUserGraduate className="text-secondary" size={24} />
+                  <span className="text-white font-bold hover:text-secondary hover:scale-110 duration-300 ml-4 text-2xl">
+                    Student
+                  </span>
+                </Link>
+              </div>
+
+              <div className="">
+                <Link
+                  to={"/dashboard/upload-book"}
+                  className="text-2xl flex items-center gap-4"
+                >
+                  <MdUploadFile className="text-secondary" size={24} />
+                  <span className="text-white font-bold hover:text-secondary hover:scale-110 duration-300 ml-4 text-2xl">
+                    Upload Book
+                  </span>
+                </Link>
+              </div>
             </>
           ) : (
             <>
@@ -125,9 +141,12 @@ export const SideBar = ({ onSelectChat }) => {
           )}
         </ul>
       </div>
-      {userData?.role === "student" && (
+      {(userData?.role === "student" || userData?.role === "admin") && (
         <div className="my-8 ">
-          <Link to="#" className=" text-2xl flex items-center gap-4">
+          <Link
+            to="/dashboard/book-library"
+            className="text-2xl flex items-center gap-4"
+          >
             <FaBook className="text-secondary" size={24} />
             <span className="text-white font-bold hover:text-secondary hover:scale-110 duration-300 ml-4 text-2xl">
               Book Library

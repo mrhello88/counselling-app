@@ -29,6 +29,9 @@ import { AdminCounselorPage } from "./components/Dashboard/admin-dashboard/admin
 import { AdminCounselorProfile } from "./components/Dashboard/admin-dashboard/adminCounselorAccess/adminCounselorProfile/AdminCounselorProfile";
 import { AdminStudentProfile } from "./components/Dashboard/admin-dashboard/adminStudentAccess/adminStudentProfile/AdminStudentProfile";
 import { AdminStudentPage } from "./components/Dashboard/admin-dashboard/adminStudentAccess/AdminStudentAccess";
+import { AdminBookUpload } from "./components/Dashboard/admin-dashboard/adminBookUpload/AdminBookUpload";
+import { AllBooks } from "./components/Dashboard/bookLibrary/BookLibrary";
+import NotFound from "./components/Error/Error404";
 
 export const App = () => {
   const { isLoggedIn, fetchData } = useAuth();
@@ -62,6 +65,10 @@ export const App = () => {
               <>
                 <Route path="/dashboard" element={<UserDashboard />}>
                   <Route index element={<ChatWindow />} />
+                  <Route
+                    path="/dashboard/book-library"
+                    element={<AllBooks />}
+                  />
                 </Route>
                 <Route
                   path="/profile/student"
@@ -108,11 +115,15 @@ export const App = () => {
                     path="/dashboard/admin-student-profile/:studentId"
                     element={<AdminStudentProfile />}
                   />
+                  <Route
+                    path="/dashboard/upload-book"
+                    element={<AdminBookUpload />}
+                  />
+                  <Route
+                    path="/dashboard/book-library"
+                    element={<AllBooks />}
+                  />
                 </Route>
-                {/* <Route
-               path="/profile/student"
-               element={<StudentProfilePage />}
-             /> */}
               </>
             ) : null}
           </>
@@ -146,6 +157,7 @@ export const App = () => {
         <Route path="/payment" element={<Payment />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/counselorList" element={<CounselorList />} />
+        <Route path="*" element={<NotFound />} /> {/* Catch-all route for 404 */}
       </Routes>
       <Footer />
     </Router>

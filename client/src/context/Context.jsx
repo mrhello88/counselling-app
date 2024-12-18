@@ -15,7 +15,6 @@ export const AuthProvider = ({ children }) => {
   const [refreshFlag, setRefreshFlag] = useState(false);
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [onlineStatus, setOnlineStatus] = useState({ status: "offline" });
-  const [data, setData] = useState({ adminCounselor: "" });
   const [isLoggedIn, setIsLoggedIn] = useState(!!token);
   const [state, dispatch] = useReducer(apiReducer, initialState);
   // const [data, setData] = useState({});   //if use the global state for data, so we need multiple functions for api's(fetch,post), and overwrite data over global state
@@ -23,13 +22,15 @@ export const AuthProvider = ({ children }) => {
 
   const storeTokenInLS = (serverToken) => {
     localStorage.setItem("token", serverToken);
+    setToken(localStorage.getItem("token"));
     setIsLoggedIn(true);
-    return setToken(localStorage.getItem("token"));
+    return;
   };
   const LogoutUser = () => {
     setToken("");
+    localStorage.removeItem("token");
     setIsLoggedIn(false);
-    return localStorage.removeItem("token");
+    return;
   };
 
   // Fetch Data (GET Request)
@@ -78,8 +79,6 @@ export const AuthProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(axiosResponse);
-
       // Extract data
       // dispatch({ type: "SET_USER_DATA", payload: axiosResponse?.data?.data });
       return axiosResponse?.data;
@@ -105,8 +104,6 @@ export const AuthProvider = ({ children }) => {
         storeTokenInLS,
         onlineStatus,
         setOnlineStatus,
-        data,
-        setData,
         state,
       }}
     >

@@ -17,6 +17,7 @@ const userStatusRoute = require("./router/userStatus");
 const counselorProfileRoute = require("./router/counselingSession");
 const adminRoute = require("./router/admin");
 const studentRoute = require("./router/student");
+const error = require("./controller/error404");
 const { Server } = require("socket.io");
 const server = http.createServer(app);
 const corsOptions = {
@@ -40,7 +41,8 @@ app.use(messageRoute);
 app.use(userStatusRoute);
 app.use(adminRoute);
 app.use(counselorProfileRoute);
-app.use(studentRoute);
+app.use(studentRoute);   
+app.use(error.error404);
 try {
   io.on("connection", async (socket) => {
     console.log("A user connected", socket.id);
@@ -54,7 +56,7 @@ try {
           [userId],
           JSON.stringify({ status: "offline" }, { EX: 3600 })
         );
-        socket  
+        socket
           .to(socket.room)
           .emit("status", { socketId: socket.id, status: "offline" });
       }

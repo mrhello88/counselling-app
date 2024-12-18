@@ -1,14 +1,30 @@
 const multer = require("multer");
 const path = require("path");
 
-// Define storage for files (images and PDFs)
-const storage = multer.diskStorage({
+// Define storageForProfile for files (images and PDFs)
+const storageForProfile = multer.diskStorage({
   destination: (req, file, cb) => {
     // Separate directories for images and PDFs
     if (file.mimetype === "application/pdf") {
       cb(null, "public/files"); // Directory for PDF files
     } else if (file.mimetype.startsWith("image")) {
       cb(null, "public/images"); // Directory for images
+    }
+  },
+  filename: (req, file, cb) => {
+    // Generate unique filename
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+// Define storageForProfile for files (images and PDFs)
+const storageForBook = multer.diskStorage({
+  destination: (req, file, cb) => {
+    // Separate directories for images and PDFs
+    if (file.mimetype === "application/pdf") {
+      cb(null, "public/books"); // Directory for PDF files
+    } else if (file.mimetype.startsWith("image")) {
+      cb(null, "public/BImages"); // Directory for images
     }
   },
   filename: (req, file, cb) => {
@@ -26,7 +42,7 @@ const imageFilter = (req, file, cb) => {
   ) {
     cb(null, true);
   } else {
-    cb(new Error('Only JPEG, JPG, and PNG formats are allowed!'), false);
+    cb(new Error("Only JPEG, JPG, and PNG formats are allowed!"), false);
   }
 };
 
@@ -41,7 +57,7 @@ const pdfFilter = (req, file, cb) => {
 
 // Define upload middleware to handle both image and file (PDF)
 const uploadProfileAndFiles = multer({
-  storage: storage,
+  storage: storageForProfile,
   limits: {
     fileSize: 1024 * 1024 * 15, // 15MB limit
   },
@@ -51,7 +67,7 @@ const uploadProfileAndFiles = multer({
       imageFilter(req, file, cb); // Use image filter for images
     } else if (file.mimetype === "application/pdf") {
       pdfFilter(req, file, cb); // Use PDF filter for PDFs
-    } else { 
+    } else {
       cb(new Error("Unsupported file format!"), false);
     }
   },
@@ -60,6 +76,28 @@ const uploadProfileAndFiles = multer({
   { name: "file", maxCount: 1 }, // Single PDF upload
 ]);
 
+// Define upload middleware to handle both image and file (PDF)
+const AddBook = multer({
+  storage: storageForBook,
+  limits: {
+    fileSize: 1024 * 1024 * 50, // 50MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Determine the filter based on file type
+    if (file.mimetype.startsWith("image")) {
+      imageFilter(req, file, cb); // Use image filter for images
+    } else if (file.mimetype === "application/pdf") {
+      pdfFilter(req, file, cb); // Use PDF filter for PDFs
+    } else {
+      cb(new Error("Unsupported file format!"), false);
+    }
+  },
+}).fields([
+  { name: "bookImage", maxCount: 1 }, // Single profile image upload
+  { name: "bookPdf", maxCount: 1 }, // Single PDF upload
+]);
+
 module.exports = {
   uploadProfileAndFiles,
+  AddBook,
 };

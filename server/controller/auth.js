@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const client = require("../utils/redisDatabase");
 const UserSchema = require("../model/User");
 const CounselorProfileSchema = require("../model/CounselorProfile");
+const deleteFile = require("../utils/fileRemover");
 const bcryptjs = require("bcryptjs");
 const crypto = require("crypto");
 const cryptoSchema = require("../model/CryptoToken");
@@ -94,10 +95,12 @@ exports.postRegister = async (req, res, next) => {
       });
 
       if (user.status === "disabled") {
+        deleteFile(filePath);
         return res.status(403).json({ message: "None", success: false });
       }
 
       if (user) {
+        deleteFile(filePath);
         return res
           .status(409)
           .json({ message: "User already exist", success: false });
@@ -131,6 +134,10 @@ exports.postRegister = async (req, res, next) => {
       const user = await UserSchema.findOne({
         "personalInfo.email": personalInfo.email,
       });
+
+      if (user.status === "disabled") {
+        return res.status(403).json({ message: "None", success: false });
+      }
 
       if (user) {
         return res
@@ -205,6 +212,7 @@ exports.getVerify = async (req, res, next) => {
     // Find user by token in cryptoSchema
     const cryptoUser = await cryptoSchema.findOne({ token: cryptoToken });
     if (!cryptoUser) {
+      deleteFile(cryptoUser.file);
       return res
         .status(404)
         .json({ message: "Time is out Please Register again", success: false });
@@ -254,6 +262,7 @@ exports.getVerify = async (req, res, next) => {
 
       // Check Redis response. For some Redis clients, 'OK' may not be returned.
       if (userSession !== "OK") {
+        deleteFile(file);
         return res.status(500).json({
           message: "Failed to create user session in Redis",
           success: false,
