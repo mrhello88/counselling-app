@@ -52,7 +52,7 @@ exports.authentication = async (req, res, next) => {
     req.userId = sessionData.userData._id;
 
     // Proceed to the next middleware
-    next();
+    next(); 
   } catch (error) {
     return res.status(401).json({
       message: "Unauthorized: Invalid token or session expired",

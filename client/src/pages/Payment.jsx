@@ -8,7 +8,7 @@ export const Payment = () => {
   const navigate = useNavigate();
   const location = useLocation();
   // const { postCounselingSession, postData, apiLoading, postCounselorAdvice } = useAuth();
-  const { postData, apiLoading, fetchData } = useAuth();
+  const { postData, apiLoading, fetchData, setRefreshFlag } = useAuth();
 
   const [errors, setErrors] = useState({});
   const [paymentInfo, setPaymentInfo] = useState({
@@ -36,6 +36,7 @@ export const Payment = () => {
     if (location.state.scheduleSessionData) {
       try {
         const { scheduleSessionData } = location.state;
+        console.log("scheduleSessionData", scheduleSessionData)
         const counselingResponseData = await postData(
           "http://localhost:3000/counseling-schedule",
           scheduleSessionData
@@ -46,11 +47,12 @@ export const Payment = () => {
             { counselorId: scheduleSessionData.counselorId }
           );
           if (counselingResponseData.success) {
-            const responseData = await fetchData("http://localhost:3000/user");
-            if (responseData.success) {
+            setRefreshFlag(true)
+            // const responseData = await fetchData("http://localhost:3000/user");
+            // if (responseData.success) {
               toast.success(responseAdviceData.message);
               navigate("/dashboard");
-            }
+            // }
           } else {
             toast.error(responseAdviceData.message || "Registration failed.");
           }

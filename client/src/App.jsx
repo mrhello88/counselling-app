@@ -34,7 +34,7 @@ import { AllBooks } from "./components/Dashboard/bookLibrary/BookLibrary";
 import NotFound from "./components/Error/Error404";
 
 export const App = () => {
-  const { isLoggedIn, fetchData } = useAuth();
+  const { isLoggedIn, fetchData, refreshFlag } = useAuth();
   const [userData, setUserData] = useState({});
   useEffect(() => {
     const fetchingData = async () => {
@@ -49,9 +49,9 @@ export const App = () => {
       }
     };
     // Call the async function inside useEffect
-    fetchingData();
-  }, [isLoggedIn, fetchData]);
-
+    fetchingData(userData);
+  }, [isLoggedIn, fetchData, refreshFlag]);
+console.log(userData,"this sklfaskld ")
   return (
     <Router>
       <div className="">
@@ -157,7 +157,8 @@ export const App = () => {
         <Route path="/payment" element={<Payment />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/counselorList" element={<CounselorList />} />
-        <Route path="*" element={<NotFound />} /> {/* Catch-all route for 404 */}
+        <Route path="*" element={<NotFound />} />{" "}
+        {/* Catch-all route for 404 */}
       </Routes>
       <Footer />
     </Router>

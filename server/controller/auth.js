@@ -177,8 +177,8 @@ exports.getUser = async (req, res, next) => {
         .status(401)
         .json({ message: "User Has No Credentials", success: false });
     }
-    // If the user is a student, simply return the user data
-    if (role === "student" || role === "admin") {
+
+    if (role === "admin") {
       return res.status(200).json({
         data: req.user,
         message: "User Not Found",
@@ -186,19 +186,28 @@ exports.getUser = async (req, res, next) => {
       });
     }
 
-    // If the user is a counselor, fetch their data and populate the counselorId
-    const counselorData = await UserSchema.findOne({
+    const userData = await UserSchema.findOne({
       "personalInfo.email": personalInfo.email,
     }).populate("counselor");
 
-    if (!counselorData) {
+    if (!userData) {
       return res
         .status(404)
-        .json({ message: "Counselor not found", success: false });
+        .json({ message: `${role} not found`, success: false });
     }
+
+    // If the user is a student, simply return the user data
+    if (role === "student") {
+      return res.status(200).json({
+        data: userData,
+        message: "student",
+        success: true,
+      });
+    }
+
     return res
       .status(200)
-      .json({ data: counselorData, message: "user LoggedIn", success: true });
+      .json({ data: userData, message: "user LoggedIn", success: true });
   } catch (error) {
     return res.status(500).json({ message: "Server error", success: false });
   }

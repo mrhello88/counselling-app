@@ -6,7 +6,8 @@ import { toast } from "react-toastify";
 import { LoadingOverlay } from "../Loading/Loading";
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isLoggedIn, fetchData, apiLoading, LogoutUser } = useAuth();
+  const { isLoggedIn, fetchData, apiLoading, LogoutUser, refreshFlag } =
+    useAuth();
   const [userData, setUserData] = useState({});
   useEffect(() => {
     const fetchingData = async () => {
@@ -22,7 +23,7 @@ export const Navbar = () => {
     };
     // Call the async function inside useEffect
     fetchingData();
-  }, [isLoggedIn, fetchData]);
+  }, [isLoggedIn, fetchData, refreshFlag]);
   // if (apiLoading) {
   //   return apiLoading && <LoadingOverlay />;
   // }
