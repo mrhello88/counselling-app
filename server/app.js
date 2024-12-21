@@ -41,7 +41,7 @@ app.use(messageRoute);
 app.use(userStatusRoute);
 app.use(adminRoute);
 app.use(counselorProfileRoute);
-app.use(studentRoute);   
+app.use(studentRoute);
 app.use(error.error404);
 try {
   io.on("connection", async (socket) => {
@@ -73,8 +73,16 @@ try {
       socket.to(room).emit("status", { socketId: socket.id, status: "online" });
     });
     // Handle receiving and broadcasting messages
-    socket.on("message", ({ room, message, sender }) => {
-      const newMessage = { message, senderId: sender, _id: Date.now() };
+    socket.on("message", ({ room, data }) => {
+      const { _id, message, senderId, file, image, createdAt } = data;
+      const newMessage = {
+        _id,
+        message,
+        senderId,
+        file,
+        image,
+        createdAt,
+      };
       // Broadcast the message to everyone in the room
       io.to(room).emit("message", newMessage);
 

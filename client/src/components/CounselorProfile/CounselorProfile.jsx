@@ -12,12 +12,15 @@ export const CounselorProfile = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [errors, setErrors] = useState({});
   // const {
-    //   getCounselorProfile,
-    //   isLoggedIn,
-    // } = useAuth();
-    const [profileData, setProfileData] = useState({});
+  //   getCounselorProfile,
+  //   isLoggedIn,
+  // } = useAuth();
+  const [profileData, setProfileData] = useState({});
   const { fetchData, apiLoading, isLoggedIn } = useAuth();
   const { counselorId } = useParams();
+  console.log(counselorId,
+    "this is at counselor profile"
+  );
   const navigate = useNavigate();
   useEffect(() => {
     const fetchingData = async () => {
@@ -88,9 +91,9 @@ export const CounselorProfile = () => {
     // alert("Counseling session scheduled successfully!");
   };
 
-  // if (!profileData?._id) {
-  //   return <LoadingOverlay />;
-  // }
+  if (!profileData?._id) {
+    return <LoadingOverlay />;
+  }
 
   return (
     <div className="max-w-3xl mx-auto bg-white shadow-md rounded-lg p-6 mt-10">

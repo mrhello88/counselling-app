@@ -5,34 +5,52 @@ exports.postMessages = async (req, res, next) => {
   try {
     const { id: receiverId } = req.params;
     const senderId = req.user._id;
-    const { message } = req.body;
+    const { message, createdAt } = req.body;
+
+    // Access uploaded file paths if they exist
+    const image = req.files?.chatImage?.[0]?.path.split("\\chat\\")[1]; // Full path for image
+    const file = req.files?.chatFile?.[0]?.path.split("\\chat\\")[1]; // Full path for file
+
+    // Create conversation if it doesn't exist
     let conversation = await Conversation.findOne({
       participants: { $all: [senderId, receiverId] },
     });
+
     if (!conversation) {
       conversation = await Conversation.create({
         participants: [senderId, receiverId],
       });
     }
+
+    // Create a new message schema
     const newMessage = new MessageSchema({
       senderId: senderId,
       receiverId: receiverId,
-      message,
+      message: message.trim(),
+      image, // Attach image path if it exists
+      file, // Attach file path if it exists
+      createdAt,
     });
+
+    // Save the new message to the conversation
     if (newMessage) {
       conversation.messages.push(newMessage._id);
-      conversation.save();
+      await conversation.save();
     }
-    await Promise.all([newMessage.save()]);
+
+    // Save the message to the database
+    await newMessage.save();
+
     return res.status(201).json({
-      message: "message add to conversation successfully",
+      message: "Message added to conversation successfully",
       data: newMessage,
       success: true,
     });
   } catch (error) {
+    console.error(error);
     return res
       .status(500)
-      .json({ message: "server error post messages", success: true });
+      .json({ message: "Server error while posting messages", success: false });
   }
 };
 
@@ -59,4 +77,3 @@ exports.postGetMessages = async (req, res, next) => {
       .json({ message: "server error fetch messages", success: false });
   }
 };
-      

@@ -94,12 +94,11 @@ exports.postRegister = async (req, res, next) => {
         "personalInfo.email": personalInfo.email,
       });
 
-      if (user.status === "disabled") {
-        deleteFile(filePath);
-        return res.status(403).json({ message: "None", success: false });
-      }
-
       if (user) {
+        if (user.status === "disabled") {
+          deleteFile(filePath);
+          return res.status(403).json({ message: "None", success: false });
+        }
         deleteFile(filePath);
         return res
           .status(409)
@@ -135,11 +134,10 @@ exports.postRegister = async (req, res, next) => {
         "personalInfo.email": personalInfo.email,
       });
 
-      if (user.status === "disabled") {
-        return res.status(403).json({ message: "None", success: false });
-      }
-
       if (user) {
+        if (user.status === "disabled") {
+          return res.status(403).json({ message: "None", success: false });
+        }
         return res
           .status(409)
           .json({ message: "User already exist", success: false });

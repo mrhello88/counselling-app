@@ -6,6 +6,14 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import duration from "dayjs/plugin/duration";
 import { toast } from "react-toastify";
+import {
+  FaFilePdf,
+  FaFileWord,
+  FaFileExcel,
+  FaFileAlt,
+  FaImage,
+} from "react-icons/fa";
+import { IoMdDownload } from "react-icons/io";
 import { LoadingOverlay } from "../../Loading/Loading";
 dayjs.extend(utc);
 dayjs.extend(duration);
@@ -18,27 +26,36 @@ export const ChatWindow = () => {
   const [schedule, setSchedule] = useState({});
   const [status, setStatus] = useState("loading"); // loading, before, during, end
   const [remainingTime, setRemainingTime] = useState(null);
-  // const { getUserMessages, getCounselingSession, isLoggedIn } = useAuth();
-  const { fetchData, apiLoading, isLoggedIn, onlineStatus, setOnlineStatus } = useAuth();
+  const {
+    fetchData,
+    apiLoading,
+    isLoggedIn,
+    onlineStatus,
+    setOnlineStatus,
+    refreshFlag,
+  } = useAuth();
   useEffect(() => {
     if (!chatUser?._id) return; // Early return if chatUser ID is unavailable
 
     const fetchingData = async () => {
       try {
         // Fetch messages and schedule concurrently
-        const [messagesResponse, scheduleResponse, userStatusResoponse] = await Promise.all([
-          fetchData(`http://localhost:3000/get/${chatUser._id}`),
-          fetchData(
-            `http://localhost:3000/counseling-schedule/${chatUser._id}`
-          ),
-          fetchData(`http://localhost:3000/user-status/${chatUser._id}`)
-        ]);
+        const [messagesResponse, scheduleResponse, userStatusResoponse] =
+          await Promise.all([
+            fetchData(`http://localhost:3000/get/${chatUser._id}`),
+            fetchData(
+              `http://localhost:3000/counseling-schedule/${chatUser._id}`
+            ),
+            fetchData(`http://localhost:3000/user-status/${chatUser._id}`),
+          ]);
 
-         // Handle messages response
-         if (userStatusResoponse.success) {
+        // Handle messages response
+        if (userStatusResoponse.success) {
           setOnlineStatus(userStatusResoponse.data || "");
         } else {
-          toast.error(userStatusResoponse.message || "Failed to fetch userStatus");
+          toast.error(
+            userStatusResoponse.message || "Failed to fetch userStatus"
+          );
         }
 
         // Handle messages response
@@ -61,7 +78,7 @@ export const ChatWindow = () => {
     };
 
     fetchingData();
-  }, [chatUser?._id, isLoggedIn, fetchData]); // Dependency array
+  }, [chatUser?._id, isLoggedIn, fetchData, refreshFlag]); // Dependency array
 
   useEffect(() => {
     const sessionEnd = dayjs.utc(schedule.endDate);
@@ -154,13 +171,71 @@ export const ChatWindow = () => {
                 {messages?.map((obj) => (
                   <li
                     key={obj._id}
-                    className={`mb-2 p-2 w-full max-w-xs rounded-lg break-words text-base font-medium ${
+                    className={`mb-4 p-4 w-full max-w-sm rounded-lg shadow-md text-sm font-medium relative ${
                       obj.senderId === userId
-                        ? "bg-yellow-500 text-black ml-auto"
+                        ? "bg-secondary text-white ml-auto"
                         : "bg-gray-200 text-gray-800"
                     }`}
                   >
-                    <p className="leading-relaxed">{obj.message}</p>
+                    {/* Message Content */}
+                    <p className="leading-relaxed mb-2">{obj.message}</p>
+
+                    {/* Image Preview */}
+                    {obj.image && (
+                      <div className="mb-2">
+                        <img
+                          src={`http://localhost:3000/chat/${obj.image}`} // Adjust the path if needed
+                          alt="Attachment"
+                          className="rounded-lg border max-w-full"
+                          style={{ objectFit: "cover" }}
+                        />
+                      </div>
+                    )}
+
+                    {/* File Preview */}
+                    {obj.file && (
+                      <div className="p-3 mb-2 bg-gray-400 rounded-lg shadow-inner border flex items-center gap-3">
+                        {/* File Type Icons */}
+                        {obj.file.match(/\.(pdf)$/i) && (
+                          <FaFilePdf className="h-6 w-6 text-red-500" />
+                        )}
+                        {obj.file.match(/\.(docx|doc)$/i) && (
+                          <FaFileWord className="h-6 w-6 text-blue-500" />
+                        )}
+                        {obj.file.match(/\.(xlsx|xls)$/i) && (
+                          <FaFileExcel className="h-6 w-6 text-green-500" />
+                        )}
+                        {obj.file.match(/\.(txt)$/i) && (
+                          <FaFileAlt className="h-6 w-6 text-gray-700" />
+                        )}
+                        {obj.file.match(/\.(jpg|jpeg|png|gif)$/i) && (
+                          <FaImage className="h-6 w-6 text-yellow-500" />
+                        )}
+
+                        <span className="truncate text-sm font-medium text-gray-700">
+                          {obj.file.split("\\").pop()}
+                        </span>
+
+                        {/* Download Link */}
+                        <a
+                          href={`http://localhost:3000/chat/${obj.file}`} // Adjust the path if needed
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="ml-auto flex items-center text-blue-500 hover:underline"
+                        >
+                          <IoMdDownload className="mr-1" />
+                          Download
+                        </a>
+                      </div>
+                    )}
+
+                    {/* Timestamp */}
+                    <span className="text-xs text-gray-500 absolute bottom-1 right-2">
+                      {new Date(obj.createdAt).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
                   </li>
                 ))}
               </ul>
