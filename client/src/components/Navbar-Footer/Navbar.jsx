@@ -28,23 +28,23 @@ export const Navbar = () => {
   //   return apiLoading && <LoadingOverlay />;
   // }
   return (
-    <nav className="bg-primary p-4 ">
-      <div className="container mx-auto flex justify-between items-center">
+    <nav className="bg-primary p-4">
+      <div className="container mx-auto flex flex-wrap justify-between items-center">
         {/* Logo */}
-        <div className="flex justify-between items-center space-x-52 ">
-          <div className="text-secondary font-bold text-xl pl-5 duration-300 hover:scale-125">
+        <div className="flex items-center space-x-8">
+          <div className="text-secondary font-bold text-xl duration-300 hover:scale-125">
             <h2 className="text-2xl cursor-pointer">StudentCounselor</h2>
           </div>
+
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-8 text-lg font-bold w-full h-12 items-center">
+          <div className="hidden lg:flex flex-wrap space-x-6 text-lg font-bold">
             <NavLink
               to="/"
               className={({ isActive }) =>
-                ` ${
+                `${
                   isActive
                     ? "text-white hover:text-secondary scale-115"
                     : "hover:scale-125 text-secondary"
-                  // "text-secondary hover:text-white scale-115" : "hover:scale-125 text-secondary"
                 }`
               }
             >
@@ -53,39 +53,21 @@ export const Navbar = () => {
 
             {isLoggedIn && userData.role && (
               <>
-                {userData.role === "student" && userData.friends.length > 0 ? (
-                  <>
-                    <NavLink
-                      to="/dashboard"
-                      className={({ isActive }) =>
-                        ` ${
-                          isActive
-                            ? "text-white hover:text-secondary scale-115"
-                            : "hover:scale-125 text-secondary"
-                          // "text-secondary hover:text-white scale-115" : "hover:scale-125 text-secondary "
-                        }`
-                      }
-                    >
-                      Dashboard
-                    </NavLink>
-                  </>
-                ) : null}
-                {userData.role === "counselor" || userData.role === "admin" ? (
-                  <>
-                    <NavLink
-                      to="/dashboard"
-                      className={({ isActive }) =>
-                        ` ${
-                          isActive
-                            ? "text-white hover:text-secondary scale-115"
-                            : "hover:scale-125  text-secondary"
-                          // "text-secondary hover:text-white scale-115" : "hover:scale-125 text-secondary"
-                        }`
-                      }
-                    >
-                      Dashboard
-                    </NavLink>
-                  </>
+                {(userData.role === "student" && userData.friends.length > 0) ||
+                userData.role === "counselor" ||
+                userData.role === "admin" ? (
+                  <NavLink
+                    to="/dashboard"
+                    className={({ isActive }) =>
+                      `${
+                        isActive
+                          ? "text-white hover:text-secondary scale-115"
+                          : "hover:scale-125 text-secondary"
+                      }`
+                    }
+                  >
+                    Dashboard
+                  </NavLink>
                 ) : null}
               </>
             )}
@@ -93,7 +75,7 @@ export const Navbar = () => {
             <NavLink
               to="/counselorList"
               className={({ isActive }) =>
-                ` ${
+                `${
                   isActive
                     ? "text-white hover:text-secondary scale-115"
                     : "hover:scale-125 text-secondary"
@@ -103,21 +85,9 @@ export const Navbar = () => {
               Counselors
             </NavLink>
             <NavLink
-              to="/"
+              to="/about"
               className={({ isActive }) =>
-                ` ${
-                  isActive
-                    ? "text-white hover:text-secondary scale-115"
-                    : "hover:scale-125 text-secondary"
-                }`
-              }
-            >
-              Service
-            </NavLink>
-            <NavLink
-              to=""
-              className={({ isActive }) =>
-                ` ${
+                `${
                   isActive
                     ? "text-white hover:text-secondary scale-115"
                     : "hover:scale-125 text-secondary"
@@ -130,31 +100,27 @@ export const Navbar = () => {
         </div>
 
         {/* CTA Button */}
-        <div className="hidden md:flex text-lg">
+        <div className="hidden lg:flex text-lg space-x-4">
           {isLoggedIn && userData.role ? (
-            <>
-              <NavLink
-                to={"/"}
-                onClick={() => {
-                  LogoutUser();
-                }}
-                className="hidden md:block  mx-12  px-4 py-2 rounded text-primary bg-secondary hover:text-white font-bold text-xl duration-300 hover:scale-110"
-              >
-                Log Out
-              </NavLink>
-            </>
+            <NavLink
+              to="/"
+              onClick={LogoutUser}
+              className="px-4 py-2 rounded text-primary bg-secondary hover:text-white font-bold text-xl duration-300 hover:scale-110"
+            >
+              Log Out
+            </NavLink>
           ) : (
             <>
               <NavLink
-                to={"/login"}
-                className="hidden md:block mx-12 px-4 py-2 rounded text-primary bg-secondary hover:text-white font-bold text-xl duration-300 hover:scale-110"
+                to="/login"
+                className="px-4 py-2 rounded text-primary bg-secondary hover:text-white font-bold text-xl duration-300 hover:scale-110"
               >
                 Log In
               </NavLink>
 
               <NavLink
                 to="/register"
-                className="hidden md:block px-4 py-2 rounded  text-primary bg-secondary hover:text-white font-bold text-xl duration-300 hover:scale-110"
+                className="px-4 py-2 rounded text-primary bg-secondary hover:text-white font-bold text-xl duration-300 hover:scale-110"
               >
                 Book a session
               </NavLink>
@@ -164,51 +130,85 @@ export const Navbar = () => {
 
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden text-white"
+          className="lg:hidden text-white"
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
+
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden mt-2">
-          <a
-            href="/"
-            className="block py-2 px-4 hover:bg-secondary text-primary"
+        <div className="lg:hidden mt-2 space-y-2">
+          <NavLink
+            to="/"
+            className="block py-2 px-4 hover:bg-secondary text-white"
           >
             Home
-          </a>
-          <a
-            href="/dashboard"
-            className="block py-2 px-4 hover:bg-secondary text-primary"
+          </NavLink>
+
+          {isLoggedIn && userData.role && (
+            <>
+              {userData.role === "student" && userData.friends.length > 0 ? (
+                <NavLink
+                  to="/dashboard"
+                  className="block py-2 px-4 hover:bg-secondary text-white"
+                >
+                  Dashboard
+                </NavLink>
+              ) : null}
+
+              {(userData.role === "counselor" || userData.role === "admin") && (
+                <NavLink
+                  to="/dashboard"
+                  className="block py-2 px-4 hover:bg-secondary text-white"
+                >
+                  Dashboard
+                </NavLink>
+              )}
+            </>
+          )}
+
+          <NavLink
+            to="/counselorList"
+            className="block py-2 px-4 hover:bg-secondary text-white"
           >
-            User
-          </a>
-          <a
-            href="/about"
-            className="block py-2 px-4 hover:bg-secondary text-primary"
+            Counselors
+          </NavLink>
+          <NavLink
+            to="/about"
+            className="block py-2 px-4 hover:bg-secondary text-white"
           >
-            About
-          </a>
-          <a
-            href="#"
-            className="block py-2 px-4 hover:bg-secondary text-primary"
-          >
-            Register
-          </a>
-          <a
-            href="/register"
-            className="block py-2 px-4 hover:bg-secondary text-primary"
-          >
-            Contact
-          </a>
-          <button className="w-full text-left bg-[#38bdf8] text-white py-2 px-4 mt-2 hover:bg-[#0ea5e9]">
-            Book a Session
-          </button>
+            About Us
+          </NavLink>
+
+          {isLoggedIn && userData.role ? (
+            <button
+              onClick={() => {
+                LogoutUser();
+              }}
+              className="w-full text-left bg-[#38bdf8] text-white py-2 px-4 hover:bg-[#0ea5e9]"
+            >
+              Log Out
+            </button>
+          ) : (
+            <>
+              <NavLink
+                to="/login"
+                className="block bg-secondary text-primary py-2 px-4 rounded hover:bg-primary hover:text-white"
+              >
+                Log In
+              </NavLink>
+              <NavLink
+                to="/register"
+                className="block bg-secondary text-primary py-2 px-4 rounded hover:bg-primary hover:text-white"
+              >
+                Book a Session
+              </NavLink>
+            </>
+          )}
         </div>
       )}
-        
     </nav>
   );
 };

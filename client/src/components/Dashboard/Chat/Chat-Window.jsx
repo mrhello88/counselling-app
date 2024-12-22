@@ -125,8 +125,7 @@ export const ChatWindow = () => {
   return (
     <>
       {isLoggedIn && chatUser?._id ? (
-        <div className="flex flex-col justify-between h-screen">
-          <div className="">
+        <div className="flex flex-col justify-between">
             <div className="flex items-center gap-2 py-2 px-4 bg-gray-800">
               {onlineStatus.status === "online" ? (
                 <span className="text-green-500">• Online</span> // Green icon for online
@@ -167,7 +166,7 @@ export const ChatWindow = () => {
               </span>
             </div>
             <div className="">
-              <ul className="overflow-y-scroll h-[30.4rem] bg-gray-800 border-t-2 border-secondary px-4 pt-2">
+              <ul className="overflow-y-scroll h-screen bg-gray-800 border-t-2 border-secondary px-4 pt-2">
                 {messages?.map((obj) => (
                   <li
                     key={obj._id}
@@ -245,7 +244,6 @@ export const ChatWindow = () => {
               setMessages={setMessages}
               isChatEnabled={status === "during"}
             />
-          </div>
         </div>
       ) : (
         <div className="h-screen flex items-center justify-center">

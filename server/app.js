@@ -46,7 +46,7 @@ app.use(error.error404);
 try {
   io.on("connection", async (socket) => {
     console.log("A user connected", socket.id);
-    // Handle joining the room
+    // Handle joining the roomv
     socket.on("join", async ({ room, userId }) => {
       // Leave the previous room if the user was already in one
       if (socket.room) {

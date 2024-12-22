@@ -27,15 +27,13 @@ export const AllBooks = () => {
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-6 text-primary">Books Library</h2>
-      {/* {loading ? (
-        <p className="text-center text-gray-500">Loading books...</p>
-      ) :  */}
+
       {books.length === 0 ? (
         <p className="text-center text-gray-500">No books available</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {books.map((book) => (
-            <BookCard book={book} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {books.map((book, index) => (
+            <BookCard key={index} book={book} />
           ))}
         </div>
       )}

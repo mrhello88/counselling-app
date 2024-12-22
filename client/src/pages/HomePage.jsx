@@ -382,7 +382,7 @@ export function HomePage() {
     setTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
   };
   // const { getCounselors, fetchData, apiLoading } = useAuth();
-  const { fetchData, apiLoading, isLoggedIn} = useAuth();
+  const { fetchData, apiLoading, isLoggedIn } = useAuth();
   // Dummy data for counselors
 
   const [counselors, setCounselors] = useState([]);
@@ -465,11 +465,11 @@ export function HomePage() {
                     Get personalized education and career counseling to unlock
                     your full potential.
                   </p>
-                  <div>
-                    <button className=" hover:scale-110 py-4 px-6 text-2xl font-bold rounded-md inline-block mr-4 text-primary bg-secondary hover:bg-secondary hover:text-white transition-colors duration-300">
+                  <div className="flex flex-col md:flex-row items-center md:justify-start gap-4">
+                    <button className="w-full md:w-auto hover:scale-110 py-4 px-6 text-xl md:text-2xl font-bold rounded-md text-primary bg-secondary hover:bg-secondary hover:text-white transition-colors duration-300">
                       Get Started
                     </button>
-                    <button className="hover:scale-110 py-4 px-6 text-2xl font-bold rounded-md inline-block  bg-primary hover:text-secondary transition-colors duration-300">
+                    <button className="w-full md:w-auto hover:scale-110 py-4 px-6 text-xl md:text-2xl font-bold rounded-md bg-primary hover:text-secondary transition-colors duration-300">
                       Learn More
                     </button>
                   </div>

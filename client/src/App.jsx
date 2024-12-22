@@ -51,7 +51,6 @@ export const App = () => {
     // Call the async function inside useEffect
     fetchingData(userData);
   }, [isLoggedIn, fetchData, refreshFlag]);
-console.log(userData,"this sklfaskld ")
   return (
     <Router>
       <div className="">

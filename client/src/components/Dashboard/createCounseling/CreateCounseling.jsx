@@ -7,7 +7,7 @@ import { LoadingOverlay } from "../../Loading/Loading";
 export const CreateSession = () => {
   const [data, setData] = useState({ category: "", duration: "", price: "" });
   const [errors, setErrors] = useState({});
-  const { postData, apiLoading} = useAuth();
+  const { postData, apiLoading } = useAuth();
   // const { postCreateCounseling, apiLoading, postData } = useAuth();
 
   const handleChange = (e) => {
@@ -54,81 +54,81 @@ export const CreateSession = () => {
   //   return apiLoading && <LoadingOverlay />;
   // }
   return (
-    <div className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-md">
-      <h2 className="text-2xl font-semibold mb-6 text-center">
-        Create Counseling Session
-      </h2>
-      <form onSubmit={handleSubmit}>
-        {/* Category Selector */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Category
-          </label>
-          <select
-            value={data.category}
-            name="category"
-            onChange={handleChange}
-            className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          >
-            <option value="">Select Category</option>
-            <option value="mental_health">Mental Health</option>
-            <option value="career_counseling">Career Counseling</option>
-            <option value="scholarship_counseling">
-              Scholarship Counseling
-            </option>
-          </select>
-          {errors.category && (
-            <p className="text-red-500 text-sm">{errors.category._errors[0]}</p>
-          )}
-        </div>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+  <div className="max-w-md w-full p-6 bg-white shadow-lg rounded-md">
+    <h2 className="text-2xl font-semibold mb-6 text-center">
+      Create Counseling Session
+    </h2>
+    <form onSubmit={handleSubmit}>
+      {/* Category Selector */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700">
+          Category
+        </label>
+        <select
+          value={data.category}
+          name="category"
+          onChange={handleChange}
+          className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        >
+          <option value="">Select Category</option>
+          <option value="mental_health">Mental Health</option>
+          <option value="career_counseling">Career Counseling</option>
+          <option value="scholarship_counseling">Scholarship Counseling</option>
+        </select>
+        {errors.category && (
+          <p className="text-red-500 text-sm">{errors.category._errors[0]}</p>
+        )}
+      </div>
 
-        {/* Duration Selector */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Duration
-          </label>
-          <select
-            value={data.duration}
-            name="duration"
-            onChange={handleChange}
-            className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          >
-            <option value="">Select Duration</option>
-            <option value="45">45 minutes</option>
-          </select>
-          {errors.duration && (
-            <p className="text-red-500 text-sm">{errors.duration._errors[0]}</p>
-          )}
-        </div>
+      {/* Duration Selector */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700">
+          Duration
+        </label>
+        <select
+          value={data.duration}
+          name="duration"
+          onChange={handleChange}
+          className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        >
+          <option value="">Select Duration</option>
+          <option value="45">45 minutes</option>
+        </select>
+        {errors.duration && (
+          <p className="text-red-500 text-sm">{errors.duration._errors[0]}</p>
+        )}
+      </div>
 
-        {/* Price Input */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Price
-          </label>
-          <input
-            name="price"
-            type="number"
-            value={data.price}
-            onChange={handleChange}
-            className="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="Enter price in Rs"
-          />
-          {errors.price && (
-            <p className="text-red-500 text-sm">{errors.price._errors[0]}</p>
-          )}
-        </div>
+      {/* Price Input */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700">
+          Price
+        </label>
+        <input
+          name="price"
+          type="number"
+          value={data.price}
+          onChange={handleChange}
+          className="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          placeholder="Enter price in Rs"
+        />
+        {errors.price && (
+          <p className="text-red-500 text-sm">{errors.price._errors[0]}</p>
+        )}
+      </div>
 
-        {/* Submit Button */}
-        <div className="text-center">
-          <button
-            type="submit"
-            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
-            Submit
-          </button>
-        </div>
-      </form>
-    </div>
+      {/* Submit Button */}
+      <div className="text-center">
+        <button
+          type="submit"
+          className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
+          Submit
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
   );
 };
