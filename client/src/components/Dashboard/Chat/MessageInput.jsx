@@ -181,45 +181,107 @@ export const MessageInput = ({ selectedChat, setMessages, isChatEnabled }) => {
       )}
       {/* Input Section */}
       <div className="flex items-center space-x-3">
-        <textarea
-          ref={textareaRef}
-          value={message}
-          onChange={(e) => {
-            handleInputChange(e);
-            handleInput();
-          }}
-          placeholder="Type a message..."
-          rows={1}
-          className="flex-grow w-full p-3 border rounded-lg bg-gray-900 text-white text-base font-medium focus:outline-none resize-none overflow-y-auto"
-        ></textarea>
-        <div className="flex space-x-2">
-          <label htmlFor="fileInput" className="cursor-pointer">
-            <FileText className="text-white hover:text-blue-500" size={24} />
-          </label>
-          <input
-            type="file"
-            id="fileInput"
-            onChange={handleFileChange}
-            accept=".pdf,.doc,.docx,.xls,.xlsx,.txt"
-            className="hidden"
-          />
-          <label htmlFor="imageInput" className="cursor-pointer">
-            <ImageIcon className="text-white hover:text-blue-500" size={24} />
-          </label>
-          <input
-            type="file"
-            id="imageInput"
-            onChange={handleImageChange}
-            accept=".png,.jpg,.jpeg"
-            className="hidden"
-          />
-        </div>
-        <button
-          onClick={handleSend}
-          className="px-4 py-2 rounded-lg text-primary bg-secondary hover:text-white font-bold duration-300 hover:scale-105"
-        >
-          Send
-        </button>
+        {isChatEnabled ? (
+          <>
+            <textarea
+              ref={textareaRef}
+              value={message}
+              onChange={(e) => {
+                handleInputChange(e);
+                handleInput();
+              }}
+              placeholder="Type a message..."
+              rows={1}
+              className="flex-grow w-full p-3 border rounded-lg bg-gray-900 text-white text-base font-medium focus:outline-none resize-none overflow-y-auto"
+            ></textarea>
+            <div className="flex space-x-2">
+              <label htmlFor="fileInput" className="cursor-pointer">
+                <FileText
+                  className="text-white hover:text-blue-500"
+                  size={24}
+                />
+              </label>
+              <input
+                type="file"
+                id="fileInput"
+                onChange={handleFileChange}
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.txt"
+                className="hidden"
+              />
+              <label htmlFor="imageInput" className="cursor-pointer">
+                <ImageIcon
+                  className="text-white hover:text-blue-500"
+                  size={24}
+                />
+              </label>
+              <input
+                type="file"
+                id="imageInput"
+                onChange={handleImageChange}
+                accept=".png,.jpg,.jpeg"
+                className="hidden"
+              />
+            </div>
+            <button
+              onClick={handleSend}
+              className="px-4 py-2 rounded-lg text-primary bg-secondary hover:text-white font-bold duration-300 hover:scale-105"
+            >
+              Send
+            </button>
+          </>
+        ) : (
+          <>
+            <textarea
+              ref={textareaRef}
+              value={message}
+              onChange={(e) => {
+                handleInputChange(e);
+                handleInput();
+              }}
+              disabled
+              placeholder="Type a message..."
+              rows={1}
+              className="flex-grow w-full p-3 border rounded-lg bg-gray-900 text-white text-base font-medium focus:outline-none resize-none overflow-y-auto"
+            ></textarea>
+            <div className="flex space-x-2">
+              <label htmlFor="fileInput" className="cursor-pointer">
+                <FileText
+                  className="text-white hover:text-blue-500"
+                  size={24}
+                />
+              </label>
+              <input
+                type="file"
+                id="fileInput"
+                onChange={handleFileChange}
+                disabled
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.txt"
+                className="hidden"
+              />
+              <label htmlFor="imageInput" className="cursor-pointer">
+                <ImageIcon
+                  className="text-white hover:text-blue-500"
+                  size={24}
+                />
+              </label>
+              <input
+                type="file"
+                id="imageInput"
+                onChange={handleImageChange}
+                disabled
+                accept=".png,.jpg,.jpeg"
+                className="hidden"
+              />
+            </div>
+            <button
+              onClick={handleSend}
+              disabled
+              className="px-4 py-2 rounded-lg text-primary bg-secondary hover:text-white font-bold duration-300 hover:scale-105"
+            >
+              Send
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
