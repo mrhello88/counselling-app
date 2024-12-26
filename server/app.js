@@ -20,10 +20,21 @@ const studentRoute = require("./router/student");
 const error = require("./controller/error404");
 const { Server } = require("socket.io");
 const server = http.createServer(app);
+const allowedOrigins = [
+  "https://counselling-app-1.onrender.com",
+  "http://localhost:5173",
+];
+
 const corsOptions = {
-  origin: "https://counselling-app-1.onrender.com" || "http://localhost:5173",
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true); // Allow the origin
+    } else {
+      callback(new Error("Not allowed by CORS")); // Block the origin
+    }
+  },
   methods: ["GET", "POST", "DELETE", "UPDATE"],
-  Credentials: true,
+  credentials: true, // Ensure lowercase "credentials"
 };
 
 // app.use(authentication)

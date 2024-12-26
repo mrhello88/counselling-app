@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/Context";
 import { LoadingOverlay } from "../components/Loading/Loading";
+import { toast } from "react-toastify";
 
 const Card = ({ children, className }) => {
   return (
