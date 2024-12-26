@@ -42,11 +42,11 @@ export const ChatWindow = () => {
         // Fetch messages and schedule concurrently
         const [messagesResponse, scheduleResponse, userStatusResoponse] =
           await Promise.all([
-            fetchData(`http://localhost:3000/get/${chatUser._id}`),
+            fetchData(`${process.env.BACKEND_URL}/get/${chatUser._id}`),
             fetchData(
-              `http://localhost:3000/counseling-schedule/${chatUser._id}`
+              `${process.env.BACKEND_URL}/counseling-schedule/${chatUser._id}`
             ),
-            fetchData(`http://localhost:3000/user-status/${chatUser._id}`),
+            fetchData(`${process.env.BACKEND_URL}/user-status/${chatUser._id}`),
           ]);
 
         // Handle messages response
@@ -134,7 +134,7 @@ export const ChatWindow = () => {
               )}
               <img
                 className="w-12 rounded-full"
-                src={`http://localhost:3000/images/${chatUser?.profile}`}
+                src={`${process.env.BACKEND_URL}/images/${chatUser?.profile}`}
                 alt="demy logo"
               />
               <span className="text-white text-xl font-medium capitalize">
@@ -183,7 +183,7 @@ export const ChatWindow = () => {
                     {obj.image && (
                       <div className="mb-2">
                         <img
-                          src={`http://localhost:3000/chat/${obj.image}`} // Adjust the path if needed
+                          src={`${process.env.BACKEND_URL}/chat/${obj.image}`} // Adjust the path if needed
                           alt="Attachment"
                           className="rounded-lg border max-w-full"
                           style={{ objectFit: "cover" }}
@@ -217,7 +217,7 @@ export const ChatWindow = () => {
 
                         {/* Download Link */}
                         <a
-                          href={`http://localhost:3000/chat/${obj.file}`} // Adjust the path if needed
+                          href={`${process.env.BACKEND_URL}/chat/${obj.file}`} // Adjust the path if needed
                           target="_blank"
                           rel="noopener noreferrer"
                           className="ml-auto flex items-center text-blue-500 hover:underline"

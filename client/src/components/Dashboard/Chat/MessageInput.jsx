@@ -7,7 +7,7 @@ import { Send, FileText, Image as ImageIcon, Trash2 } from "lucide-react"; // Im
 export const MessageInput = ({ selectedChat, setMessages, isChatEnabled }) => {
   const socket = useMemo(
     () =>
-      io("http://localhost:3000", {
+      io(`${process.env.BACKEND_URL}`, {
         transports: ["websocket"],
         withCredentials: true,
       }),
@@ -83,7 +83,7 @@ export const MessageInput = ({ selectedChat, setMessages, isChatEnabled }) => {
     }
     try {
       const responseData = await postData(
-        `http://localhost:3000/send/${chatUser?._id}`,
+        `${process.env.BACKEND_URL}/send/${chatUser?._id}`,
         formData
       );
       if (responseData.success) {

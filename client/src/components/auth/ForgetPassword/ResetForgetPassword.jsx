@@ -25,7 +25,7 @@ export const ResetForgetPassword = () => {
     }
     try {
       const responseData = await postData(
-        `http://localhost:3000/password-reset`,
+        `${process.env.BACKEND_URL}/password-reset`,
         {
           token,
           password,

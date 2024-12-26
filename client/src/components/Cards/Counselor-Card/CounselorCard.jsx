@@ -12,7 +12,7 @@ export const CounselorCard = ({
   return (
     <div className="bg-primary space-y-4 shadow-md rounded-lg p-6 flex flex-col items-center text-center">
       <img
-        src={`http://localhost:3000/images/${counselorData?.profile}`} // Default profile image
+        src={`${process.env.BACKEND_URL}/images/${counselorData?.profile}`} // Default profile image
         alt="Profile"
         className="w-24 h-24 rounded-full mb-4 shadow-lg"
       />

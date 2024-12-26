@@ -15,7 +15,7 @@ export const CounselorList = () => {
     const fetchingData = async () => {
       try {
         const responseData = await fetchData(
-          `http://localhost:3000/counselors`
+          `${process.env.BACKEND_URL}/counselors`
         );
         if (responseData.success) {
           setCounselors(responseData.data || []);

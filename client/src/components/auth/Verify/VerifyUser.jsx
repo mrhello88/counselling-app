@@ -15,13 +15,13 @@ export const VerifyUser = () => {
     const fetchingData = async () => {
       try {
         const responseData = await fetchData(
-          `http://localhost:3000/register/verify/${token}`
+          `${process.env.BACKEND_URL}/register/verify/${token}`
         );
         if (responseData.success) {
           LogoutUser();
           storeTokenInLS(responseData.token);
           const responseUserData = await fetchData(
-            "http://localhost:3000/user"
+            `${process.env.BACKEND_URL}/user`
           );
           if (responseUserData.success) {
             toast.success(responseData.message);

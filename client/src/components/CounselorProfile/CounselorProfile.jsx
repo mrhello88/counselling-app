@@ -26,7 +26,7 @@ export const CounselorProfile = () => {
     const fetchingData = async () => {
       try {
         const responseData = await fetchData(
-          `http://localhost:3000/counselorProfile/${counselorId}`
+          `${process.env.BACKEND_URL}/counselorProfile/${counselorId}`
         );
         if (responseData.success) {
           setProfileData(responseData.data || {});
@@ -102,7 +102,7 @@ export const CounselorProfile = () => {
       {/* Personal Info */}
       <div className="mb-4">
         <img
-          src={`http://localhost:3000/images/${profileData?.profile}`} // Default profile image
+          src={`${process.env.BACKEND_URL}/images/${profileData?.profile}`} // Default profile image
           alt="Counselor"
           className="w-24 h-24 rounded-full mb-4"
         />
@@ -148,7 +148,7 @@ export const CounselorProfile = () => {
         <div className="mt-6">
           <h4 className="text-xl font-semibold">Attached Document:</h4>
           <a
-            href={`http://localhost:3000/files/${profileData.counselor?.file}`}
+            href={`${process.env.BACKEND_URL}/files/${profileData.counselor?.file}`}
             className="text-blue-500 underline"
             target="_blank"
             rel="noopener noreferrer"

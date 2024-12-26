@@ -173,7 +173,7 @@ function CounselorCard({ counselor }) {
         <CardContent className="p-0">
           <div className="relative h-48 overflow-hidden text-white">
             <img
-              src={`http://localhost:3000/images/${counselor.profile}`}
+              src={`${process.env.BACKEND_URL}/images/${counselor.profile}`}
               alt={`${counselor.personalInfo.name}, Counselor`}
               className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
               onError={handleError}
@@ -390,7 +390,7 @@ export function HomePage() {
     const fetchingData = async () => {
       try {
         const responseData = await fetchData(
-          `http://localhost:3000/counselors`
+          `${process.env.BACKEND_URL}/counselors`
         );
         if (responseData.success) {
           setCounselors(responseData.data || []);

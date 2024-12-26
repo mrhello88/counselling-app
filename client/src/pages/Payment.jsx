@@ -36,22 +36,22 @@ export const Payment = () => {
     if (location.state.scheduleSessionData) {
       try {
         const { scheduleSessionData } = location.state;
-        console.log("scheduleSessionData", scheduleSessionData)
+        console.log("scheduleSessionData", scheduleSessionData);
         const counselingResponseData = await postData(
-          "http://localhost:3000/counseling-schedule",
+          `${process.env.BACKEND_URL}/counseling-schedule`,
           scheduleSessionData
         );
         if (counselingResponseData.success) {
           const responseAdviceData = await postData(
-            `http://localhost:3000/buy-advice`,
+            `${process.env.BACKEND_URL}/buy-advice`,
             { counselorId: scheduleSessionData.counselorId }
           );
           if (counselingResponseData.success) {
-            setRefreshFlag(true)
-            // const responseData = await fetchData("http://localhost:3000/user");
+            setRefreshFlag(true);
+            // const responseData = await fetchData(`${process.env.BACKEND_URL}/user`);
             // if (responseData.success) {
-              toast.success(responseAdviceData.message);
-              navigate("/dashboard");
+            toast.success(responseAdviceData.message);
+            navigate("/dashboard");
             // }
           } else {
             toast.error(responseAdviceData.message || "Registration failed.");
@@ -60,7 +60,7 @@ export const Payment = () => {
           toast.error(counselingResponseData.message);
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
         toast.error(
           "An unexpected error occurred while post counsling schedule"
         );

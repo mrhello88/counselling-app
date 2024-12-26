@@ -25,7 +25,7 @@ export const StudentProfilePage = () => {
   useEffect(() => {
     const fetchingData = async () => {
       try {
-        const responseData = await fetchData("http://localhost:3000/profile");
+        const responseData = await fetchData(`${process.env.BACKEND_URL}/profile`);
         if (responseData.success) {
           setProfileData(responseData.data || []);
         } else {
@@ -81,7 +81,7 @@ export const StudentProfilePage = () => {
     // Call API to update profile data
     try {
       const responseData = await postData(
-        "http://localhost:3000/update-student-profile",
+        `${process.env.BACKEND_URL}/update-student-profile`,
         updatedFormData
       );
       if (responseData.success) {
@@ -105,7 +105,7 @@ export const StudentProfilePage = () => {
         <div className="flex justify-center">
           <img
             className="w-32 h-32 rounded-full object-cover"
-            src={`http://localhost:3000/images/${previewImage}`}
+            src={`${process.env.BACKEND_URL}/images/${previewImage}`}
             alt="Profile"
           />
         </div>

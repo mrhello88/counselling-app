@@ -374,7 +374,7 @@ export const CounselorRegister = () => {
       formData.append("file", Data.file);
       try {
         const responseData = await postData(
-          "http://localhost:3000/register",
+          `${process.env.BACKEND_URL}/register`,
           formData
         );
         if (responseData.success) {

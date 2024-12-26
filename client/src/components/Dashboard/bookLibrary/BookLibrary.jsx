@@ -9,7 +9,7 @@ export const AllBooks = () => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const responseData = await fetchData("http://localhost:3000/get-books");
+        const responseData = await fetchData(`${process.env.BACKEND_URL}/get-books`);
         if (responseData.success) {
           setBooks(responseData.data);
         } else {

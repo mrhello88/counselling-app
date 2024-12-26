@@ -19,7 +19,7 @@ export const CounselorProfilePage = () => {
   useEffect(() => {
     const fetchingData = async () => {
       try {
-        const responseData = await fetchData("http://localhost:3000/profile");
+        const responseData = await fetchData(`${process.env.BACKEND_URL}/profile`);
         if (responseData.success) {
           setProfileData(responseData.data || []);
         } else {
@@ -92,7 +92,7 @@ export const CounselorProfilePage = () => {
     // Call API to update profile data
     try {
       const responseData = await postData(
-        "http://localhost:3000/update-profile",
+        `${process.env.BACKEND_URL}/update-profile`,
         formDataToSubmit
       );
       if (responseData.success) {
@@ -117,7 +117,7 @@ export const CounselorProfilePage = () => {
         <div className="flex justify-center">
           <img
             className="w-32 h-32 rounded-full object-cover"
-            src={`http://localhost:3000/images/${previewImage}`}
+            src={`${process.env.BACKEND_URL}/images/${previewImage}`}
             alt="Profile"
           />
         </div>
@@ -283,7 +283,7 @@ export const CounselorProfilePage = () => {
             )}
             {!isEditing && file && (
               <a
-                href={`http://localhost:3000/files/${file}`}
+                href={`${process.env.BACKEND_URL}/files/${file}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"

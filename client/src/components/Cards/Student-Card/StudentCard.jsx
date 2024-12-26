@@ -8,7 +8,7 @@ export const StudentCard = ({
   return (
     <div className="bg-primary space-y-3 shadow-md rounded-lg p-4 flex flex-col items-center">
       <img
-        src={`http://localhost:3000/images/${studentData?.profile}`} // Default profile image
+        src={`${process.env.BACKEND_URL}/images/${studentData?.profile}`} // Default profile image
         alt="Profile"
         className="w-24 h-24 rounded-full mb-4 shadow-lg"
       />

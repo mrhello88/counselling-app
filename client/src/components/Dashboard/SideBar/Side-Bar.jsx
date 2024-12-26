@@ -18,7 +18,7 @@ export const SideBar = ({  isSidebarOpen, toggleSidebar, onSelectChat }) => {
     const fetchingData = async () => {
       try {
         const responseData = await fetchData(
-          `http://localhost:3000/user/friends`
+          `${process.env.BACKEND_URL}/user/friends`
         );
         if (responseData.success) {
           setUserData(responseData.data || {});
@@ -137,7 +137,7 @@ export const SideBar = ({  isSidebarOpen, toggleSidebar, onSelectChat }) => {
 
                           <img
                             className="w-16 h-16 rounded-full object-cover"
-                            src={`http://localhost:3000/images/${items?.profile}`}
+                            src={`${process.env.BACKEND_URL}/images/${items?.profile}`}
                             alt="Profile"
                           />
                           <div className="text-base">

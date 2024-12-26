@@ -20,7 +20,7 @@ export const LoginPage = ({ role }) => {
     }
 
     try {
-      const responseData = await postData("http://localhost:3000/login", {
+      const responseData = await postData(`${process.env.BACKEND_URL}/login`, {
         email,
         role,
         password,
@@ -28,7 +28,7 @@ export const LoginPage = ({ role }) => {
       if (responseData.success) {
         LogoutUser(); // If logout is required before login, ensure this is intentional.
         storeTokenInLS(responseData.token); // Ensure this function is correctly implemented.
-        const responseUserData = await fetchData("http://localhost:3000/user");
+        const responseUserData = await fetchData(`${process.env.BACKEND_URL}/user`);
         if (responseUserData.success) {
           toast.success(responseData.message || "Login successfully!");
           const { role, friends } = responseUserData.data;

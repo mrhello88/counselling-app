@@ -39,7 +39,7 @@ export const App = () => {
   useEffect(() => {
     const fetchingData = async () => {
       try {
-        const responseData = await fetchData("http://localhost:3000/user");
+        const responseData = await fetchData(`${process.env.BACKEND_URL}/user`);
         if (responseData.success) {
           setUserData(responseData.data || {});
         }

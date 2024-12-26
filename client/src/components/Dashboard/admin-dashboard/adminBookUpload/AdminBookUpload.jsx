@@ -79,7 +79,7 @@ export const AdminBookUpload = () => {
 
     try {
       const responseData = await postData(
-        "http://localhost:3000/add-book",
+        `${process.env.BACKEND_URL}/add-book`,
         uploadData
       );
       if (responseData.success) {
@@ -104,7 +104,7 @@ export const AdminBookUpload = () => {
   const { title, description, pdfPreview, imagePreview } = formData;
 
   return (
-    <div className="p-4 bg-white rounded-lg w-full bg-green-300 h-screen">
+    <div className="p-4 bg-white rounded-lg w-full h-screen">
         <h2 className="text-2xl font-bold text-primary mb-4 text-center">
           Upload New Book
         </h2>

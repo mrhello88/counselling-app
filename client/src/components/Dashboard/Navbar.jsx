@@ -10,7 +10,7 @@ const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
   useEffect(() => {
     const fetchingData = async () => {
       try {
-        const responseData = await fetchData("http://localhost:3000/user");
+        const responseData = await fetchData(`${process.env.BACKEND_URL}/user`);
         if (responseData.success) {
           setUserData(responseData.data || {});
         }
@@ -53,7 +53,7 @@ const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
           <Link to={"/profile/counselor"}>
             <img
               className="w-16 h-16 rounded-full object-cover"
-              src={`http://localhost:3000/images/${userData?.profile}`}
+              src={`${process.env.BACKEND_URL}/images/${userData?.profile}`}
               alt="Profile"
             />
           </Link>
@@ -61,7 +61,7 @@ const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
           <Link to={"/profile/admin"}>
             <img
               className="w-16 h-16 rounded-full object-cover"
-              src={`http://localhost:3000/images/${userData?.profile}`}
+              src={`${process.env.BACKEND_URL}/images/${userData?.profile}`}
               alt="Profile"
             />
           </Link>
@@ -69,7 +69,7 @@ const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
           <Link to={"/profile/student"}>
             <img
               className="w-16 h-16 rounded-full object-cover"
-              src={`http://localhost:3000/images/${userData?.profile}`}
+              src={`${process.env.BACKEND_URL}/images/${userData?.profile}`}
               alt="Profile"
             />
           </Link>

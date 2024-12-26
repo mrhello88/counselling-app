@@ -12,7 +12,7 @@ export const AdminStudentProfile = () => {
     const fetchingData = async () => {
       try {
         const responseData = await fetchData(
-          `http://localhost:3000/counselorProfile/${studentId}`
+          `${process.env.BACKEND_URL}/counselorProfile/${studentId}`
         );
         if (responseData.success) {
           setProfileData(responseData.data || {});
@@ -33,7 +33,7 @@ export const AdminStudentProfile = () => {
       {/* Personal Info */}
       <div className="mb-4">
         <img
-          src={`http://localhost:3000/images/${profileData?.profile}`} // Default profile image
+          src={`${process.env.BACKEND_URL}/images/${profileData?.profile}`} // Default profile image
           alt="Student"
           className="w-24 h-24 rounded-full mb-4"
         />

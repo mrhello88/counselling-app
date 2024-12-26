@@ -5,7 +5,9 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [react()],
   define: {
-    "process.env.BACKEND_URL": JSON.stringify("http://localhost:5000"), // Replace with your backend URL
+    "process.env.BACKEND_URL": JSON.stringify(
+      "http://localhost:5000" || "https://your-heroku-app.herokuapp.com"
+    ), // Replace with your backend URL
   },
   resolve: {
     alias: {

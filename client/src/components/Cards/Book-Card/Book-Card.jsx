@@ -5,7 +5,7 @@ export const BookCard = ({ book }) => {
       className="bg-white shadow-lg rounded-lg overflow-hidden"
     >
       <img
-        src={`http://localhost:3000/BImages/${book.imagePath}`}
+        src={`${process.env.BACKEND_URL}/BImages/${book.imagePath}`}
         alt={book.title}
         className="w-full h-48 object-cover"
       />
@@ -14,7 +14,7 @@ export const BookCard = ({ book }) => {
         <p className="text-sm text-gray-500 mt-2">{book.description}</p>
         <div className="mt-4">
           <a
-            href={`http://localhost:3000/books/${book.pdfPath}`}
+            href={`${process.env.BACKEND_URL}/books/${book.pdfPath}`}
             target="_blank"
             rel="noreferrer"
             className="text-primary hover:underline"
