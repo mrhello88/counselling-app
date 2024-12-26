@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   define: {
     "process.env.BACKEND_URL": JSON.stringify(
-      "http://localhost:5000" || "https://your-heroku-app.herokuapp.com"
+      "http://localhost:5000" || "https://counselling-app-ki9p.onrender.com/"
     ), // Replace with your backend URL
   },
   resolve: {

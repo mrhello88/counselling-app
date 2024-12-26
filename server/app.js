@@ -21,7 +21,7 @@ const error = require("./controller/error404");
 const { Server } = require("socket.io");
 const server = http.createServer(app);
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "https://counselling-app-1.onrender.com" || "http://localhost:5173",
   methods: ["GET", "POST", "DELETE", "UPDATE"],
   Credentials: true,
 };
