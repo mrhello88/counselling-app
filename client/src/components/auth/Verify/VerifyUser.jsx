@@ -15,17 +15,17 @@ export const VerifyUser = () => {
   useEffect(() => {
     const fetchingData = async () => {
       try {
-        console.log(responseData);
         const responseData = await fetchData(
           `${process.env.BACKEND_URL}/api/register/verify/${token}`
         );
+        console.log(responseData);
         if (responseData.success) {
-          console.log(responseData)
           LogoutUser();
           storeTokenInLS(responseData.token);
           const responseUserData = await fetchData(
             `${process.env.BACKEND_URL}/api/user`
           );
+           console.log(responseUserData);
           if (responseUserData.success) {
             toast.success(responseData.message);
             const { role, friends } = responseUserData.data;
