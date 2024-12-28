@@ -9,15 +9,18 @@ export const VerifyUser = () => {
   const navigate = useNavigate();
   const { fetchData, apiLoading, LogoutUser, storeTokenInLS } =
     useAuth(); // Assuming VerifyUser is a function from useAuth
+    console.log(token)
 
   // Effect to verify user and authenticate
   useEffect(() => {
     const fetchingData = async () => {
       try {
+        console.log(responseData);
         const responseData = await fetchData(
           `${process.env.BACKEND_URL}/register/verify/${token}`
         );
         if (responseData.success) {
+          console.log(responseData)
           LogoutUser();
           storeTokenInLS(responseData.token);
           const responseUserData = await fetchData(
@@ -51,7 +54,7 @@ export const VerifyUser = () => {
     fetchingData(); // Call the async function to execute the user verification
   }, [fetchData]);
 
-  // if (apiLoading) {
-  //   return <LoadingOverlay />;
-  // }
+  if (apiLoading) {
+    return <LoadingOverlay />;
+  }
 };

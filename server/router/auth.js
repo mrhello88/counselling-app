@@ -8,6 +8,7 @@ const uploadProfileAndFiles = require("../utils/multer").uploadProfileAndFiles;
 const router = express.Router();
 
 router.post("/login", authController.postLogin);
+router.get("/register/verify/:token", authController.getVerify);
 router.post(
   "/register",
   uploadProfileAndFiles,
@@ -15,7 +16,6 @@ router.post(
   authController.postRegister
 );
 router.get("/user", authentication, authController.getUser); 
-router.get("/register/verify/:token", authController.getVerify);
 router.post("/email-reset", authController.postEmailResetPassword)
 router.post("/password-reset", authController.postResetPassword)
 
