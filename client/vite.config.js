@@ -6,7 +6,7 @@ export default defineConfig(({ mode }) => {
   const BACKEND_URL =
     mode === "development"
       ? "http://localhost:3000" // Local backend for development
-      : "https://mentora-pweq.onrender.com"; // Deployed backend for production
+      : "https://counselling-app-ki9p.onrender.com"; // Deployed backend for production
 
   return {
     plugins: [react()],
