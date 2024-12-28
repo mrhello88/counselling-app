@@ -37,7 +37,7 @@ export const CreateSession = () => {
     // Add your submission logic here
     try {
       const responseData = await postData(
-        `${process.env.BACKEND_URL}/create-counseling`,
+        `${process.env.BACKEND_URL}/api/create-counseling`,
         data
       );
       if (responseData.success) {

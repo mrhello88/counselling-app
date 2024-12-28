@@ -3,7 +3,7 @@ const router = express.Router();
 const studentController = require("../controller/student");
 const authentication = require("../middleware/authentication").authentication;
 
-router.get("/students", authentication, studentController.getStudent);
+router.get("/api/students", authentication, studentController.getStudent);
 
 
 module.exports = router;

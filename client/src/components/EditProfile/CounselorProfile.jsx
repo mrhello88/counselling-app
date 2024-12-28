@@ -19,7 +19,7 @@ export const CounselorProfilePage = () => {
   useEffect(() => {
     const fetchingData = async () => {
       try {
-        const responseData = await fetchData(`${process.env.BACKEND_URL}/profile`);
+        const responseData = await fetchData(`${process.env.BACKEND_URL}/api/profile`);
         if (responseData.success) {
           setProfileData(responseData.data || []);
         } else {
@@ -92,7 +92,7 @@ export const CounselorProfilePage = () => {
     // Call API to update profile data
     try {
       const responseData = await postData(
-        `${process.env.BACKEND_URL}/update-profile`,
+        `${process.env.BACKEND_URL}/api/update-profile`,
         formDataToSubmit
       );
       if (responseData.success) {

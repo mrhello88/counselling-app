@@ -42,11 +42,11 @@ export const ChatWindow = () => {
         // Fetch messages and schedule concurrently
         const [messagesResponse, scheduleResponse, userStatusResoponse] =
           await Promise.all([
-            fetchData(`${process.env.BACKEND_URL}/get/${chatUser._id}`),
+            fetchData(`${process.env.BACKEND_URL}/api/get/${chatUser._id}`),
             fetchData(
-              `${process.env.BACKEND_URL}/counseling-schedule/${chatUser._id}`
+              `${process.env.BACKEND_URL}/api/counseling-schedule/${chatUser._id}`
             ),
-            fetchData(`${process.env.BACKEND_URL}/user-status/${chatUser._id}`),
+            fetchData(`${process.env.BACKEND_URL}/api/user-status/${chatUser._id}`),
           ]);
 
         // Handle messages response

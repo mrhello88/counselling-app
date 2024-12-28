@@ -5,16 +5,16 @@ const uploadProfileAndFiles = require("../utils/multer").uploadProfileAndFiles;
 
 const router = express.Router();
 
-router.get("/profile", authentication, profileController.getProfile);
+router.get("/api/profile", authentication, profileController.getProfile);
 router.post(
-  "/update-profile",
+  "/api/update-profile",
   authentication,
   uploadProfileAndFiles,
   profileController.putUpdateProfile
 );
 
 router.post(
-  "/update-student-profile",
+  "/api/update-student-profile",
   authentication,
   uploadProfileAndFiles,
   profileController.postUpdateStudentProfile

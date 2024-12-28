@@ -24,7 +24,7 @@ export const VerifyEmailReset = () => {
       return;
     }
     try {
-      const responseData = await postData(`${process.env.BACKEND_URL}/email-reset`, {
+      const responseData = await postData(`${process.env.BACKEND_URL}/api/email-reset`, {
         email,
       });
       if (responseData.success) {

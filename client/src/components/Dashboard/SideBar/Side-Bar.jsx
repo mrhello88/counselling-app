@@ -18,7 +18,7 @@ export const SideBar = ({  isSidebarOpen, toggleSidebar, onSelectChat }) => {
     const fetchingData = async () => {
       try {
         const responseData = await fetchData(
-          `${process.env.BACKEND_URL}/user/friends`
+          `${process.env.BACKEND_URL}/api/user/friends`
         );
         if (responseData.success) {
           setUserData(responseData.data || {});

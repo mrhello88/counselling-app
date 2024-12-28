@@ -9,7 +9,7 @@ export const AdminCounselorPage = () => {
   // Fetch counselors from the backend
   const fetchCounselors = async () => {
     try {
-      const responseData = await fetchData(`${process.env.BACKEND_URL}/counselors`);
+      const responseData = await fetchData(`${process.env.BACKEND_URL}/api/counselors`);
       if (responseData.success) {
         setCounselors(responseData.data || []);
       } else {
@@ -28,7 +28,7 @@ export const AdminCounselorPage = () => {
     e.preventDefault();
     try {
       const responseData = await fetchData(
-        `${process.env.BACKEND_URL}/toggleStatus/${counselorId}`
+        `${process.env.BACKEND_URL}/api/toggleStatus/${counselorId}`
       );
       if (responseData.success) {
         await fetchCounselors();

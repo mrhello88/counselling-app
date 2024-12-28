@@ -79,7 +79,7 @@ export const AdminBookUpload = () => {
 
     try {
       const responseData = await postData(
-        `${process.env.BACKEND_URL}/add-book`,
+        `${process.env.BACKEND_URL}/api/add-book`,
         uploadData
       );
       if (responseData.success) {

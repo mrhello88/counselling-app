@@ -83,7 +83,7 @@ export const MessageInput = ({ selectedChat, setMessages, isChatEnabled }) => {
     }
     try {
       const responseData = await postData(
-        `${process.env.BACKEND_URL}/send/${chatUser?._id}`,
+        `${process.env.BACKEND_URL}/api/send/${chatUser?._id}`,
         formData
       );
       if (responseData.success) {

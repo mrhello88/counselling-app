@@ -6,19 +6,19 @@ const counselingSessionSchemaZod = require("../zod-validation/counselingSessionZ
 const router = express.Router();
 
 router.get(
-  "/counselorProfile/:counselorId",
+  "/api/counselorProfile/:counselorId",
   counselingSessionController.getCounselorProfile
 );
 
 router.post(
-  "/counseling-schedule",
+  "/api/counseling-schedule",
   authentication,
   zodValidation(counselingSessionSchemaZod),
   counselingSessionController.postscheduleCounseling
 );
 
 router.get(
-  "/counseling-schedule/:counselorId",
+  "/api/counseling-schedule/:counselorId",
   authentication,
   counselingSessionController.getscheduleCounseling
 );

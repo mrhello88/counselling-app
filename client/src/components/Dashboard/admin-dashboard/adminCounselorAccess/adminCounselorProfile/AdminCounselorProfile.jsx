@@ -12,7 +12,7 @@ export const AdminCounselorProfile = () => {
     const fetchingData = async () => {
       try {
         const responseData = await fetchData(
-          `${process.env.BACKEND_URL}/counselorProfile/${counselorId}`
+          `${process.env.BACKEND_URL}/api/counselorProfile/${counselorId}`
         );
         if (responseData.success) {
           setProfileData(responseData.data || {});

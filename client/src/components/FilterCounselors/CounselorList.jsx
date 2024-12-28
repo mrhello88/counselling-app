@@ -15,7 +15,7 @@ export const CounselorList = () => {
     const fetchingData = async () => {
       try {
         const responseData = await fetchData(
-          `${process.env.BACKEND_URL}/counselors`
+          `${process.env.BACKEND_URL}/api/counselors`
         );
         if (responseData.success) {
           setCounselors(responseData.data || []);

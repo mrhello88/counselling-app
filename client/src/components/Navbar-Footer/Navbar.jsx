@@ -12,7 +12,7 @@ export const Navbar = () => {
   useEffect(() => {
     const fetchingData = async () => {
       try {
-        const responseData = await fetchData(`${process.env.BACKEND_URL}/user`);
+        const responseData = await fetchData(`${process.env.BACKEND_URL}/api/user`);
         if (responseData.success) {
           setUserData(responseData.data || {});
         }

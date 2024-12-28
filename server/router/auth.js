@@ -7,16 +7,16 @@ const zodValidator = require("../middleware/zodValidation").zodRegistrationValid
 const uploadProfileAndFiles = require("../utils/multer").uploadProfileAndFiles;
 const router = express.Router();
 
-router.post("/login", authController.postLogin);
-router.get("/register/verify/:token", authController.getVerify);
+router.post("/api/login", authController.postLogin);
+router.get("/api/register/verify/:token", authController.getVerify);
 router.post(
-  "/register",
+  "/api/register",
   uploadProfileAndFiles,
   zodValidator(zodUser, zodCounselorProfile),
   authController.postRegister
 );
-router.get("/user", authentication, authController.getUser); 
-router.post("/email-reset", authController.postEmailResetPassword)
-router.post("/password-reset", authController.postResetPassword)
+router.get("/api/user", authentication, authController.getUser); 
+router.post("/api/email-reset", authController.postEmailResetPassword)
+router.post("/api/password-reset", authController.postResetPassword)
 
 module.exports = router;

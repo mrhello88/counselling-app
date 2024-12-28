@@ -12,7 +12,7 @@ export const AdminStudentPage = () => {
   // Fetch students from the backend
   const fetchStudents = async () => {
     try {
-      const responseData = await fetchData(`${process.env.BACKEND_URL}/students`);
+      const responseData = await fetchData(`${process.env.BACKEND_URL}/api/students`);
       if (responseData.success) {
         setStudents(responseData.data || []);
       } else {
@@ -32,7 +32,7 @@ export const AdminStudentPage = () => {
     e.preventDefault();
     try {
       const responseData = await fetchData(
-        `${process.env.BACKEND_URL}/toggleStatus/${studentId}`
+        `${process.env.BACKEND_URL}/api/toggleStatus/${studentId}`
       );
       if (responseData.success) {
         await fetchStudents();

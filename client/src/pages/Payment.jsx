@@ -38,17 +38,17 @@ export const Payment = () => {
         const { scheduleSessionData } = location.state;
         console.log("scheduleSessionData", scheduleSessionData);
         const counselingResponseData = await postData(
-          `${process.env.BACKEND_URL}/counseling-schedule`,
+          `${process.env.BACKEND_URL}/api/counseling-schedule`,
           scheduleSessionData
         );
         if (counselingResponseData.success) {
           const responseAdviceData = await postData(
-            `${process.env.BACKEND_URL}/buy-advice`,
+            `${process.env.BACKEND_URL}/api/buy-advice`,
             { counselorId: scheduleSessionData.counselorId }
           );
           if (counselingResponseData.success) {
             setRefreshFlag(true);
-            // const responseData = await fetchData(`${process.env.BACKEND_URL}/user`);
+            // const responseData = await fetchData(`${process.env.BACKEND_URL}/api/user`);
             // if (responseData.success) {
             toast.success(responseAdviceData.message);
             navigate("/dashboard");

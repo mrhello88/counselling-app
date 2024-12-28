@@ -374,7 +374,7 @@ export const CounselorRegister = () => {
       formData.append("file", Data.file);
       try {
         const responseData = await postData(
-          `${process.env.BACKEND_URL}/register`,
+          `${process.env.BACKEND_URL}/api/register`,
           formData
         );
         if (responseData.success) {

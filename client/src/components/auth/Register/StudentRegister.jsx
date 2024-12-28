@@ -46,7 +46,7 @@ export const StudentRegister = () => {
     // Submit form data (you can replace this with an API call)
     try {
       const responseData = await postData(
-        `${process.env.BACKEND_URL}/register`,
+        `${process.env.BACKEND_URL}/api/register`,
         formData
       );
       if (responseData.success) {

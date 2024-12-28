@@ -5,8 +5,8 @@ const createCounselingZodSchema = require("../zod-validation/zodCreateCounseling
 const zodValidation = require("../middleware/zodValidation.js").zodValidation
 const router = express.Router();
 
-router.get("/counselors", counselorController.getCounselor);
-router.post("/buy-advice",authentication,counselorController.postCAdvice)
-router.post("/create-counseling",authentication,zodValidation(createCounselingZodSchema),counselorController.postCreateCounseling)
-router.get("/user/friends",authentication,counselorController.getUCounselors)
+router.get("/api/counselors", counselorController.getCounselor);
+router.post("/api/buy-advice",authentication,counselorController.postCAdvice)
+router.post("/api/create-counseling",authentication,zodValidation(createCounselingZodSchema),counselorController.postCreateCounseling)
+router.get("/api/user/friends",authentication,counselorController.getUCounselors)
 module.exports = router 
