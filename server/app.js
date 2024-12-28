@@ -21,7 +21,7 @@ const error = require("./controller/error404");
 const { Server } = require("socket.io");
 const server = http.createServer(app);
 const allowedOrigins = [
-  "https://mentora-pweq.onrender.com",
+  "https://counselling-app-ki9p.onrender.com",
   "http://localhost:5173",
 ];
 
