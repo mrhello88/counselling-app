@@ -44,7 +44,8 @@ const io = new Server(server);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
-
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../client/dist')));
 app.use(profileRoute);
 app.use(counselorRoute);
 app.use(authRoute);
@@ -53,7 +54,10 @@ app.use(userStatusRoute);
 app.use(adminRoute);
 app.use(counselorProfileRoute);
 app.use(studentRoute);
-app.use(error.error404);
+// Fallback to React for unknown routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
+});
 try {
   io.on("connection", async (socket) => {
     console.log("A user connected", socket.id);
