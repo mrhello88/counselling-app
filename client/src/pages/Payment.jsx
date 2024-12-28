@@ -36,11 +36,11 @@ export const Payment = () => {
     if (location.state.scheduleSessionData) {
       try {
         const { scheduleSessionData } = location.state;
-        console.log("scheduleSessionData", scheduleSessionData);
         const counselingResponseData = await postData(
           `${process.env.BACKEND_URL}/api/counseling-schedule`,
           scheduleSessionData
         );
+        console.log(counselingResponseData,"counseling response");
         if (counselingResponseData.success) {
           const responseAdviceData = await postData(
             `${process.env.BACKEND_URL}/api/buy-advice`,
