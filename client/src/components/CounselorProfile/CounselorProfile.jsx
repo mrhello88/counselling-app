@@ -59,7 +59,6 @@ export const CounselorProfile = () => {
     const endDate = moment(selectedDate)
       .add(profileData.counseling?.duration, "minutes")
       .format("YYYY-MM-DD HH:mm:ss");
-
     if (!isLoggedIn) {
       return navigate("/login/student", {
         state: {

@@ -7,8 +7,14 @@ import { LoadingOverlay } from "../Loading/Loading";
 export const LoginPage = ({ role }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { apiLoading, fetchData, postData, LogoutUser, storeTokenInLS } =
-    useAuth();
+  const {
+    apiLoading,
+    isLoggedIn,
+    fetchData,
+    postData,
+    LogoutUser,
+    storeTokenInLS,
+  } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -30,7 +36,7 @@ export const LoginPage = ({ role }) => {
       );
       if (responseData.success) {
         LogoutUser(); // If logout is required before login, ensure this is intentional.
-        storeTokenInLS(responseData.token); // Ensure this function is correctly implemented.
+        await storeTokenInLS(responseData.token); // Ensure this function is correctly implemented.
         const responseUserData = await fetchData(
           `${process.env.BACKEND_URL}/api/user`
         );

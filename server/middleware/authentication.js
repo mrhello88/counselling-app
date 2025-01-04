@@ -15,7 +15,7 @@ exports.authentication = async (req, res, next) => {
     // Extract JWT token by removing "Bearer " prefix
     const jwtToken = token.replace("Bearer ", "").trim();
     // Fetch user session from Redis
-    const userSession = await client.get(jwtToken); 
+    const userSession = await client.get(jwtToken);
     if (!userSession) {
       return res.status(401).json({
         message: "Unauthorized: Session expired or invalid",
@@ -25,7 +25,6 @@ exports.authentication = async (req, res, next) => {
 
     // Parse session data
     const sessionData = JSON.parse(userSession);
-
     if (!sessionData.token || !sessionData.userData) {
       return res.status(401).json({
         message: "Unauthorized: Invalid session data",
@@ -52,8 +51,9 @@ exports.authentication = async (req, res, next) => {
     req.userId = sessionData.userData._id;
 
     // Proceed to the next middleware
-    next(); 
+    next();
   } catch (error) {
+    console.error("Authentication error:", error);
     return res.status(401).json({
       message: "Unauthorized: Invalid token or session expired",
       success: false,

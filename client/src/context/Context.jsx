@@ -3,11 +3,11 @@ import {
   useState,
   useContext,
   useCallback,
-  useReducer,
+  // useReducer,
 } from "react";
 import axios from "axios";
-import { apiReducer, initialState } from "./Reducer";
-import { toast } from "react-toastify";
+// import { apiReducer, initialState } from "./Reducer";
+// import { toast } from "react-toastify";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -15,16 +15,18 @@ export const AuthProvider = ({ children }) => {
   const [refreshFlag, setRefreshFlag] = useState(false);
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [onlineStatus, setOnlineStatus] = useState({ status: "offline" });
-  const [isLoggedIn, setIsLoggedIn] = useState(!!token);
-  const [state, dispatch] = useReducer(apiReducer, initialState);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!token || false);
+  // const [state, dispatch] = useReducer(apiReducer, initialState);
   // const [data, setData] = useState({});   //if use the global state for data, so we need multiple functions for api's(fetch,post), and overwrite data over global state
   // setUser({ ...user, userData: res_data.data });  // by using this update data, if post data, then got the reponse and update the data according to it, where are we use
 
   const storeTokenInLS = (serverToken) => {
-    localStorage.setItem("token", serverToken);
-    setToken(localStorage.getItem("token"));
-    setIsLoggedIn(true);
-    return;
+    return new Promise((resolve) => {
+      localStorage.setItem("token", serverToken);
+      setToken(localStorage.getItem("token"));
+      setIsLoggedIn(true);
+      resolve();
+    });
   };
   
   const LogoutUser = () => {
@@ -41,7 +43,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const axiosResponse = await axios.get(url, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token") || token}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       // Extract data
@@ -77,7 +79,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const axiosResponse = await axios.post(endpoint, payload, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       // Extract data
@@ -105,7 +107,7 @@ export const AuthProvider = ({ children }) => {
         storeTokenInLS,
         onlineStatus,
         setOnlineStatus,
-        state,
+        // state,
       }}
     >
       {children}
