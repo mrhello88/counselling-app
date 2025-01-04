@@ -39,7 +39,9 @@ export const App = () => {
   useEffect(() => {
     const fetchingData = async () => {
       try {
-        const responseData = await fetchData(`${process.env.BACKEND_URL}/api/user`);
+        const responseData = await fetchData(
+          `${process.env.BACKEND_URL}/api/user`
+        );
         console.log(responseData);
         if (responseData.success) {
           setUserData(responseData.data || {});
@@ -52,7 +54,7 @@ export const App = () => {
     // Call the async function inside useEffect
     fetchingData(userData);
   }, [isLoggedIn, fetchData, refreshFlag]);
-  
+
   return (
     <Router>
       <div className="">
@@ -62,6 +64,7 @@ export const App = () => {
         {/* <Route path={`/`} element={<Home />} /> */}
         {isLoggedIn && userData.role ? (
           <>
+            <Route path="/payment" element={<Payment />} />
             {userData.role === "student" && userData.friends.length > 0 ? (
               <>
                 <Route path="/dashboard" element={<UserDashboard />}>
@@ -155,7 +158,6 @@ export const App = () => {
           element={<CounselorProfile />}
         />
         <Route path="/login/admin" element={<LoginPage role={"admin"} />} />
-        <Route path="/payment" element={<Payment />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/counselorList" element={<CounselorList />} />
         <Route path="*" element={<NotFound />} />{" "}
