@@ -32,8 +32,8 @@ export const LoginPage = ({ role }) => {
         if (responseUserData.success) {
           toast.success(responseData.message || "Login successfully!");
           const { role, friends } = responseUserData.data;
-          if (location.state?.navigateToPayment) {
-            navigate(location.state?.navigateToPayment, {
+          if (location?.state?.navigateToPayment) {
+            navigate(location?.state?.navigateToPayment, {
               state: { ...location?.state },
             });
           } else if (role === "student" && (!friends || friends.length === 0)) {
