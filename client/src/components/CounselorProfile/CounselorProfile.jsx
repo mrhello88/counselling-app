@@ -18,9 +18,7 @@ export const CounselorProfile = () => {
   const [profileData, setProfileData] = useState({});
   const { fetchData, apiLoading, isLoggedIn } = useAuth();
   const { counselorId } = useParams();
-  console.log(counselorId,
-    "this is at counselor profile"
-  );
+
   const navigate = useNavigate();
   useEffect(() => {
     const fetchingData = async () => {
@@ -63,7 +61,7 @@ export const CounselorProfile = () => {
       .format("YYYY-MM-DD HH:mm:ss");
 
     if (!isLoggedIn) {
-      return navigate("/login", {
+      return navigate("/login/student", {
         state: {
           navigateToPayment: `/payment`,
           scheduleSessionData: {

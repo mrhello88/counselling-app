@@ -60,7 +60,6 @@ app.get('*', (req, res) => {
 });
 try {
   io.on("connection", async (socket) => {
-    console.log("A user connected", socket.id);
     // Handle joining the roomv
     socket.on("join", async ({ room, userId }) => {
       // Leave the previous room if the user was already in one
@@ -107,8 +106,6 @@ try {
 
     // Handle disconnect
     socket.on("disconnect", async () => {
-      console.log("user disconnect", socket.id);
-
       if (socket.room) {
         // Notify the room that the user is offline
         await client.set(

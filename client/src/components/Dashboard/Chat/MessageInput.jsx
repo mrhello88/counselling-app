@@ -122,8 +122,6 @@ export const MessageInput = ({ selectedChat, setMessages, isChatEnabled }) => {
     });
 
     socket.on("status", (data) => {
-      // Check if the status is 'online' and set the status of the other user
-      console.log(data.status, data.socketId, socket.id, "this is id's");
       if (data.status === "online") {
         setOnlineStatus({ status: "online" });
       } else if (data.status === "offline") {

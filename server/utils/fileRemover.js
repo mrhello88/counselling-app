@@ -19,7 +19,6 @@ function deleteFile(fileName) {
         console.error("Error while deleting the file:", err);
         return;
       }
-      console.log("File successfully deleted!");
     });
   } catch (err) {
     console.error("Error while deleting the file:", err);

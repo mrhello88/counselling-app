@@ -42,7 +42,6 @@ export const App = () => {
         const responseData = await fetchData(
           `${process.env.BACKEND_URL}/api/user`
         );
-        console.log(responseData);
         if (responseData.success) {
           setUserData(responseData.data || {});
         }

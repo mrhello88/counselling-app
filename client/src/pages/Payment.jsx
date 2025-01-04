@@ -40,7 +40,6 @@ export const Payment = () => {
           `${process.env.BACKEND_URL}/api/counseling-schedule`,
           scheduleSessionData
         );
-        console.log(counselingResponseData,"counseling response");
         if (counselingResponseData.success) {
           const responseAdviceData = await postData(
             `${process.env.BACKEND_URL}/api/buy-advice`,
@@ -60,7 +59,6 @@ export const Payment = () => {
           toast.error(counselingResponseData.message);
         }
       } catch (error) {
-        console.log(error);
         toast.error(
           "An unexpected error occurred while post counsling schedule"
         );

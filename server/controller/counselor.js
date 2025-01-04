@@ -65,7 +65,6 @@ exports.postCAdvice = async (req, res) => {
 exports.postCreateCounseling = async (req, res, next) => {
   try {
     const { category, duration, price } = req.body;
-    //  console.log("executes", req.body)
     const userId = req.user._id;
 
     const findCounseling = await CreateCounseling.findOne({
