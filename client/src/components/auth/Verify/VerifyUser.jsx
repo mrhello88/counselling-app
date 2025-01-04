@@ -16,12 +16,14 @@ export const VerifyUser = () => {
         const responseData = await fetchData(
           `${process.env.BACKEND_URL}/api/register/verify/${token}`
         );
+        console.log(responseData);
         if (responseData.success) {
           LogoutUser();
           storeTokenInLS(responseData.token);
           const responseUserData = await fetchData(
             `${process.env.BACKEND_URL}/api/user`
           );
+           console.log(responseUserData);
           if (responseUserData.success) {
             toast.success(responseData.message);
             const { role, friends } = responseUserData.data;
