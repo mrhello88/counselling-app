@@ -94,7 +94,6 @@ exports.getAllBooks = async (req, res, next) => {
         success: false,
       });
     }
-
     res.status(200).json({
       message: "Books fetched successfully!",
       success: true,
@@ -108,3 +107,4 @@ exports.getAllBooks = async (req, res, next) => {
     });
   }
 };
+

@@ -9,18 +9,14 @@ export const VerifyUser = () => {
   const navigate = useNavigate();
   const { fetchData, apiLoading, LogoutUser, storeTokenInLS } =
     useAuth(); // Assuming VerifyUser is a function from useAuth
-    console.log(token)
-
   // Effect to verify user and authenticate
   useEffect(() => {
     const fetchingData = async () => {
       try {
-        console.log(responseData);
         const responseData = await fetchData(
           `${process.env.BACKEND_URL}/api/register/verify/${token}`
         );
         if (responseData.success) {
-          console.log(responseData)
           LogoutUser();
           storeTokenInLS(responseData.token);
           const responseUserData = await fetchData(
@@ -36,7 +32,7 @@ export const VerifyUser = () => {
               navigate("/dashboard");
             } else if (
               role === "admin" ||
-              (role === "student" && (friends || friends.length > 0))
+              (role === "student" && (friends.length > 0))
             ) {
               navigate("/dashboard");
             }

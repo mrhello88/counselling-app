@@ -40,6 +40,7 @@ export const App = () => {
     const fetchingData = async () => {
       try {
         const responseData = await fetchData(`${process.env.BACKEND_URL}/api/user`);
+        console.log(responseData);
         if (responseData.success) {
           setUserData(responseData.data || {});
         }
@@ -51,6 +52,7 @@ export const App = () => {
     // Call the async function inside useEffect
     fetchingData(userData);
   }, [isLoggedIn, fetchData, refreshFlag]);
+  
   return (
     <Router>
       <div className="">

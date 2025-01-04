@@ -33,7 +33,7 @@ export const Payment = () => {
       toast.error("Please fix the errors in the form.");
       return;
     }
-    if (location.state.scheduleSessionData) {
+    if (location?.state?.scheduleSessionData) {
       try {
         const { scheduleSessionData } = location.state;
         console.log("scheduleSessionData", scheduleSessionData);
