@@ -25,7 +25,6 @@ router.get(
  
 router.get(
   "/api/counselorAvailableSlots/:counselorId",
-  authentication,
   counselingSessionController.getCounselorAvailableSlots
 );
 
