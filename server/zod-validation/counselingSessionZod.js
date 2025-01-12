@@ -1,4 +1,5 @@
 const z = require("zod");
+const moment = require("moment");
 
 // Regular expression to validate the date format YYYY-MM-DD HH:mm:ss
 const dateRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
@@ -13,14 +14,14 @@ const isValidDateComponents = (year, month, day) => {
   if (month < 1 || month > 12) return false; // Invalid month
   const daysInMonth = [
     31,
-    isLeapYear(year) ? 29 : 28, 
-    31,  
+    isLeapYear(year) ? 29 : 28,
+    31,
     30,
     31,
     30,
-    31, 
     31,
-    30, 
+    31,
+    30,
     31,
     30,
     31,
@@ -55,32 +56,26 @@ const counselingSessionSchemaZod = z.object({
         message: "Invalid date components: check year, month, or day.",
       }
     )
-    .transform((dateString) => {
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) {
-        throw new Error("Invalid date.");
-      }
-      return date;
+    .refine((dateString) => {
+      const date = moment(dateString, "YYYY-MM-DD HH:mm:ss"); // Parse the date using moment
+      return date.isAfter(moment()); // Ensure the date is in the future
+    }, {
+      message: "Date must be in the future.",
     })
     .refine(
-      (date) => {
-        const now = new Date();
-        return date > now; // Ensure the date is in the future
-      },
-      {
-        message: "Date must be in the future.",
-      }
-    )
-    .refine(
-      (date) => {
-        const minutes = date.getMinutes();
-        return minutes === 0 || minutes === 30; // Only allow times with minutes 0 or 30
+      (dateString) => {
+        const minutes = Number(dateString.split(":")[1]);
+        return minutes === 0; // Only allow times on the hour
       },
       {
         message:
-          "Please select a time on the hour or half-hour (e.g., 10:00 or 10:30).",
+          "Please select a time on the hour (e.g., 10:00, 11:00).",
       }
-    ),
+    )
+    .transform((dateString) => {
+      // Return date as a validated string in the original format
+      return dateString;
+    }),
 });
 
 module.exports = counselingSessionSchemaZod;

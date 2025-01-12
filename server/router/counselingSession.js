@@ -22,7 +22,7 @@ router.get(
   authentication,
   counselingSessionController.getscheduleCounseling
 );
- 
+
 router.get(
   "/api/counselorAvailableSlots/:counselorId",
   counselingSessionController.getCounselorAvailableSlots

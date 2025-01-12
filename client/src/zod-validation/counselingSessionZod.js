@@ -58,9 +58,9 @@ export const counselingSessionSchemaZod = z.object({
     )
     .refine((dateString) => {
       const date = moment(dateString, "YYYY-MM-DD HH:mm:ss"); // Parse the date using moment
-      return date.isAfter(moment().add(1, 'hour')); // Ensure the date is at least one hour in the future
+      return date.isAfter(moment()); // Ensure the date is in the future
     }, {
-      message: "Date must be at least one hour in the future.",
+      message: "Date must be in the future.",
     })
     .refine(
       (dateString) => {
