@@ -5,10 +5,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar-Footer/Navbar";
 import { UserDashboard } from "./pages/U-Dashboard";
 import { ChatWindow } from "./components/Dashboard/Chat/Chat-Window";
-// import { ChatWindows } from "./components/Dashboard/Chat/Chat-Window";
 import { Footer } from "./components/Navbar-Footer/Footer";
 import { LoginPage } from "./components/auth/Login";
-// import { Home } from "./pages/Home";
 import { Payment } from "./pages/Payment";
 import { Register } from "./pages/Register";
 import { StudentRegister } from "./components/auth/Register/StudentRegister";
@@ -60,7 +58,6 @@ export const App = () => {
         <Navbar />
       </div>
       <Routes>
-        {/* <Route path={`/`} element={<Home />} /> */}
         {isLoggedIn && userData.role ? (
           <>
             <Route path="/payment" element={<Payment />} />

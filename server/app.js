@@ -60,7 +60,7 @@ app.get('*', (req, res) => {
 });
 try {
   io.on("connection", async (socket) => {
-    // Handle joining the roomv
+    // Handle joining the room
     socket.on("join", async ({ room, userId }) => {
       // Leave the previous room if the user was already in one
       if (socket.room) {

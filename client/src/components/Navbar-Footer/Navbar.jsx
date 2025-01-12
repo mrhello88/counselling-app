@@ -143,6 +143,7 @@ export const Navbar = () => {
           <NavLink
             to="/"
             className="block py-2 px-4 hover:bg-secondary text-white"
+            onClick={() => setIsOpen(false)}
           >
             Home
           </NavLink>
@@ -153,6 +154,7 @@ export const Navbar = () => {
                 <NavLink
                   to="/dashboard"
                   className="block py-2 px-4 hover:bg-secondary text-white"
+                  onClick={() => setIsOpen(false)}
                 >
                   Dashboard
                 </NavLink>
@@ -162,6 +164,7 @@ export const Navbar = () => {
                 <NavLink
                   to="/dashboard"
                   className="block py-2 px-4 hover:bg-secondary text-white"
+                  onClick={() => setIsOpen(false)}
                 >
                   Dashboard
                 </NavLink>
@@ -172,12 +175,14 @@ export const Navbar = () => {
           <NavLink
             to="/counselorList"
             className="block py-2 px-4 hover:bg-secondary text-white"
+            onClick={() => setIsOpen(false)}
           >
             Counselors
           </NavLink>
           <NavLink
             to="/about"
             className="block py-2 px-4 hover:bg-secondary text-white"
+            onClick={() => setIsOpen(false)}
           >
             About Us
           </NavLink>
@@ -186,6 +191,7 @@ export const Navbar = () => {
             <button
               onClick={() => {
                 LogoutUser();
+                setIsOpen(false);
               }}
               className="w-full text-left bg-[#38bdf8] text-white py-2 px-4 hover:bg-[#0ea5e9]"
             >
@@ -196,12 +202,14 @@ export const Navbar = () => {
               <NavLink
                 to="/login"
                 className="block bg-secondary text-primary py-2 px-4 rounded hover:bg-primary hover:text-white"
+                onClick={() => setIsOpen(false)}
               >
                 Log In
               </NavLink>
               <NavLink
                 to="/register"
                 className="block bg-secondary text-primary py-2 px-4 rounded hover:bg-primary hover:text-white"
+                onClick={() => setIsOpen(false)}
               >
                 Book a Session
               </NavLink>

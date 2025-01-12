@@ -1,73 +1,80 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/Context";
-import { paymentFormSchema } from "../zod-validation/paymentZod";
-import { LoadingOverlay } from "../components/Loading/Loading";
+// import { paymentFormSchema } from "../zod-validation/paymentZod";
+// import { LoadingOverlay } from "../components/Loading/Loading";
 import { toast } from "react-toastify";
+import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+
 export const Payment = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  // const { postCounselingSession, postData, apiLoading, postCounselorAdvice } = useAuth();
-  const { postData, apiLoading, fetchData, setRefreshFlag } = useAuth();
+  const { postData, setRefreshFlag } = useAuth();
+  const stripe = useStripe();
+  const elements = useElements();
 
-  const [errors, setErrors] = useState({});
-  const [paymentInfo, setPaymentInfo] = useState({
-    cardNumber: "",
-    cardHolder: "",
-    expirationDate: "",
-    cvv: "",
-    billingAddress: "",
-  });
+  // const [errors, setErrors] = useState({});
+  // const [paymentInfo, setPaymentInfo] = useState({
+  //   cardNumber: "",
+  //   cardHolder: "",
+  //   expirationDate: "",
+  //   cvv: "",
+  //   billingAddress: "",
+  // });
 
-  const handleChange = (e) => {
-    setPaymentInfo({ ...paymentInfo, [e.target.name]: e.target.value });
-    setErrors((prevError) => ({ ...prevError, [e.target.name]: "" }));
-  };
+  // const handleChange = (e) => {
+  //   setPaymentInfo({ ...paymentInfo, [e.target.name]: e.target.value });
+  //   setErrors((prevError) => ({ ...prevError, [e.target.name]: "" }));
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = paymentFormSchema.safeParse(paymentInfo);
-    if (!result.success) {
-      const fieldErrors = result.error.format();
-      setErrors(fieldErrors);
-      toast.error("Please fix the errors in the form.");
+    // const result = paymentFormSchema.safeParse(paymentInfo);
+    // if (!result.success) {
+    //   const fieldErrors = result.error.format();
+    //   setErrors(fieldErrors);
+    //   toast.error("Please fix the errors in the form.");
+    //   return;
+    // }
+
+    if (!stripe || !elements) {
+      toast.error("Stripe has not loaded yet. Please try again.");
       return;
     }
+
+    const cardElement = elements.getElement(CardElement);
+    const { error, paymentMethod } = await stripe.createPaymentMethod({
+      type: "card",
+      card: cardElement,
+    });
+
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+
     if (location?.state?.scheduleSessionData) {
       try {
         const { scheduleSessionData } = location.state;
         const counselingResponseData = await postData(
           `${process.env.BACKEND_URL}/api/counseling-schedule`,
-          scheduleSessionData
+          { ...scheduleSessionData, paymentMethodId: paymentMethod.id }
         );
         if (counselingResponseData.success) {
-          const responseAdviceData = await postData(
-            `${process.env.BACKEND_URL}/api/buy-advice`,
-            { counselorId: scheduleSessionData.counselorId }
-          );
-          if (counselingResponseData.success) {
-            setRefreshFlag(true);
-            // const responseData = await fetchData(`${process.env.BACKEND_URL}/api/user`);
-            // if (responseData.success) {
-            toast.success(responseAdviceData.message);
-            navigate("/dashboard");
-            // }
-          } else {
-            toast.error(responseAdviceData.message || "Registration failed.");
-          }
+          setRefreshFlag(true);
+          toast.success(counselingResponseData.message);
+          navigate("/dashboard");
         } else {
           toast.error(counselingResponseData.message);
         }
       } catch (error) {
         toast.error(
-          "An unexpected error occurred while post counsling schedule"
+          "An unexpected error occurred while post counseling schedule"
         );
       }
     }
   };
-  // if (apiLoading) {
-  //   return apiLoading && <LoadingOverlay />;
-  // }
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
@@ -75,127 +82,12 @@ export const Payment = () => {
           Payment Details
         </h2>
         <form onSubmit={handleSubmit}>
-          {/* Card Number */}
+          {/* Card Element */}
           <div className="mb-4">
-            <label
-              className="block text-gray-700 font-semibold mb-2"
-              htmlFor="cardNumber"
-            >
-              Card Number
+            <label className="block text-gray-700 font-semibold mb-2">
+              Card Details
             </label>
-            <input
-              type="text"
-              id="cardNumber"
-              name="cardNumber"
-              placeholder="1234 5678 9123 4567"
-              className="border border-gray-300 rounded-md p-2 w-full"
-              value={paymentInfo.cardNumber}
-              onChange={handleChange}
-              required
-            />
-            {errors.cardNumber && (
-              <p className="text-red-500 text-sm">
-                {errors.cardNumber._errors[0]}
-              </p>
-            )}
-          </div>
-
-          {/* Cardholder Name */}
-          <div className="mb-4">
-            <label
-              className="block text-gray-700 font-semibold mb-2"
-              htmlFor="cardHolder"
-            >
-              Cardholder Name
-            </label>
-            <input
-              type="text"
-              id="cardHolder"
-              name="cardHolder"
-              placeholder="John Doe"
-              className="border border-gray-300 rounded-md p-2 w-full"
-              value={paymentInfo.cardHolder}
-              onChange={handleChange}
-              required
-            />
-            {errors.cardHolder && (
-              <p className="text-red-500 text-sm">
-                {errors.cardHolder._errors[0]}
-              </p>
-            )}
-          </div>
-
-          {/* Expiration Date */}
-          <div className="mb-4">
-            <label
-              className="block text-gray-700 font-semibold mb-2"
-              htmlFor="expirationDate"
-            >
-              Expiration Date
-            </label>
-            <input
-              type="text"
-              id="expirationDate"
-              name="expirationDate"
-              placeholder="MM/YY"
-              className="border border-gray-300 rounded-md p-2 w-full"
-              value={paymentInfo.expirationDate}
-              onChange={handleChange}
-              required
-            />
-            {errors.expirationDate && (
-              <p className="text-red-500 text-sm">
-                {errors.expirationDate._errors[0]}
-              </p>
-            )}
-          </div>
-
-          {/* CVV */}
-          <div className="mb-4">
-            <label
-              className="block text-gray-700 font-semibold mb-2"
-              htmlFor="cvv"
-            >
-              CVV
-            </label>
-            <input
-              type="text"
-              id="cvv"
-              name="cvv"
-              placeholder="123"
-              className="border border-gray-300 rounded-md p-2 w-full"
-              value={paymentInfo.cvv}
-              onChange={handleChange}
-              required
-            />
-            {errors.cvv && (
-              <p className="text-red-500 text-sm">{errors.cvv._errors[0]}</p>
-            )}
-          </div>
-
-          {/* Billing Address */}
-          <div className="mb-4">
-            <label
-              className="block text-gray-700 font-semibold mb-2"
-              htmlFor="billingAddress"
-            >
-              Billing Address
-            </label>
-            <input
-              type="text"
-              id="billingAddress"
-              name="billingAddress"
-              placeholder="123 Main St, City, Country"
-              className="border border-gray-300 rounded-md p-2 w-full"
-              value={paymentInfo.billingAddress}
-              onChange={handleChange}
-              required
-            />
-            {errors.billingAddress && (
-              <p className="text-red-500 text-sm">
-                {errors.billingAddress._errors[0]}
-              </p>
-            )}
+            <CardElement className="border border-gray-300 rounded-md p-2 w-full" />
           </div>
 
           {/* Pay Now Button */}

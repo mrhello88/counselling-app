@@ -58,18 +58,18 @@ export const counselingSessionSchemaZod = z.object({
     )
     .refine((dateString) => {
       const date = moment(dateString, "YYYY-MM-DD HH:mm:ss"); // Parse the date using moment
-      return date.isAfter(moment()); // Ensure the date is in the future
+      return date.isAfter(moment().add(1, 'hour')); // Ensure the date is at least one hour in the future
     }, {
-      message: "Date must be in the future.",
+      message: "Date must be at least one hour in the future.",
     })
     .refine(
       (dateString) => {
         const minutes = Number(dateString.split(":")[1]);
-        return minutes === 0 || minutes === 30; // Only allow times with minutes 0 or 30
+        return minutes === 0; // Only allow times on the hour
       },
       {
         message:
-          "Please select a time on the hour or half-hour (e.g., 10:00 or 10:30).",
+          "Please select a time on the hour (e.g., 10:00, 11:00).",
       }
     )
     .transform((dateString) => {

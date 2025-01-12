@@ -11,11 +11,8 @@ import { LoadingOverlay } from "../Loading/Loading";
 export const CounselorProfile = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [errors, setErrors] = useState({});
-  // const {
-  //   getCounselorProfile,
-  //   isLoggedIn,
-  // } = useAuth();
   const [profileData, setProfileData] = useState({});
+  const [availableSlots, setAvailableSlots] = useState([]);
   const { fetchData, apiLoading, isLoggedIn } = useAuth();
   const { counselorId } = useParams();
 
@@ -28,6 +25,14 @@ export const CounselorProfile = () => {
         );
         if (responseData.success) {
           setProfileData(responseData.data || {});
+          const slotsData = await fetchData(
+            `${process.env.BACKEND_URL}/api/counselorAvailableSlots/${counselorId}`
+          );
+          if (slotsData.success) {
+            setAvailableSlots(slotsData.data || []);
+          } else {
+            toast.error(slotsData.message);
+          }
         } else {
           toast.error(responseData.message);
         }
@@ -44,8 +49,7 @@ export const CounselorProfile = () => {
       toast.error("Date is Required!");
       return;
     }
-    // Convert the selected date to UTC explicitly
-    const startDate = moment(selectedDate).format("YYYY-MM-DD HH:mm:ss");
+    const startDate = moment(selectedDate).format("YYYY-MM-DD HH:mm:ss"); // Ensure the date is stored as UTC
     const result = counselingSessionSchemaZod.safeParse({ date: startDate });
 
     if (!result.success) {
@@ -55,10 +59,9 @@ export const CounselorProfile = () => {
       return;
     }
 
-    // Calculate end date in UTC as well
     const endDate = moment(selectedDate)
-      .add(profileData.counseling?.duration, "minutes")
-      .format("YYYY-MM-DD HH:mm:ss");
+      .add(1, "hour")
+      .format("YYYY-MM-DD HH:mm:ss"); // Ensure the date is stored as UTC
     if (!isLoggedIn) {
       return navigate("/login/student", {
         state: {
@@ -66,6 +69,7 @@ export const CounselorProfile = () => {
           scheduleSessionData: {
             counselorId: profileData?._id,
             startDate,
+            price: profileData.counseling?.price,
             endDate,
             duration: profileData.counseling?.duration,
           },
@@ -79,13 +83,18 @@ export const CounselorProfile = () => {
         scheduleSessionData: {
           counselorId: profileData?._id,
           startDate,
+          price: profileData.counseling?.price,
           endDate,
           duration: profileData.counseling?.duration,
         },
       },
     });
-    // navigate("/payment");
-    // alert("Counseling session scheduled successfully!");
+  };
+
+  const isSlotAvailable = (date) => {
+    return !availableSlots.some(
+      (slot) => moment(slot).isSame(moment(date), "minute")
+    );
   };
 
   if (!profileData?._id) {
@@ -169,7 +178,8 @@ export const CounselorProfile = () => {
           showTimeSelect
           dateFormat="Pp"
           className="border border-gray-300 rounded-md p-2 w-full"
-          minDate={new Date()} // Prevent past dates
+          minDate={moment().add(1, "hour").toDate()} // Prevent dates less than one hour from now
+          filterTime={(time) => moment(time).minute() === 0 && isSlotAvailable(time)} // Only allow times on the hour and available slots
         />
         {errors.date && (
           <p className="text-red-500 text-sm">{errors?.date?._errors[0]}</p>

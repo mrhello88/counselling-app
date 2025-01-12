@@ -59,20 +59,6 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  //  const postData = useCallback(async (url, data) => {
-  //   setApiLoading(true);
-  //   try {
-  //     const response = await axios.post(url, data);
-  //     return response.data;
-  //   } catch (err) {
-  //     setError(err);
-  //     throw err;
-  //   } finally {
-  //     setApiLoading(false);
-  //   }
-  // }, []);
-
-  // Post Data (POST Request)
   const postData = useCallback(async (endpoint, payload) => {
     setApiLoading(true);
     // dispatch({ type: "SET_LOADING", payload: false });

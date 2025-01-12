@@ -108,7 +108,7 @@ export const AdminBookUpload = () => {
         <h2 className="text-2xl font-bold text-primary mb-4 text-center">
           Upload New Book
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4 bg-red-300 h-full flex-col">
+        <form onSubmit={handleSubmit} className="space-y-4 h-full flex-col">
           {/* Title */}
           <div>
             <label className="block text-secondary font-semibold mb-2">

@@ -14,11 +14,13 @@ const CounselingSessionSchema = new Schema({
   },
   startDate: {
     type: Date,
-    required: true
+    required: true,
+    get: (value) => value.toISOString(), // Ensure the date is stored as UTC
   },
   endDate: {
     type: Date,
-    required: true
+    required: true,
+    get: (value) => value.toISOString(), // Ensure the date is stored as UTC
   }, 
   duration: {
     type: Number, // Duration in minutes

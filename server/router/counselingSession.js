@@ -22,4 +22,11 @@ router.get(
   authentication,
   counselingSessionController.getscheduleCounseling
 );
+ 
+router.get(
+  "/api/counselorAvailableSlots/:counselorId",
+  authentication,
+  counselingSessionController.getCounselorAvailableSlots
+);
+
 module.exports = router;
