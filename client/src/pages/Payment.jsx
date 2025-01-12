@@ -61,9 +61,20 @@ export const Payment = () => {
           { ...scheduleSessionData, paymentMethodId: paymentMethod.id }
         );
         if (counselingResponseData.success) {
-          setRefreshFlag(true);
-          toast.success(counselingResponseData.message);
-          navigate("/dashboard");
+          const responseAdviceData = await postData(
+            `${process.env.BACKEND_URL}/api/buy-advice`,
+            { counselorId: scheduleSessionData.counselorId }
+          );
+          if (counselingResponseData.success) {
+            setRefreshFlag(true);
+            // const responseData = await fetchData(`${process.env.BACKEND_URL}/api/user`);
+            // if (responseData.success) {
+            toast.success(responseAdviceData.message);
+            navigate("/dashboard");
+            // }
+          } else {
+            toast.error(responseAdviceData.message || "Registration failed.");
+          }
         } else {
           toast.error(counselingResponseData.message);
         }
