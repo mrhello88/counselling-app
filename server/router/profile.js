@@ -7,16 +7,17 @@ const router = express.Router();
 
 router.get("/api/profile", authentication, profileController.getProfile);
 router.post(
-  "/api/update-profile",
+  "/api/update-counselor-profile",
   authentication,
   uploadProfileAndFiles,
-  profileController.putUpdateProfile
+  profileController.postUpdateCounselorProfile
 );
 
 router.post(
-  "/api/update-student-profile",
+  "/api/update-profile",
   authentication,
   uploadProfileAndFiles,
-  profileController.postUpdateStudentProfile
+  profileController.postUpdateProfile
 );
+
 module.exports = router;

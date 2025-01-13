@@ -81,7 +81,7 @@ export const StudentProfilePage = () => {
     // Call API to update profile data
     try {
       const responseData = await postData(
-        `${process.env.BACKEND_URL}/api/update-student-profile`,
+        `${process.env.BACKEND_URL}/api/update-profile`,
         updatedFormData
       );
       if (responseData.success) {

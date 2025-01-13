@@ -30,23 +30,23 @@ exports.getCounselor = async (req, res) => {
   }
 };
 
-exports.postCAdvice = async (req, res) => {
+exports.postCounselorBuyAdvice = async (req, res) => {
   try {
     const userId = req.user._id;
     const { counselorId } = req.body;
 
-    if (req.user.role === "counselor" || req.user.role ===  "admin") {
+    if (req.user.role === "counselor" || req.user.role === "admin") {
       return res.status(403).json({
         message: `You can't add counselor as ${req.user.role}`,
         success: false,
-      }); 
+      });
     }
 
     // Add user to counselor's students list
     await UserSchema.findByIdAndUpdate(counselorId, {
       $addToSet: { friends: userId },
     });
- 
+
     // Add counselor to user's counselor list
     const user = await UserSchema.findByIdAndUpdate(userId, {
       $addToSet: { friends: counselorId },

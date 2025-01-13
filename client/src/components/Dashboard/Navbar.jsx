@@ -4,9 +4,11 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaBars, FaTimes } from 'react-icons/fa'; // Import hamburger and close icons
 import { LoadingOverlay } from "../Loading/Loading";
+
 const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
   const { isLoggedIn, fetchData, apiLoading } = useAuth();
   const [userData, setUserData] = useState({});
+
   useEffect(() => {
     const fetchingData = async () => {
       try {
@@ -22,9 +24,11 @@ const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
     // Call the async function inside useEffect
     fetchingData();
   }, [isLoggedIn, fetchData]);
+
   // if (apiLoading) {
   //   return <LoadingOverlay />;
   // }
+
   return (
     <div className="flex justify-between items-center py-2 bg-gray-900 px-8">
       {/* Hamburger Menu for Mobile */}
@@ -45,7 +49,6 @@ const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
           <span className="text-white">{userData?.personalInfo?.name}</span>
         </h1>
       </div>
-
 
       {/* User Profile */}
       <div className="hover:bg-gray-50 rounded-full">

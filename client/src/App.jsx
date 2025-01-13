@@ -14,6 +14,7 @@ import { CounselorRegister } from "./components/auth/Register/CounselorRegister"
 import { VerifyUser } from "./components/auth/Verify/VerifyUser";
 import { CounselorProfilePage } from "./components/EditProfile/CounselorProfile";
 import { StudentProfilePage } from "./components/EditProfile/StudentProfile";
+import { AdminProfilePage } from "./components/EditProfile/AdminProfile";
 import { CreateSession } from "./components/Dashboard/createCounseling/CreateCounseling";
 import { CounselorProfile } from "./components/CounselorProfile/CounselorProfile";
 import { CounselorList } from "./components/FilterCounselors/CounselorList";
@@ -30,6 +31,7 @@ import { AdminStudentPage } from "./components/Dashboard/admin-dashboard/adminSt
 import { AdminBookUpload } from "./components/Dashboard/admin-dashboard/adminBookUpload/AdminBookUpload";
 import { AllBooks } from "./components/Dashboard/bookLibrary/BookLibrary";
 import NotFound from "./components/Error/Error404";
+import { AboutUs } from "./pages/AboutUs.jsx";
 
 export const App = () => {
   const { isLoggedIn, fetchData, refreshFlag } = useAuth();
@@ -124,6 +126,10 @@ export const App = () => {
                     element={<AllBooks />}
                   />
                 </Route>
+                <Route
+                  path="/profile/admin"
+                  element={<AdminProfilePage />}
+                />
               </>
             ) : null}
           </>
@@ -156,10 +162,12 @@ export const App = () => {
         <Route path="/login/admin" element={<LoginPage role={"admin"} />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/counselorList" element={<CounselorList />} />
+        <Route path="/about" element={<AboutUs />} />
         <Route path="*" element={<NotFound />} />{" "}
         {/* Catch-all route for 404 */}
       </Routes>
       <Footer />
     </Router>
-  );
-};
+  );  
+}; 
+ 

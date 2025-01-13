@@ -7,22 +7,7 @@ import {
   AnimatePresence,
 } from "framer-motion";
 // import { useTheme } from 'next-themes'
-import {
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
-  Mail,
-  Phone,
-  Clock,
-  Users,
-  ChevronDown,
-  ChevronUp,
-  Menu,
-  X,
-  Sun,
-  Moon,
-} from "lucide-react";
+import { Clock, Users, ChevronDown, ChevronUp } from "lucide-react";
 import { useAuth } from "../context/Context";
 import { LoadingOverlay } from "../components/Loading/Loading";
 import { toast } from "react-toastify";
@@ -70,7 +55,7 @@ const Badge = ({ children, className, variant = "secondary" }) => {
   );
 };
 
-function EnhancedDottedGlobe({ isDark = false }) {
+export const EnhancedDottedGlobe = ({ isDark = false, title, subtitle }) => {
   const dotColor = isDark ? "#ffffff" : "#000000";
   const orbitColor = isDark ? "rgba(255, 255, 255, 0.2)" : "rgba(0, 0, 0, 0.2)";
 
@@ -145,7 +130,7 @@ function EnhancedDottedGlobe({ isDark = false }) {
       </svg>
     </motion.div>
   );
-}
+};
 
 function CounselorCard({ counselor }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -264,7 +249,7 @@ function CounselorCard({ counselor }) {
   );
 }
 
-function WavyLine({ color = "currentColor" }) {
+export const WavyLine = ({ color = "currentColor" }) => {
   return (
     <svg
       className="w-full h-20 -mt-1"
@@ -295,7 +280,7 @@ function WavyLine({ color = "currentColor" }) {
       ></motion.path>
     </svg>
   );
-}
+};
 
 function ScrollToTopButton() {
   const [isVisible, setIsVisible] = useState(false);
@@ -341,7 +326,7 @@ function ScrollToTopButton() {
   );
 }
 
-function FloatingShapes() {
+export const FloatingShapes = () => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <motion.div
@@ -372,7 +357,7 @@ function FloatingShapes() {
       />
     </div>
   );
-}
+};
 
 export function HomePage() {
   // const { isLoggedIn, LogoutUser} = useAuth();

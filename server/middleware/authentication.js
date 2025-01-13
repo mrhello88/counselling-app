@@ -49,6 +49,7 @@ exports.authentication = async (req, res, next) => {
     req.user = sessionData.userData;
     req.isLoggedIn = decodedToken.isLoggedIn;
     req.userId = sessionData.userData._id;
+    req.token = sessionData.token;
 
     // Proceed to the next middleware
     next();

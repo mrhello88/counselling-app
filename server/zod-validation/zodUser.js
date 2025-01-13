@@ -1,6 +1,5 @@
 const z = require("zod");
 
-
 const UserSchemaZod = z
   .object({
     personalInfo: z.object({
@@ -8,6 +7,7 @@ const UserSchemaZod = z
         .string({ message: "Name is required!" })
         .min(2, { message: "Name must be at least 2 characters." })
         .max(50, { message: "Name must be at most 50 characters." })
+        .regex(/^[A-Za-z\s]+$/, { message: "Name must contain only alphabets." })
         .trim(),
       email: z
         .string({ message: "Email is required!" })
@@ -17,10 +17,10 @@ const UserSchemaZod = z
         .string({ message: "Password is required!" })
         .min(8, { message: "Password must be at least 8 characters." })
         .max(128, { message: "Password must be at most 128 characters." })
-        // .regex(/[A-Z]/, { message: "Password must contain at least one uppercase letter." })
-        // .regex(/[a-z]/, { message: "Password must contain at least one lowercase letter." })
-        // .regex(/[0-9]/, { message: "Password must contain at least one number." })
-        // .regex(/[@$!%*?&]/, { message: "Password must contain at least one special character (@, $, !, %, *, ?, &)." })
+        .regex(/[A-Z]/, { message: "Password must contain at least one uppercase letter." })
+        .regex(/[a-z]/, { message: "Password must contain at least one lowercase letter." })
+        .regex(/[0-9]/, { message: "Password must contain at least one number." })
+        .regex(/[@$!%*?&]/, { message: "Password must contain at least one special character (@, $, !, %, *, ?, &)." })
         .trim(),
       confirmPassword: z
         .string({ message: "Confirm Password is required!" })

@@ -1,19 +1,28 @@
 const CounselorProfile = require("../model/CounselorProfile");
 const User = require("../model/User");
 const deleteFile = require("../utils/fileRemover");
+const client = require(".././utils/redisDatabase"); // Assuming you have a Redis client setup
+
 exports.getProfile = async (req, res) => {
   try {
     const { role, personalInfo } = req.user;
 
     // If the user is a student, return their basic profile data
     if (role === "student") {
-      return res
-        .status(200)
-        .json({
-          data: req.user,
-          success: true,
-          message: "this is student Profile",
-        });
+      return res.status(200).json({
+        data: req.user,
+        success: true,
+        message: "This is student profile",
+      });
+    }
+
+    // If the user is an admin, return their basic profile data
+    if (role === "admin") {
+      return res.status(200).json({
+        data: req.user,
+        success: true,
+        message: "This is admin profile",
+      });
     }
 
     // If the user is a counselor, populate the counselorId for additional details
@@ -25,16 +34,14 @@ exports.getProfile = async (req, res) => {
     if (!counselorData) {
       return res
         .status(404)
-        .json({ message: "Counselor not found", success: false }); 
+        .json({ message: "Counselor not found", success: false });
     }
     // Return the counselor data with populated counselor
-    return res
-      .status(200)
-      .json({
-        data: counselorData,
-        success: true,
-        message: "counselorData with populated counselor",
-      });
+    return res.status(200).json({
+      data: counselorData,
+      success: true,
+      message: "Counselor data with populated counselor",
+    });
   } catch (error) {
     // Log and return error response
     return res
@@ -43,7 +50,7 @@ exports.getProfile = async (req, res) => {
   }
 };
 
-exports.putUpdateProfile = async (req, res) => {
+exports.postUpdateCounselorProfile = async (req, res) => {
   const {
     name,
     degree,
@@ -136,14 +143,27 @@ exports.putUpdateProfile = async (req, res) => {
         .json({ message: "User not found", success: false });
     }
 
-    // Success response
-    return res
-      .status(200)
-      .json({
-        message: "Profile updated successfully!",
-        data: editUser,
-        success: true,
+    // Save session in the database
+    const userSession = await client.set(
+      req.token, // Key (token)
+      JSON.stringify({ userId, userData: editUser, token: req.token }), // Value (session data)
+      "EX", // Option for expiry time
+      259200 // Expiry time in seconds (3 days)
+    );
+
+    // Check Redis response. For some Redis clients, 'OK' may not be returned.
+    if (userSession !== "OK") {
+      return res.status(500).json({
+        message: "Failed to create user session in Redis",
+        success: false,
       });
+    }
+    // Success response
+    return res.status(200).json({
+      message: "Profile updated successfully!",
+      data: editUser,
+      success: true,
+    });
   } catch (error) {
     // Error handling
     return res
@@ -152,7 +172,7 @@ exports.putUpdateProfile = async (req, res) => {
   }
 };
 
-exports.postUpdateStudentProfile = async (req, res, next) => {
+exports.postUpdateProfile = async (req, res, next) => {
   const { name } = req.body;
   // Access uploaded file paths if they exist
   const profileImagePath = req.files?.profileImage?.[0]?.filename;
@@ -192,14 +212,28 @@ exports.postUpdateStudentProfile = async (req, res, next) => {
         .json({ message: "User not found", success: false });
     }
 
-    // Success response
-    return res
-      .status(200)
-      .json({
-        message: "Profile updated successfully!",
-        data: editUser,
-        success: true,
+    // Save session in the database
+    const userSession = await client.set(
+      req.token, // Key (token)
+      JSON.stringify({ userId, userData: editUser, token: req.token }), // Value (session data)
+      "EX", // Option for expiry time
+      259200 // Expiry time in seconds (3 days)
+    );
+
+    // Check Redis response. For some Redis clients, 'OK' may not be returned.
+    if (userSession !== "OK") {
+      return res.status(500).json({
+        message: "Failed to create user session in Redis",
+        success: false,
       });
+    }
+
+    // Success response
+    return res.status(200).json({
+      message: "Profile updated successfully!",
+      data: editUser,
+      success: true,
+    });
   } catch (error) {
     // Error handling
     return res
